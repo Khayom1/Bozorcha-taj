@@ -235,5 +235,32 @@
             }
         };
     </script>
+    <script>
+    // Санҷиши оддӣ
+    console.log('Supabase URL:', 'https://seagtlaujnnhoyitgsdd.supabase.co');
+    console.log('Anon Key:', 'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP');
+    
+    document.getElementById('submitBtn').addEventListener('click', async function(e) {
+        e.preventDefault();
+        alert('Тугма пахш шуд!');
+        
+        const phone = document.getElementById('phone').value.replace(/\s/g, '');
+        const fullPhone = '+992' + phone;
+        
+        try {
+            const { data, error } = await supabase
+                .from('users')
+                .insert([{ phone: fullPhone }]);
+                
+            if (error) {
+                alert('Хатогӣ: ' + error.message);
+            } else {
+                alert('Маълумот сабт шуд!');
+            }
+        } catch (err) {
+            alert('Хатогӣ: ' + err.message);
+        }
+    });
+    </script>
 </body>
 </html>
