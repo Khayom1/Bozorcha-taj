@@ -145,24 +145,24 @@
         </header>
 
         <h1 class="title" id="t-title">Маълумоти профил</h1>
-        <p class="subtitle" id="t-sub">Барои идома, маълумоти худро пур кунед</p>
+        <p class="subtitle" id="t-sub">Барои идома, маълумоти худро ворид кунед</p>
 
         <form id="profileForm">
             <div class="form-group">
                 <label id="l-name">Ном</label>
-                <input type="text" id="name" placeholder="Аҳмад">
+                <input type="text" id="name" placeholder="Номи шахсии шумо" autocomplete="given-name">
             </div>
             <div class="form-group">
                 <label id="l-surname">Насаб</label>
-                <input type="text" id="surname" placeholder="Раҳимов">
+                <input type="text" id="surname" placeholder="Насаби шумо" autocomplete="family-name">
             </div>
             <div class="form-group">
                 <label id="l-shop">Номи мағоза</label>
-                <input type="text" id="shopName" placeholder="Мағозаи ман">
+                <input type="text" id="shopName" placeholder="Масалан: 'Мағозаи Аҳмад'">
             </div>
             <div class="form-group">
                 <label id="l-address">Макони мағоза</label>
-                <textarea id="shopAddress" placeholder="Душанбе, кӯчаи Айнӣ 45"></textarea>
+                <textarea id="shopAddress" placeholder="Суроғаи пурра, масалан: Душанбе, кӯчаи Айнӣ 45"></textarea>
             </div>
         </form>
 
@@ -181,15 +181,15 @@
             tj: { 
                 flag: "🇹🇯", 
                 title: "Маълумоти профил", 
-                sub: "Барои идома, маълумоти худро пур кунед",
+                sub: "Барои идома, маълумоти худро ворид кунед",
                 name: "Ном",
                 surname: "Насаб",
                 shop: "Номи мағоза",
                 address: "Макони мағоза",
                 btn: "Сабт кардан",
                 foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.",
-                success: "Маълумот сабт шуд!",
-                error: "Ҳамаи майдонҳоро пур кунед"
+                success: "Маълумоти шумо сабт шуд!",
+                error: "Лутфан ҳамаи майдонҳоро пур кунед"
             },
             ru: { 
                 flag: "🇷🇺", 
@@ -201,8 +201,8 @@
                 address: "Адрес магазина",
                 btn: "Сохранить",
                 foot: "© 2026 Bozorcha. Все права защищены.",
-                success: "Информация сохранена!",
-                error: "Заполните все поля"
+                success: "Ваша информация сохранена!",
+                error: "Пожалуйста, заполните все поля"
             },
             en: { 
                 flag: "🇬🇧", 
@@ -214,7 +214,7 @@
                 address: "Shop address",
                 btn: "Save",
                 foot: "© 2026 Bozorcha. All rights reserved.",
-                success: "Profile saved!",
+                success: "Your information has been saved!",
                 error: "Please fill all fields"
             }
         };
@@ -262,10 +262,15 @@
                 return;
             }
 
-            // Ин ҷо мо бояд ID-и корбарро гирем. Барои ҳозир фарз мекунем, ки он дар localStorage аст.
-            // Шумо бояд ин қисмро баъдтар бо логини воқеӣ пур кунед.
-            const userId = localStorage.getItem('userId'); // Баъдтар ислоҳ карда мешавад
+            // Гирифтани ID-и корбар (бояд аз марҳилаи қаблӣ дар localStorage бошад)
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                alert("ID-и корбар ёфт нашуд. Лутфан аз нав ворид шавед.");
+                window.location.href = 'index.html';
+                return;
+            }
 
+            // Навсозии маълумот дар Supabase
             const { error } = await _supabase
                 .from('user')
                 .update({
@@ -277,6 +282,7 @@
 
             if (error) {
                 alert("Хатогӣ: " + error.message);
+                console.error(error);
             } else {
                 alert(i18n[lang].success);
                 window.location.href = 'dashboard.html';
