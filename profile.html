@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Профил - Bozorcha</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -49,7 +50,6 @@
             padding-bottom: 20px;
         }
 
-        /* Header */
         .page-header {
             display: flex;
             align-items: center;
@@ -95,7 +95,6 @@
             transform: scale(1.05);
         }
 
-        /* Profile Header */
         .profile-header {
             background: var(--gradient);
             padding: 40px 20px 30px;
@@ -127,12 +126,6 @@
         .profile-avatar:hover {
             transform: scale(1.05);
             border-color: white;
-        }
-
-        .profile-avatar i {
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
 
         .edit-avatar {
@@ -209,7 +202,6 @@
             opacity: 0.8;
         }
 
-        /* Stats Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -249,7 +241,6 @@
             color: var(--text-light);
         }
 
-        /* Profile Menu */
         .profile-menu {
             background: var(--bg-card);
             border-radius: 24px;
@@ -316,7 +307,6 @@
             font-size: 14px;
         }
 
-        /* Shop Info Card */
         .info-card {
             background: var(--bg-card);
             border-radius: 20px;
@@ -370,7 +360,6 @@
             background: var(--accent-light);
         }
 
-        /* Payment Methods */
         .payment-methods {
             margin: 0 16px 20px;
         }
@@ -426,7 +415,6 @@
             gap: 4px;
         }
 
-        /* Delivery Methods */
         .delivery-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -477,7 +465,6 @@
             font-weight: 600;
         }
 
-        /* Security Section */
         .security-section {
             background: var(--bg-card);
             border-radius: 20px;
@@ -546,7 +533,6 @@
             border-color: var(--accent);
         }
 
-        /* Switch (Toggle) */
         .switch {
             position: relative;
             display: inline-block;
@@ -592,7 +578,6 @@
             transform: translateX(26px);
         }
 
-        /* Logout Button */
         .logout-btn {
             display: flex;
             align-items: center;
@@ -616,7 +601,6 @@
             box-shadow: 0 4px 12px rgba(239,68,68,0.3);
         }
 
-        /* Modal */
         .modal {
             position: fixed;
             top: 0;
@@ -676,7 +660,7 @@
             color: var(--text);
         }
 
-        .form-input, .form-textarea {
+        .form-input {
             width: 100%;
             padding: 12px;
             border: 1px solid var(--border);
@@ -687,7 +671,7 @@
             transition: all 0.3s ease;
         }
 
-        .form-input:focus, .form-textarea:focus {
+        .form-input:focus {
             border-color: var(--accent);
             outline: none;
             box-shadow: 0 0 0 3px var(--accent-light);
@@ -722,7 +706,6 @@
             color: var(--accent);
         }
 
-        /* Responsive */
         @media (max-width: 480px) {
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -735,7 +718,6 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
     <div class="page-header">
         <div class="page-title">Профил</div>
         <div class="header-actions">
@@ -745,258 +727,167 @@
         </div>
     </div>
 
-    <!-- Profile Header -->
-    <div class="profile-header">
-        <div class="profile-avatar" onclick="changeAvatar()">
-            <i class="fas fa-store"></i>
-            <div class="edit-avatar">
-                <i class="fas fa-camera"></i>
+    <div id="profileData">
+        <div class="profile-header">
+            <div class="profile-avatar" onclick="changeAvatar()">
+                <i class="fas fa-store"></i>
+                <div class="edit-avatar">
+                    <i class="fas fa-camera"></i>
+                </div>
+            </div>
+            <div class="profile-name" id="profileName"></div>
+            <div class="profile-bio" id="profileBio"></div>
+            <div class="profile-location" id="profileLocation"></div>
+            <div class="profile-stats">
+                <div class="profile-stat">
+                    <span class="profile-stat-value" id="statProducts">0</span>
+                    <span class="profile-stat-label">Маҳсулот</span>
+                </div>
+                <div class="profile-stat">
+                    <span class="profile-stat-value" id="statCustomers">0</span>
+                    <span class="profile-stat-label">Муштарӣ</span>
+                </div>
+                <div class="profile-stat">
+                    <span class="profile-stat-value" id="statRating">0</span>
+                    <span class="profile-stat-label">Рейтинг</span>
+                </div>
             </div>
         </div>
-        <div class="profile-name">Мағозаи ман</div>
-        <div class="profile-bio">Либос, телефон, пойафзол • Аз соли 2024</div>
-        <div class="profile-location">
-            <i class="fas fa-map-marker-alt"></i>
-            <span>Душанбе, Тоҷикистон</span>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                <span class="stat-value" id="totalSales">0</span>
+                <span class="stat-label">Фурӯш</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+                <span class="stat-value" id="totalOrders">0</span>
+                <span class="stat-label">Фармоиш</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-star"></i></div>
+                <span class="stat-value" id="avgRating">0</span>
+                <span class="stat-label">Рейтинг</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                <span class="stat-value" id="memberSince">0</span>
+                <span class="stat-label">Дар бозор</span>
+            </div>
         </div>
-        <div class="profile-stats">
-            <div class="profile-stat">
-                <span class="profile-stat-value">124</span>
-                <span class="profile-stat-label">Маҳсулот</span>
+
+        <div class="profile-menu">
+            <div class="menu-item" onclick="openSection('personal')">
+                <div class="menu-icon"><i class="fas fa-user"></i></div>
+                <div class="menu-content">
+                    <div class="menu-title">Маълумоти шахсӣ</div>
+                    <div class="menu-subtitle">Ном, суроға, телефон, почта</div>
+                </div>
+                <i class="fas fa-chevron-right menu-arrow"></i>
             </div>
-            <div class="profile-stat">
-                <span class="profile-stat-value">1.2k</span>
-                <span class="profile-stat-label">Муштарӣ</span>
+            <div class="menu-item" onclick="openSection('shop')">
+                <div class="menu-icon"><i class="fas fa-store-alt"></i></div>
+                <div class="menu-content">
+                    <div class="menu-title">Маълумоти мағоза</div>
+                    <div class="menu-subtitle">Номи мағоза, категория, тавсиф</div>
+                </div>
+                <i class="fas fa-chevron-right menu-arrow"></i>
             </div>
-            <div class="profile-stat">
-                <span class="profile-stat-value">4.8</span>
-                <span class="profile-stat-label">Рейтинг</span>
+            <div class="menu-item" onclick="openSection('payment')">
+                <div class="menu-icon"><i class="fas fa-credit-card"></i></div>
+                <div class="menu-content">
+                    <div class="menu-title">Пардохт ва ҳисоб</div>
+                    <div class="menu-subtitle">Корти бонкӣ, таърихи пардохт</div>
+                </div>
+                <i class="fas fa-chevron-right menu-arrow"></i>
             </div>
+            <div class="menu-item" onclick="openSection('delivery')">
+                <div class="menu-icon"><i class="fas fa-truck"></i></div>
+                <div class="menu-content">
+                    <div class="menu-title">Усули интиқол</div>
+                    <div class="menu-subtitle">Почта, курьер, супоридани дастӣ</div>
+                </div>
+                <i class="fas fa-chevron-right menu-arrow"></i>
+            </div>
+            <div class="menu-item" onclick="openSection('security')">
+                <div class="menu-icon"><i class="fas fa-lock"></i></div>
+                <div class="menu-content">
+                    <div class="menu-title">Махфият ва амният</div>
+                    <div class="menu-subtitle">Рамз, тасдиқи дуқабата</div>
+                </div>
+                <i class="fas fa-chevron-right menu-arrow"></i>
+            </div>
+        </div>
+
+        <div class="info-card" id="shopInfo">
+            <div class="info-card-title">
+                <i class="fas fa-store"></i>
+                <span>Маълумоти мағоза</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Номи мағоза</span>
+                <span class="info-value" id="shopName"></span>
+                <span class="info-edit" onclick="editShopName()"><i class="fas fa-pen"></i> Тағйир</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Телефон</span>
+                <span class="info-value" id="shopPhone"></span>
+                <span class="info-edit" onclick="editPhone()"><i class="fas fa-pen"></i></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Почта</span>
+                <span class="info-value" id="shopEmail"></span>
+                <span class="info-edit" onclick="editEmail()"><i class="fas fa-pen"></i></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Суроға</span>
+                <span class="info-value" id="shopAddress"></span>
+                <span class="info-edit" onclick="editAddress()"><i class="fas fa-pen"></i></span>
+            </div>
+        </div>
+
+        <div class="payment-methods">
+            <div class="info-card-title" style="margin:0 16px 16px;">
+                <i class="fas fa-credit-card"></i>
+                <span>Усули пардохт</span>
+            </div>
+            <div class="payment-card">
+                <div class="payment-icon"><i class="fas fa-credit-card"></i></div>
+                <div class="payment-info">
+                    <div class="payment-name">Корти банкӣ</div>
+                    <div class="payment-desc" id="cardInfo"></div>
+                </div>
+                <div class="payment-status" id="cardStatus"></div>
+            </div>
+        </div>
+
+        <div class="security-section">
+            <div class="security-item">
+                <div class="security-info">
+                    <div class="security-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="security-text">Тасдиқи дуқабата</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="twoFactor">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="security-item">
+                <div class="security-info">
+                    <div class="security-icon"><i class="fas fa-key"></i></div>
+                    <div class="security-text">Иваз кардани рамз</div>
+                </div>
+                <span class="security-action" onclick="changePassword()">Иваз</span>
+            </div>
+        </div>
+
+        <div class="logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Баромадан аз ҳисоб</span>
         </div>
     </div>
 
-    <!-- Quick Stats -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
-            <span class="stat-value">45.2k</span>
-            <span class="stat-label">Фурӯш</span>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
-            <span class="stat-value">342</span>
-            <span class="stat-label">Фармоиш</span>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-star"></i></div>
-            <span class="stat-value">4.8</span>
-            <span class="stat-label">Рейтинг</span>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-clock"></i></div>
-            <span class="stat-value">2 сол</span>
-            <span class="stat-label">Дар бозор</span>
-        </div>
-    </div>
-
-    <!-- Profile Menu -->
-    <div class="profile-menu">
-        <div class="menu-item" onclick="openSection('personal')">
-            <div class="menu-icon"><i class="fas fa-user"></i></div>
-            <div class="menu-content">
-                <div class="menu-title">Маълумоти шахсӣ</div>
-                <div class="menu-subtitle">Ном, суроға, телефон, почта</div>
-            </div>
-            <i class="fas fa-chevron-right menu-arrow"></i>
-        </div>
-        <div class="menu-item" onclick="openSection('shop')">
-            <div class="menu-icon"><i class="fas fa-store-alt"></i></div>
-            <div class="menu-content">
-                <div class="menu-title">Маълумоти мағоза</div>
-                <div class="menu-subtitle">Номи мағоза, категория, тавсиф</div>
-            </div>
-            <i class="fas fa-chevron-right menu-arrow"></i>
-        </div>
-        <div class="menu-item" onclick="openSection('payment')">
-            <div class="menu-icon"><i class="fas fa-credit-card"></i></div>
-            <div class="menu-content">
-                <div class="menu-title">Пардохт ва ҳисоб</div>
-                <div class="menu-subtitle">Корти бонкӣ, таърихи пардохт</div>
-            </div>
-            <i class="fas fa-chevron-right menu-arrow"></i>
-        </div>
-        <div class="menu-item" onclick="openSection('delivery')">
-            <div class="menu-icon"><i class="fas fa-truck"></i></div>
-            <div class="menu-content">
-                <div class="menu-title">Усули интиқол</div>
-                <div class="menu-subtitle">Почта, курьер, супоридани дастӣ</div>
-            </div>
-            <i class="fas fa-chevron-right menu-arrow"></i>
-        </div>
-        <div class="menu-item" onclick="openSection('security')">
-            <div class="menu-icon"><i class="fas fa-lock"></i></div>
-            <div class="menu-content">
-                <div class="menu-title">Махфият ва амният</div>
-                <div class="menu-subtitle">Рамз, тасдиқи дуқабата</div>
-            </div>
-            <i class="fas fa-chevron-right menu-arrow"></i>
-        </div>
-        <div class="menu-item" onclick="openSection('notifications')">
-            <div class="menu-icon"><i class="fas fa-bell"></i></div>
-            <div class="menu-content">
-                <div class="menu-title">Огоҳиномаҳо</div>
-                <div class="menu-subtitle">Танзимоти огоҳиномаҳо</div>
-            </div>
-            <i class="fas fa-chevron-right menu-arrow"></i>
-        </div>
-        <div class="menu-item" onclick="openSection('language')">
-            <div class="menu-icon"><i class="fas fa-globe"></i></div>
-            <div class="menu-content">
-                <div class="menu-title">Забон</div>
-                <div class="menu-subtitle">Тоҷикӣ, Русский, English</div>
-            </div>
-            <i class="fas fa-chevron-right menu-arrow"></i>
-        </div>
-        <div class="menu-item" onclick="openSection('theme')">
-            <div class="menu-icon"><i class="fas fa-palette"></i></div>
-            <div class="menu-content">
-                <div class="menu-title">Тема</div>
-                <div class="menu-subtitle">Равшан, Торик</div>
-            </div>
-            <i class="fas fa-chevron-right menu-arrow"></i>
-        </div>
-    </div>
-
-    <!-- Shop Info Card -->
-    <div class="info-card">
-        <div class="info-card-title">
-            <i class="fas fa-store"></i>
-            <span>Маълумоти мағоза</span>
-        </div>
-        <div class="info-row">
-            <span class="info-label">Номи мағоза</span>
-            <span class="info-value">Мағозаи ман</span>
-            <span class="info-edit" onclick="editShopName()"><i class="fas fa-pen"></i> Тағйир</span>
-        </div>
-        <div class="info-row">
-            <span class="info-label">Телефон</span>
-            <span class="info-value">+992 901 234 567</span>
-            <span class="info-edit" onclick="editPhone()"><i class="fas fa-pen"></i></span>
-        </div>
-        <div class="info-row">
-            <span class="info-label">Почта</span>
-            <span class="info-value">magozai_man@gmail.com</span>
-            <span class="info-edit" onclick="editEmail()"><i class="fas fa-pen"></i></span>
-        </div>
-        <div class="info-row">
-            <span class="info-label">Суроға</span>
-            <span class="info-value">Душанбе, к. Айнӣ 45</span>
-            <span class="info-edit" onclick="editAddress()"><i class="fas fa-pen"></i></span>
-        </div>
-        <div class="info-row">
-            <span class="info-label">Вебсайт</span>
-            <span class="info-value">magozai.tj</span>
-            <span class="info-edit" onclick="editWebsite()"><i class="fas fa-pen"></i></span>
-        </div>
-    </div>
-
-    <!-- Payment Methods -->
-    <div class="payment-methods">
-        <div class="info-card-title" style="margin:0 16px 16px;">
-            <i class="fas fa-credit-card"></i>
-            <span>Усули пардохт</span>
-        </div>
-        <div class="payment-card">
-            <div class="payment-icon"><i class="fas fa-credit-card"></i></div>
-            <div class="payment-info">
-                <div class="payment-name">Корти милли</div>
-                <div class="payment-desc">**** **** **** 1234</div>
-            </div>
-            <div class="payment-status">
-                <i class="fas fa-check-circle"></i> Асосӣ
-            </div>
-        </div>
-        <div class="payment-card">
-            <div class="payment-icon"><i class="fas fa-mobile-alt"></i></div>
-            <div class="payment-info">
-                <div class="payment-name">Alif Mobile</div>
-                <div class="payment-desc">+992 901 234 567</div>
-            </div>
-            <span class="info-edit" onclick="addPayment()">+ Илова</span>
-        </div>
-    </div>
-
-    <!-- Delivery Methods -->
-    <div class="delivery-grid">
-        <div class="delivery-item" onclick="toggleDelivery('self')">
-            <div class="delivery-icon"><i class="fas fa-bicycle"></i></div>
-            <div class="delivery-name">Доставкаи шахсӣ</div>
-            <div class="delivery-price">10-20 с</div>
-            <div class="delivery-badge">Фаъол</div>
-        </div>
-        <div class="delivery-item" onclick="toggleDelivery('post')">
-            <div class="delivery-icon"><i class="fas fa-truck"></i></div>
-            <div class="delivery-name">Почта</div>
-            <div class="delivery-price">15 с</div>
-            <div class="delivery-badge">Фаъол</div>
-        </div>
-        <div class="delivery-item" onclick="toggleDelivery('pickup')">
-            <div class="delivery-icon"><i class="fas fa-hand"></i></div>
-            <div class="delivery-name">Супоридани дастӣ</div>
-            <div class="delivery-price">Ройгон</div>
-            <div class="delivery-badge">Фаъол</div>
-        </div>
-        <div class="delivery-item" onclick="addDelivery()">
-            <div class="delivery-icon"><i class="fas fa-plus-circle"></i></div>
-            <div class="delivery-name">Илова кардан</div>
-            <div class="delivery-price">Усули нав</div>
-        </div>
-    </div>
-
-    <!-- Security Section -->
-    <div class="security-section">
-        <div class="security-item">
-            <div class="security-info">
-                <div class="security-icon"><i class="fas fa-shield-alt"></i></div>
-                <div class="security-text">Тасдиқи дуқабата</div>
-            </div>
-            <label class="switch">
-                <input type="checkbox" checked>
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="security-item">
-            <div class="security-info">
-                <div class="security-icon"><i class="fas fa-key"></i></div>
-                <div class="security-text">Иваз кардани рамз</div>
-            </div>
-            <span class="security-action" onclick="changePassword()">Иваз</span>
-        </div>
-        <div class="security-item">
-            <div class="security-info">
-                <div class="security-icon"><i class="fas fa-mobile-alt"></i></div>
-                <div class="security-text">Тафтиши SMS</div>
-            </div>
-            <div class="security-status">
-                <i class="fas fa-check-circle"></i> Фаъол
-            </div>
-        </div>
-        <div class="security-item">
-            <div class="security-info">
-                <div class="security-icon"><i class="fas fa-history"></i></div>
-                <div class="security-text">Таърихи воридшавӣ</div>
-            </div>
-            <span class="security-action" onclick="loginHistory()">Дидан</span>
-        </div>
-    </div>
-
-    <!-- Logout Button -->
-    <div class="logout-btn" onclick="logout()">
-        <i class="fas fa-sign-out-alt"></i>
-        <span>Баромадан аз ҳисоб</span>
-    </div>
-
-    <!-- Edit Profile Modal -->
     <div class="modal" id="editModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1010,80 +901,113 @@
     </div>
 
     <script>
-        // Гирфтани паём барои ивази тема
+        const _supabase = supabase.createClient(
+            'https://seagtlaujnnhoyitgsdd.supabase.co',
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+        );
+
+        let currentUser = null;
+        let currentSection = null;
+
         window.addEventListener('message', function(event) {
             if (event.data.type === 'theme') {
                 document.body.setAttribute('data-theme', event.data.theme);
             }
         });
 
-        // Функсия барои кушодани танзимот дар саҳифаи асосӣ
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadProfile();
+            await loadStats();
+        });
+
+        async function loadProfile() {
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const { data, error } = await _supabase
+                .from('user')
+                .select('*')
+                .eq('id', userId)
+                .single();
+
+            if (error) {
+                console.error('Error loading profile:', error);
+                return;
+            }
+
+            currentUser = data;
+
+            // Маълумоти асосӣ
+            const fullName = data.full_name || 'Мағозаи ман';
+            document.getElementById('profileName').innerText = fullName;
+            document.getElementById('profileBio').innerText = 'Либос, телефон, пойафзол';
+            document.getElementById('profileLocation').innerHTML = '<i class="fas fa-map-marker-alt"></i> ' + (data.shop_address || 'Душанбе, Тоҷикистон');
+            
+            document.getElementById('shopName').innerText = data.shop_name || 'Мағозаи ман';
+            document.getElementById('shopPhone').innerText = data.phone || '+992 000 000 000';
+            document.getElementById('shopEmail').innerText = data.email || 'info@magozai.tj';
+            document.getElementById('shopAddress').innerText = data.shop_address || 'Душанбе, к. Айнӣ 45';
+        }
+
+        async function loadStats() {
+            const userId = localStorage.getItem('userId');
+            
+            // Шумораи маҳсулот
+            const { count: productsCount } = await _supabase
+                .from('products')
+                .select('*', { count: 'exact', head: true })
+                .eq('user_id', userId);
+
+            document.getElementById('statProducts').innerText = productsCount || 0;
+            document.getElementById('totalSales').innerText = '0'; // Барои ҳозир
+
+            // Баъдтар метавонед омори воқеиро илова кунед
+            document.getElementById('statCustomers').innerText = '0';
+            document.getElementById('statRating').innerText = '0';
+            document.getElementById('totalOrders').innerText = '0';
+            document.getElementById('avgRating').innerText = '0';
+            document.getElementById('memberSince').innerText = '2 сол';
+        }
+
         function openSettings() {
             window.parent.postMessage({ type: 'openSettings' }, '*');
         }
 
-        // Кушодани қисматҳо
         function openSection(section) {
+            currentSection = section;
             const modal = document.getElementById('editModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalBody = document.getElementById('modalBody');
             
-            const sections = {
-                personal: {
-                    title: 'Маълумоти шахсӣ',
-                    fields: [
-                        { label: 'Ном', type: 'text', value: 'Аҳмад', name: 'name' },
-                        { label: 'Насаб', type: 'text', value: 'Каримов', name: 'surname' },
-                        { label: 'Телефон', type: 'tel', value: '+992 901 234 567', name: 'phone' },
-                        { label: 'Почта', type: 'email', value: 'ahmad@mail.tj', name: 'email' },
-                        { label: 'Санаи таваллуд', type: 'date', value: '1990-01-01', name: 'birthdate' }
-                    ]
-                },
-                shop: {
-                    title: 'Маълумоти мағоза',
-                    fields: [
-                        { label: 'Номи мағоза', type: 'text', value: 'Мағозаи ман', name: 'shopName' },
-                        { label: 'Категория', type: 'select', options: ['Либос', 'Телефон', 'Пойафзол', 'Косметика'], value: 'Либос', name: 'category' },
-                        { label: 'Тавсиф', type: 'textarea', value: 'Либос, телефон, пойафзол', name: 'bio' },
-                        { label: 'Вебсайт', type: 'url', value: 'https://magozai.tj', name: 'website' }
-                    ]
-                }
-            };
-
-            const data = sections[section] || { title: 'Тағйири маълумот', fields: [] };
-            modalTitle.innerText = data.title;
+            let fields = [];
+            if (section === 'personal') {
+                modalTitle.innerText = 'Маълумоти шахсӣ';
+                fields = [
+                    { label: 'Ном', type: 'text', name: 'name', value: currentUser?.full_name?.split(' ')[0] || '' },
+                    { label: 'Насаб', type: 'text', name: 'surname', value: currentUser?.full_name?.split(' ')[1] || '' },
+                    { label: 'Телефон', type: 'tel', name: 'phone', value: currentUser?.phone || '' },
+                    { label: 'Почта', type: 'email', name: 'email', value: currentUser?.email || '' }
+                ];
+            } else if (section === 'shop') {
+                modalTitle.innerText = 'Маълумоти мағоза';
+                fields = [
+                    { label: 'Номи мағоза', type: 'text', name: 'shopName', value: currentUser?.shop_name || '' },
+                    { label: 'Суроға', type: 'text', name: 'shopAddress', value: currentUser?.shop_address || '' }
+                ];
+            }
 
             let html = '';
-            data.fields.forEach(field => {
-                if (field.type === 'textarea') {
-                    html += `
-                        <div class="form-group">
-                            <label class="form-label">${field.label}</label>
-                            <textarea class="form-textarea" name="${field.name}">${field.value}</textarea>
-                        </div>
-                    `;
-                } else if (field.type === 'select') {
-                    let options = '';
-                    field.options.forEach(opt => {
-                        const selected = opt === field.value ? 'selected' : '';
-                        options += `<option value="${opt}" ${selected}>${opt}</option>`;
-                    });
-                    html += `
-                        <div class="form-group">
-                            <label class="form-label">${field.label}</label>
-                            <select class="form-input" name="${field.name}">${options}</select>
-                        </div>
-                    `;
-                } else {
-                    html += `
-                        <div class="form-group">
-                            <label class="form-label">${field.label}</label>
-                            <input type="${field.type}" class="form-input" name="${field.name}" value="${field.value}">
-                        </div>
-                    `;
-                }
+            fields.forEach(field => {
+                html += `
+                    <div class="form-group">
+                        <label class="form-label">${field.label}</label>
+                        <input type="${field.type}" class="form-input" name="${field.name}" value="${field.value}">
+                    </div>
+                `;
             });
-
             html += `<button type="submit" class="btn">Сабт кардан</button>`;
             modalBody.innerHTML = html;
             modal.classList.add('open');
@@ -1093,14 +1017,42 @@
             document.getElementById('editModal').classList.remove('open');
         }
 
-        function saveChanges() {
-            alert('Тағйирот сабт шуд');
-            closeModal();
+        async function saveChanges() {
+            const form = document.querySelector('#modalBody');
+            const inputs = form.querySelectorAll('input');
+            const updates = {};
+
+            inputs.forEach(input => {
+                updates[input.name] = input.value;
+            });
+
+            if (currentSection === 'personal') {
+                updates.full_name = `${updates.name || ''} ${updates.surname || ''}`.trim();
+                delete updates.name;
+                delete updates.surname;
+            } else if (currentSection === 'shop') {
+                updates.shop_name = updates.shopName;
+                updates.shop_address = updates.shopAddress;
+                delete updates.shopName;
+                delete updates.shopAddress;
+            }
+
+            const userId = localStorage.getItem('userId');
+            const { error } = await _supabase
+                .from('user')
+                .update(updates)
+                .eq('id', userId);
+
+            if (error) {
+                alert('Хатогӣ: ' + error.message);
+            } else {
+                closeModal();
+                await loadProfile();
+            }
         }
 
-        // Дигар функсияҳо
         function changeAvatar() {
-            alert('Иваз кардани акс');
+            alert('Иваз кардани акс дар ҳоли сохтан');
         }
 
         function editShopName() {
@@ -1116,45 +1068,25 @@
         }
 
         function editAddress() {
-            alert('Тағйири суроға');
-        }
-
-        function editWebsite() {
-            alert('Тағйири вебсайт');
-        }
-
-        function addPayment() {
-            alert('Иловаи усули пардохт');
-        }
-
-        function toggleDelivery(type) {
-            alert('Усули интиқол иваз шуд');
-        }
-
-        function addDelivery() {
-            alert('Иловаи усули нави интиқол');
+            openSection('shop');
         }
 
         function changePassword() {
-            alert('Иваз кардани рамз');
-        }
-
-        function loginHistory() {
-            alert('Таърихи воридшавӣ');
+            alert('Иваз кардани рамз дар ҳоли сохтан');
         }
 
         function logout() {
             if (confirm('Шумо боварӣ доред, ки мехоҳед бароед?')) {
+                localStorage.clear();
                 window.location.href = 'index.html';
             }
         }
 
-        // Close modal on click outside
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 closeModal();
             }
-        }
+        };
     </script>
 </body>
-                                                                    </html>
+</html>
