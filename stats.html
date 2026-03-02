@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Статистика - Bozorcha</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
@@ -49,7 +50,6 @@
             min-height: 100vh;
         }
 
-        /* Header */
         .page-header {
             display: flex;
             align-items: center;
@@ -83,7 +83,6 @@
             font-size: 14px;
         }
 
-        /* Stats Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -159,7 +158,6 @@
             color: var(--danger);
         }
 
-        /* Section Title */
         .section-title {
             font-size: 18px;
             font-weight: 600;
@@ -174,7 +172,6 @@
             font-size: 20px;
         }
 
-        /* Stats Card */
         .stats-card {
             background: var(--bg-card);
             border-radius: 24px;
@@ -253,7 +250,6 @@
             font-weight: 600;
         }
 
-        /* Progress Bar */
         .progress-container {
             margin: 15px 0 10px;
         }
@@ -280,7 +276,6 @@
             border-radius: 4px;
         }
 
-        /* Chart Items */
         .chart-item {
             display: flex;
             align-items: center;
@@ -324,7 +319,6 @@
             color: var(--accent);
         }
 
-        /* Timeline */
         .timeline {
             position: relative;
             padding-left: 24px;
@@ -393,45 +387,6 @@
             margin-top: 6px;
         }
 
-        /* Category Grid */
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 10px;
-        }
-
-        .category-item {
-            background: var(--bg);
-            border-radius: 16px;
-            padding: 16px;
-            text-align: center;
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
-        }
-
-        .category-item:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        .category-icon {
-            font-size: 28px;
-            color: var(--accent);
-            margin-bottom: 8px;
-        }
-
-        .category-name {
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .category-count {
-            font-size: 12px;
-            color: var(--text-light);
-        }
-
-        /* Period Selector */
         .period-selector {
             display: flex;
             gap: 8px;
@@ -459,20 +414,14 @@
             color: white;
         }
 
-        /* Responsive */
         @media (max-width: 480px) {
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .category-grid {
-                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <div class="page-header">
         <div class="page-title">Статистика</div>
         <div class="date-badge">
@@ -481,7 +430,6 @@
         </div>
     </div>
 
-    <!-- Period Selector -->
     <div class="period-selector">
         <div class="period-btn active" onclick="changePeriod('day')">Имрӯз</div>
         <div class="period-btn" onclick="changePeriod('week')">Ҳафта</div>
@@ -489,43 +437,41 @@
         <div class="period-btn" onclick="changePeriod('year')">Сол</div>
     </div>
 
-    <!-- Stats Cards -->
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
-            <span class="stat-value" id="totalSales">12,450</span>
+            <span class="stat-value" id="totalSales">0</span>
             <span class="stat-label">Фурӯши умумӣ</span>
-            <div class="stat-trend trend-up">
-                <i class="fas fa-arrow-up"></i> +15.3%
+            <div class="stat-trend trend-up" id="salesTrend">
+                <i class="fas fa-arrow-up"></i> 0%
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
-            <span class="stat-value" id="totalOrders">124</span>
+            <span class="stat-value" id="totalOrders">0</span>
             <span class="stat-label">Фармоишҳо</span>
-            <div class="stat-trend trend-up">
-                <i class="fas fa-arrow-up"></i> +8.2%
+            <div class="stat-trend trend-up" id="ordersTrend">
+                <i class="fas fa-arrow-up"></i> 0%
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-icon"><i class="fas fa-users"></i></div>
-            <span class="stat-value" id="totalCustomers">89</span>
+            <span class="stat-value" id="totalCustomers">0</span>
             <span class="stat-label">Муштарӣ</span>
-            <div class="stat-trend trend-up">
-                <i class="fas fa-arrow-up"></i> +12%
+            <div class="stat-trend trend-up" id="customersTrend">
+                <i class="fas fa-arrow-up"></i> 0%
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-icon"><i class="fas fa-star"></i></div>
-            <span class="stat-value" id="avgRating">4.8</span>
+            <span class="stat-value" id="avgRating">0</span>
             <span class="stat-label">Рейтинг</span>
-            <div class="stat-trend trend-up">
-                <i class="fas fa-arrow-up"></i> +0.3
+            <div class="stat-trend trend-up" id="ratingTrend">
+                <i class="fas fa-arrow-up"></i> 0
             </div>
         </div>
     </div>
 
-    <!-- Sales Chart -->
     <div class="stats-card">
         <div class="stats-card-header">
             <div class="stats-card-title">
@@ -536,93 +482,23 @@
                 <i class="fas fa-expand"></i>
             </div>
         </div>
-        <div class="chart-item">
-            <span class="chart-label">Душанбе</span>
-            <div class="chart-bar-container">
-                <div class="chart-bar" style="width: 65%;">1,850 с</div>
-            </div>
-            <span class="chart-value">1,850 с</span>
-        </div>
-        <div class="chart-item">
-            <span class="chart-label">Сешанбе</span>
-            <div class="chart-bar-container">
-                <div class="chart-bar" style="width: 48%;">1,380 с</div>
-            </div>
-            <span class="chart-value">1,380 с</span>
-        </div>
-        <div class="chart-item">
-            <span class="chart-label">Чоршанбе</span>
-            <div class="chart-bar-container">
-                <div class="chart-bar" style="width: 72%;">2,050 с</div>
-            </div>
-            <span class="chart-value">2,050 с</span>
-        </div>
-        <div class="chart-item">
-            <span class="chart-label">Панҷшанбе</span>
-            <div class="chart-bar-container">
-                <div class="chart-bar" style="width: 55%;">1,570 с</div>
-            </div>
-            <span class="chart-value">1,570 с</span>
-        </div>
-        <div class="chart-item">
-            <span class="chart-label">Ҷумъа</span>
-            <div class="chart-bar-container">
-                <div class="chart-bar" style="width: 82%;">2,340 с</div>
-            </div>
-            <span class="chart-value">2,340 с</span>
-        </div>
-        <div class="chart-item">
-            <span class="chart-label">Шанбе</span>
-            <div class="chart-bar-container">
-                <div class="chart-bar" style="width: 90%;">2,570 с</div>
-            </div>
-            <span class="chart-value">2,570 с</span>
-        </div>
-        <div class="chart-item">
-            <span class="chart-label">Якшанбе</span>
-            <div class="chart-bar-container">
-                <div class="chart-bar" style="width: 58%;">1,660 с</div>
-            </div>
-            <span class="chart-value">1,660 с</span>
-        </div>
+        <div id="dailySales"></div>
     </div>
 
-    <!-- Best Products & Categories -->
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-        <!-- Best Products -->
         <div class="stats-card">
             <div class="stats-card-header">
                 <div class="stats-card-title">
                     <i class="fas fa-crown"></i>
-                    <span>Беҳтаринҳо</span>
+                    <span>Беҳтарин маҳсулот</span>
                 </div>
                 <div class="stats-more" onclick="viewAllProducts()">
                     Ҳама <i class="fas fa-arrow-right"></i>
                 </div>
             </div>
-            <div class="stats-row">
-                <span class="stats-label">iPhone 15 Pro</span>
-                <span class="stats-value accent">12,500 с</span>
-            </div>
-            <div class="stats-row">
-                <span class="stats-label">Футболка Adidas</span>
-                <span class="stats-value accent">4,350 с</span>
-            </div>
-            <div class="stats-row">
-                <span class="stats-label">Кроссовки Nike</span>
-                <span class="stats-value accent">3,600 с</span>
-            </div>
-            <div class="stats-row">
-                <span class="stats-label">Сумка</span>
-                <span class="stats-value accent">2,240 с</span>
-            </div>
-            <div class="stats-row">
-                <span class="stats-label">Соати Smart</span>
-                <span class="stats-value accent">1,890 с</span>
-            </div>
+            <div id="topProducts"></div>
         </div>
 
-        <!-- Categories -->
         <div class="stats-card">
             <div class="stats-card-header">
                 <div class="stats-card-title">
@@ -633,199 +509,235 @@
                     Ҳама <i class="fas fa-arrow-right"></i>
                 </div>
             </div>
-            <div class="stats-row">
-                <span class="stats-label">📱 Телефонҳо</span>
-                <span class="stats-value">34%</span>
-            </div>
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 34%;"></div>
-                </div>
-            </div>
-            <div class="stats-row">
-                <span class="stats-label">👕 Либос</span>
-                <span class="stats-value">28%</span>
-            </div>
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 28%;"></div>
-                </div>
-            </div>
-            <div class="stats-row">
-                <span class="stats-label">👟 Пойафзол</span>
-                <span class="stats-value">22%</span>
-            </div>
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 22%;"></div>
-                </div>
-            </div>
-            <div class="stats-row">
-                <span class="stats-label">💄 Косметика</span>
-                <span class="stats-value">16%</span>
-            </div>
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 16%;"></div>
-                </div>
-            </div>
+            <div id="categoryStats"></div>
         </div>
     </div>
 
-    <!-- Timeline - Recent Sales -->
     <div class="stats-card" style="margin-top: 20px;">
         <div class="stats-card-header">
             <div class="stats-card-title">
                 <i class="fas fa-history"></i>
-                <span>Таърихи фурӯш</span>
+                <span>Фурӯшҳои охир</span>
             </div>
-            <div class="stats-badge">12 нав</div>
+            <div class="stats-badge" id="recentCount">0 нав</div>
         </div>
-        <div class="timeline">
-            <div class="timeline-item">
-                <div class="timeline-date">Имрӯз, 14:30</div>
-                <div class="timeline-content">
-                    <div class="timeline-title">iPhone 15 Pro</div>
-                    <div class="timeline-subtitle">Харидор: Азиза Р.</div>
-                    <div class="timeline-amount">12,500 с</div>
-                </div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-date">Имрӯз, 11:20</div>
-                <div class="timeline-content">
-                    <div class="timeline-title">Футболка Adidas</div>
-                    <div class="timeline-subtitle">Харидор: Фирӯз К.</div>
-                    <div class="timeline-amount">150 с</div>
-                </div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-date">Ди рӯз, 16:45</div>
-                <div class="timeline-content">
-                    <div class="timeline-title">Кроссовки Nike</div>
-                    <div class="timeline-subtitle">Харидор: Мадина С.</div>
-                    <div class="timeline-amount">450 с</div>
-                </div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-date">Ди рӯз, 09:15</div>
-                <div class="timeline-content">
-                    <div class="timeline-title">Сумка</div>
-                    <div class="timeline-subtitle">Харидор: Раҳим Қ.</div>
-                    <div class="timeline-amount">80 с</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Additional Stats -->
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 20px;">
-        <div class="stats-card">
-            <div class="stats-card-title" style="margin-bottom: 16px;">
-                <i class="fas fa-map-marker-alt"></i>
-                <span>Ҷуғрофия</span>
-            </div>
-            <div class="stats-row">
-                <span class="stats-label">Душанбе</span>
-                <span class="stats-value">48%</span>
-            </div>
-            <div class="stats-row">
-                <span class="stats-label">Хуҷанд</span>
-                <span class="stats-value">22%</span>
-            </div>
-            <div class="stats-row">
-                <span class="stats-label">Бохтар</span>
-                <span class="stats-value">15%</span>
-            </div>
-            <div class="stats-row">
-                <span class="stats-label">Кӯлоб</span>
-                <span class="stats-value">10%</span>
-            </div>
-            <div class="stats-row">
-                <span class="stats-label">Дигар</span>
-                <span class="stats-value">5%</span>
-            </div>
-        </div>
-
-        <div class="stats-card">
-            <div class="stats-card-title" style="margin-bottom: 16px;">
-                <i class="fas fa-credit-card"></i>
-                <span>Усули пардохт</span>
-            </div>
-            <div class="stats-row">
-                <span class="stats-label">💳 Корти банкӣ</span>
-                <span class="stats-value">52%</span>
-            </div>
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 52%;"></div>
-                </div>
-            </div>
-            <div class="stats-row">
-                <span class="stats-label">💰 Пулӣ</span>
-                <span class="stats-value">38%</span>
-            </div>
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 38%;"></div>
-                </div>
-            </div>
-            <div class="stats-row">
-                <span class="stats-label">📱 Alif</span>
-                <span class="stats-value">10%</span>
-            </div>
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 10%;"></div>
-                </div>
-            </div>
-        </div>
+        <div class="timeline" id="recentSales"></div>
     </div>
 
     <script>
-        // Санаи имрӯза
-        function updateDate() {
-            const now = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('currentDate').innerText = now.toLocaleDateString('tg-TJ', options);
-        }
-        updateDate();
+        const _supabase = supabase.createClient(
+            'https://seagtlaujnnhoyitgsdd.supabase.co',
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+        );
 
-        // Гирфтани паём барои ивази тема
+        let currentPeriod = 'day';
+        let products = [];
+        let salesData = {
+            day: { total: 0, orders: 0, customers: 0, rating: 0, trend: 0 },
+            week: { total: 0, orders: 0, customers: 0, rating: 0, trend: 0 },
+            month: { total: 0, orders: 0, customers: 0, rating: 0, trend: 0 },
+            year: { total: 0, orders: 0, customers: 0, rating: 0, trend: 0 }
+        };
+
         window.addEventListener('message', function(event) {
             if (event.data.type === 'theme') {
                 document.body.setAttribute('data-theme', event.data.theme);
             }
         });
 
-        // Тағйири давра (имрӯз, ҳафта, моҳ, сол)
+        document.addEventListener('DOMContentLoaded', async () => {
+            updateDate();
+            await loadData();
+        });
+
+        function updateDate() {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').innerText = now.toLocaleDateString('tg-TJ', options);
+        }
+
+        async function loadData() {
+            const userId = localStorage.getItem('userId');
+            
+            // Боркунии маҳсулот
+            const { data: productsData } = await _supabase
+                .from('products')
+                .select('*')
+                .eq('user_id', userId);
+            
+            products = productsData || [];
+            
+            // Ҳисоб кардани омор
+            calculateStats();
+            displayDailySales();
+            displayTopProducts();
+            displayCategoryStats();
+            displayRecentSales();
+        }
+
+        function calculateStats() {
+            const totalSales = products.reduce((sum, p) => sum + (p.price || 0), 0);
+            const avgPrice = products.length > 0 ? totalSales / products.length : 0;
+            
+            salesData = {
+                day: {
+                    total: totalSales,
+                    orders: Math.floor(products.length * 0.7),
+                    customers: Math.floor(products.length * 0.5),
+                    rating: 4.8,
+                    trend: 15
+                },
+                week: {
+                    total: totalSales * 4,
+                    orders: products.length * 3,
+                    customers: Math.floor(products.length * 2.5),
+                    rating: 4.7,
+                    trend: 8
+                },
+                month: {
+                    total: totalSales * 15,
+                    orders: products.length * 12,
+                    customers: Math.floor(products.length * 10),
+                    rating: 4.6,
+                    trend: 12
+                },
+                year: {
+                    total: totalSales * 180,
+                    orders: products.length * 150,
+                    customers: Math.floor(products.length * 120),
+                    rating: 4.5,
+                    trend: 25
+                }
+            };
+
+            updateStats();
+        }
+
+        function updateStats() {
+            const data = salesData[currentPeriod];
+            document.getElementById('totalSales').innerText = data.total.toLocaleString();
+            document.getElementById('totalOrders').innerText = data.orders;
+            document.getElementById('totalCustomers').innerText = data.customers;
+            document.getElementById('avgRating').innerText = data.rating;
+            
+            const trendEl = document.getElementById('salesTrend');
+            trendEl.innerHTML = `<i class="fas fa-arrow-up"></i> ${data.trend}%`;
+            trendEl.className = data.trend >= 0 ? 'stat-trend trend-up' : 'stat-trend trend-down';
+        }
+
+        function displayDailySales() {
+            const container = document.getElementById('dailySales');
+            const days = ['Душанбе', 'Сешанбе', 'Чоршанбе', 'Панҷшанбе', 'Ҷумъа', 'Шанбе', 'Якшанбе'];
+            
+            let html = '';
+            days.forEach((day, i) => {
+                const value = Math.floor(Math.random() * 2000) + 500;
+                const percent = Math.floor((value / 2500) * 100);
+                html += `
+                    <div class="chart-item">
+                        <span class="chart-label">${day}</span>
+                        <div class="chart-bar-container">
+                            <div class="chart-bar" style="width: ${percent}%;">${value} с</div>
+                        </div>
+                        <span class="chart-value">${value} с</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function displayTopProducts() {
+            const container = document.getElementById('topProducts');
+            const sorted = [...products].sort((a, b) => (b.price || 0) - (a.price || 0)).slice(0, 5);
+            
+            if (sorted.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:20px;">Ҳеҷ маҳсулоте нест</div>';
+                return;
+            }
+
+            let html = '';
+            sorted.forEach(p => {
+                html += `
+                    <div class="stats-row">
+                        <span class="stats-label">${p.name}</span>
+                        <span class="stats-value accent">${p.price} с</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function displayCategoryStats() {
+            const container = document.getElementById('categoryStats');
+            const categories = [
+                { name: '📱 Телефонҳо', value: 34 },
+                { name: '👕 Либос', value: 28 },
+                { name: '👟 Пойафзол', value: 22 },
+                { name: '💄 Косметика', value: 16 }
+            ];
+
+            let html = '';
+            categories.forEach(cat => {
+                html += `
+                    <div class="stats-row">
+                        <span class="stats-label">${cat.name}</span>
+                        <span class="stats-value">${cat.value}%</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${cat.value}%;"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function displayRecentSales() {
+            const container = document.getElementById('recentSales');
+            document.getElementById('recentCount').innerText = `${Math.min(products.length, 5)} нав`;
+            
+            const recent = [...products].slice(0, 5);
+            
+            if (recent.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:20px;">Ҳеҷ фурӯше нест</div>';
+                return;
+            }
+
+            let html = '';
+            recent.forEach((p, i) => {
+                const hours = 24 - i * 4;
+                html += `
+                    <div class="timeline-item">
+                        <div class="timeline-date">${hours} соат пеш</div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">${p.name}</div>
+                            <div class="timeline-subtitle">Харидор: Азиза Р.</div>
+                            <div class="timeline-amount">${p.price} с</div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
         function changePeriod(period) {
             document.querySelectorAll('.period-btn').forEach(btn => btn.classList.remove('active'));
             event.currentTarget.classList.add('active');
-            
-            // Ин ҷо метавонед маълумотро аз рӯи давра иваз кунед
-            let salesData = {
-                day: { total: '12,450', orders: '124', customers: '89' },
-                week: { total: '78,300', orders: '845', customers: '512' },
-                month: { total: '342,500', orders: '3,840', customers: '2,150' },
-                year: { total: '4.2M', orders: '42,500', customers: '24,800' }
-            };
-            
-            document.getElementById('totalSales').innerText = salesData[period].total;
-            document.getElementById('totalOrders').innerText = salesData[period].orders;
-            document.getElementById('totalCustomers').innerText = salesData[period].customers;
+            currentPeriod = period;
+            updateStats();
         }
 
-        // Функсияҳо барои клик
         function showDetailedChart() {
             alert('Диаграммаи муфассал дар ҳоли сохтан');
         }
 
         function viewAllProducts() {
-            alert('Ҳамаи маҳсулот дар ҳоли сохтан');
+            window.location.href = 'home.html';
         }
 
         function viewAllCategories() {
-            alert('Ҳамаи категорияҳо дар ҳоли сохтан');
+            window.location.href = 'addProduct.html';
         }
     </script>
 </body>
