@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Почтаи электронӣ - Bozorcha</title>
     <style>
+        /* Стилҳо (ҳамин тавр мемонанд) */
         :root {
             --bg: #FFFFFF;
             --surface: #F8F9FA;
@@ -99,6 +100,8 @@
         footer { margin-top: 40px; color: var(--text-secondary); font-size: 12px; }
         .error-message { color: #ff4444; font-size: 13px; text-align: left; visibility: hidden; min-height: 20px; }
         .error-message.show { visibility: visible; }
+        .success-message { color: #10b981; font-size: 14px; text-align: center; margin-top: 20px; display: none; }
+        .success-message.show { display: block; }
     </style>
 </head>
 <body data-theme="light">
@@ -137,8 +140,9 @@
             <input type="email" id="email" placeholder="example@mail.com">
         </div>
         <div class="error-message" id="error">Почтаи электронӣ нодуруст аст</div>
+        <div class="success-message" id="success">Истинод ба почтаи шумо фиристода шуд! Лутфан почтаи худро санҷед.</div>
 
-        <button class="btn btn-primary disabled" id="submitBtn">Давом</button>
+        <button class="btn btn-primary" id="submitBtn">Давом</button>
         <footer id="t-foot">© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</footer>
     </div>
 
@@ -150,9 +154,9 @@
         );
 
         const i18n = {
-            tj: { flag: "🇹🇯", title: "Почтаи электронӣ", sub: "Почтаи электронии худро ворид кунед", btn: "Давом", foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.", err: "Почтаи электронӣ нодуруст аст", loading: "Дар ҳоли фиристодан..." },
-            ru: { flag: "🇷🇺", title: "Электронная почта", sub: "Введите вашу электронную почту", btn: "Далее", foot: "© 2026 Bozorcha. Все права защищены.", err: "Неверный email", loading: "Отправка..." },
-            en: { flag: "🇬🇧", title: "Email", sub: "Enter your email address", btn: "Continue", foot: "© 2026 Bozorcha. All rights reserved.", err: "Invalid email", loading: "Sending..." }
+            tj: { flag: "🇹🇯", title: "Почтаи электронӣ", sub: "Почтаи электронии худро ворид кунед", btn: "Давом", foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.", err: "Почтаи электронӣ нодуруст аст", loading: "Дар ҳоли фиристодан...", success: "Истинод ба почтаи шумо фиристода шуд! Лутфан почтаи худро санҷед." },
+            ru: { flag: "🇷🇺", title: "Электронная почта", sub: "Введите вашу электронную почту", btn: "Далее", foot: "© 2026 Bozorcha. Все права защищены.", err: "Неверный email", loading: "Отправка...", success: "Ссылка отправлена на вашу почту! Проверьте свой email." },
+            en: { flag: "🇬🇧", title: "Email", sub: "Enter your email address", btn: "Continue", foot: "© 2026 Bozorcha. All rights reserved.", err: "Invalid email", loading: "Sending...", success: "A link has been sent to your email! Please check your inbox." }
         };
 
         const emailInput = document.getElementById('email');
@@ -182,6 +186,7 @@
             document.getElementById('submitBtn').innerText = d.btn;
             document.getElementById('t-foot').innerText = d.foot;
             document.getElementById('error').innerText = d.err;
+            document.getElementById('success').innerText = d.success;
             localStorage.setItem('lang', lang);
         }
 
@@ -191,29 +196,48 @@
 
         emailInput.addEventListener('input', () => {
             const isValid = validateEmail(emailInput.value);
+            submitBtn.disabled = !isValid;
             submitBtn.classList.toggle('disabled', !isValid);
             document.getElementById('error').classList.toggle('show', emailInput.value.length > 0 && !isValid);
         });
 
         submitBtn.onclick = async () => {
-            if (submitBtn.classList.contains('disabled')) return;
+            if (submitBtn.disabled) return;
 
             const lang = localStorage.getItem('lang') || 'tj';
             const email = emailInput.value;
 
             submitBtn.innerText = i18n[lang].loading;
+            submitBtn.disabled = true;
             submitBtn.classList.add('disabled');
 
-            const { error } = await _supabase.auth.signInWithOtp({ email });
+            try {
+                const { error } = await _supabase.auth.signInWithOtp({
+                    email: email,
+                    options: {
+                        emailRedirectTo: window.location.origin + '/profile-form.html'
+                    }
+                });
 
-            if (error) {
-                alert("Хатогӣ: " + error.message);
+                if (error) {
+                    alert("Хатогӣ: " + error.message);
+                    submitBtn.innerText = i18n[lang].btn;
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('disabled');
+                } else {
+                    localStorage.setItem('userEmail', email);
+                    localStorage.setItem('authMethod', 'email');
+                    // Нишон додани паёми муваффақият ва пинҳон кардани тугма
+                    document.getElementById('success').classList.add('show');
+                    submitBtn.style.display = 'none';
+                    emailInput.disabled = true;
+                    // Шояд тугмаи бозгашт ё чизе илова кунем
+                }
+            } catch (err) {
+                alert("Хатои шабака: " + err.message);
                 submitBtn.innerText = i18n[lang].btn;
+                submitBtn.disabled = false;
                 submitBtn.classList.remove('disabled');
-            } else {
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('authMethod', 'email');
-                window.location.href = 'step3-verify.html';
             }
         };
     </script>
