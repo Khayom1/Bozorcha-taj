@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Почтаи электронӣ - Bozorcha</title>
+    <title>Тасдиқи почта - Bozorcha</title>
     <style>
-        /* Стилҳо */
         :root {
             --bg: #FFFFFF;
             --surface: #F8F9FA;
@@ -69,27 +68,26 @@
         [data-theme="dark"] .sun { transform: translateY(-25px); opacity: 0; }
         [data-theme="dark"] .moon { transform: translateY(0); opacity: 1; }
 
-        .dropdown { position: relative; }
-        .dropdown-menu {
-            position: absolute; top: 50px; right: 0;
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 15px; box-shadow: var(--shadow);
-            display: none; flex-direction: column; overflow: hidden; z-index: 100; min-width: 120px;
-        }
-        .dropdown-menu.show { display: flex; }
-        .dropdown-item { padding: 12px; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; gap: 8px; justify-content: flex-start; }
-        .dropdown-item:hover { background: var(--accent-gradient); color: white; }
-
         .title { font-size: 22px; font-weight: 800; margin-bottom: 8px; text-align: left; }
         .subtitle { color: var(--text-secondary); font-size: 14px; margin-bottom: 30px; text-align: left; line-height: 1.4; }
 
-        .email-input {
+        .input-group { margin-bottom: 10px; text-align: left; }
+        .input-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+        
+        .custom-input {
             display: flex; align-items: center; background: var(--bg);
             border: 2px solid var(--border); border-radius: 20px;
-            padding: 5px; margin-bottom: 10px;
+            padding: 5px;
         }
-        .email-input:focus-within { border-color: #FF9F43; }
-        .email-input input { flex: 1; padding: 15px; border: none; outline: none; background: transparent; color: var(--text-primary); font-size: 16px; font-weight: 600; }
+        .custom-input:focus-within { border-color: #FF9F43; }
+        .custom-input input { 
+            flex: 1; padding: 15px; border: none; outline: none; 
+            background: transparent; color: var(--text-primary); 
+            font-size: 16px; font-weight: 600; 
+        }
+
+        /* Махсус барои OTP */
+        .otp-input { text-align: center; letter-spacing: 8px; font-size: 22px !important; }
 
         .btn {
             width: 100%; padding: 20px; border-radius: 20px;
@@ -97,20 +95,21 @@
             margin-top: 20px; transition: transform 0.2s, opacity 0.3s;
         }
         .btn-primary { background: var(--accent-gradient); color: white; box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2); }
-        .btn-primary.disabled { opacity: 0.5; pointer-events: none; }
+        .btn-primary:disabled { opacity: 0.5; pointer-events: none; }
+
+        #otp-section { display: none; }
+
+        .success-message { color: #10b981; font-size: 14px; text-align: center; margin-top: 20px; display: none; }
+        .error-message { color: #ff4444; font-size: 13px; text-align: left; margin-top: 5px; display: none; }
 
         footer { margin-top: 40px; color: var(--text-secondary); font-size: 12px; }
-        .error-message { color: #ff4444; font-size: 13px; text-align: left; visibility: hidden; min-height: 20px; }
-        .error-message.show { visibility: visible; }
-        .success-message { color: #10b981; font-size: 14px; text-align: center; margin-top: 20px; display: none; }
-        .success-message.show { display: block; }
     </style>
 </head>
 <body data-theme="light">
     <div class="card">
         <header>
             <div class="header-left">
-                <button class="back-btn" onclick="history.back()">←</button>
+                <button class="back-btn" onclick="location.reload()">←</button>
                 <svg width="45" height="45" viewBox="0 0 200 200">
                     <path class="awning-part" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="#f4ce9b"/>
                     <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
@@ -118,14 +117,6 @@
                 </svg>
             </div>
             <div class="controls">
-                <div class="dropdown">
-                    <button class="icon-btn" id="langBtn">🇹🇯</button>
-                    <div class="dropdown-menu" id="langMenu">
-                        <div class="dropdown-item" onclick="setLang('tj')">🇹🇯 Тоҷикӣ</div>
-                        <div class="dropdown-item" onclick="setLang('ru')">🇷🇺 Русский</div>
-                        <div class="dropdown-item" onclick="setLang('en')">🇬🇧 English</div>
-                    </div>
-                </div>
                 <button class="icon-btn" id="themeBtn">
                     <div class="theme-icon-box">
                         <span class="sun">☀️</span>
@@ -135,17 +126,32 @@
             </div>
         </header>
 
-        <h1 class="title" id="t-title">Почтаи электронӣ</h1>
-        <p class="subtitle" id="t-sub">Почтаи электронии худро ворид кунед</p>
-
-        <div class="email-input">
-            <input type="email" id="email" placeholder="example@mail.com">
+        <div id="email-section">
+            <h1 class="title">Воридшавӣ</h1>
+            <p class="subtitle">Почтаи электронии худро ворид кунед, то коди тасдиқро фиристем.</p>
+            <div class="input-group">
+                <div class="custom-input">
+                    <input type="email" id="email" placeholder="example@mail.com">
+                </div>
+                <div id="email-error" class="error-message">Почтаи электронӣ нодуруст аст</div>
+            </div>
+            <button class="btn btn-primary" id="sendBtn">Фиристодани код</button>
         </div>
-        <div class="error-message" id="error">Почтаи электронӣ нодуруст аст</div>
-        <div class="success-message" id="success">Истинод ба почтаи шумо фиристода шуд! Лутфан почтаи худро санҷед.</div>
 
-        <button class="btn btn-primary" id="submitBtn">Давом</button>
-        <footer id="t-foot">© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</footer>
+        <div id="otp-section">
+            <h1 class="title">Тасдиқи код</h1>
+            <p class="subtitle">Коди 6-рақамаеро, ки ба почтаи шумо фиристодем, ворид кунед.</p>
+            <div class="input-group">
+                <div class="custom-input">
+                    <input type="text" id="otp" class="otp-input" placeholder="000000" maxlength="6">
+                </div>
+                <div id="otp-error" class="error-message">Код бояд 6 рақам бошад</div>
+            </div>
+            <button class="btn btn-primary" id="verifyBtn">Тасдиқ кардан</button>
+            <p class="success-message" id="success-msg">Код тасдиқ шуд! Гузариш...</p>
+        </div>
+
+        <footer>© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</footer>
     </div>
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -155,20 +161,17 @@
             'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
         );
 
-        const i18n = {
-            tj: { flag: "🇹🇯", title: "Почтаи электронӣ", sub: "Почтаи электронии худро ворид кунед", btn: "Давом", foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.", err: "Почтаи электронӣ нодуруст аст", loading: "Дар ҳоли фиристодан...", success: "Истинод ба почтаи шумо фиристода шуд! Лутфан почтаи худро санҷед." },
-            ru: { flag: "🇷🇺", title: "Электронная почта", sub: "Введите вашу электронную почту", btn: "Далее", foot: "© 2026 Bozorcha. Все права защищены.", err: "Неверный email", loading: "Отправка...", success: "Ссылка отправлена на вашу почту! Проверьте свой email." },
-            en: { flag: "🇬🇧", title: "Email", sub: "Enter your email address", btn: "Continue", foot: "© 2026 Bozorcha. All rights reserved.", err: "Invalid email", loading: "Sending...", success: "A link has been sent to your email! Please check your inbox." }
-        };
-
         const emailInput = document.getElementById('email');
-        const submitBtn = document.getElementById('submitBtn');
+        const otpInput = document.getElementById('otp');
+        const sendBtn = document.getElementById('sendBtn');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const emailSection = document.getElementById('email-section');
+        const otpSection = document.getElementById('otp-section');
 
+        // Тема
         window.onload = () => {
             const savedTheme = localStorage.getItem('theme') || 'light';
-            const savedLang = localStorage.getItem('lang') || 'tj';
             document.body.setAttribute('data-theme', savedTheme);
-            setLang(savedLang);
         };
 
         document.getElementById('themeBtn').onclick = () => {
@@ -177,70 +180,77 @@
             localStorage.setItem('theme', newTheme);
         };
 
-        document.getElementById('langBtn').onclick = (e) => { e.stopPropagation(); document.getElementById('langMenu').classList.toggle('show'); };
-        window.onclick = () => document.getElementById('langMenu').classList.remove('show');
+        // Фиристодани код (OTP)
+        sendBtn.onclick = async () => {
+            const email = emailInput.value.trim();
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                document.getElementById('email-error').style.display = 'block';
+                return;
+            }
 
-        function setLang(lang) {
-            const d = i18n[lang];
-            document.getElementById('langBtn').innerText = d.flag;
-            document.getElementById('t-title').innerText = d.title;
-            document.getElementById('t-sub').innerText = d.sub;
-            document.getElementById('submitBtn').innerText = d.btn;
-            document.getElementById('t-foot').innerText = d.foot;
-            document.getElementById('error').innerText = d.err;
-            document.getElementById('success').innerText = d.success;
-            localStorage.setItem('lang', lang);
-        }
-
-        function validateEmail(email) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        }
-
-        emailInput.addEventListener('input', () => {
-            const isValid = validateEmail(emailInput.value);
-            submitBtn.disabled = !isValid;
-            submitBtn.classList.toggle('disabled', !isValid);
-            document.getElementById('error').classList.toggle('show', emailInput.value.length > 0 && !isValid);
-        });
-
-        submitBtn.onclick = async () => {
-            if (submitBtn.disabled) return;
-
-            const lang = localStorage.getItem('lang') || 'tj';
-            const email = emailInput.value;
-
-            submitBtn.innerText = i18n[lang].loading;
-            submitBtn.disabled = true;
-            submitBtn.classList.add('disabled');
+            sendBtn.disabled = true;
+            sendBtn.innerText = "Фиристода истодаем...";
 
             try {
-                const { error } = await _supabase.auth.signInWithOtp({
-                    email: email,
-                    options: {
-                        // Суроғаи пурра барои GitHub Pages ислоҳ шуд
-                        emailRedirectTo: 'https://khayom1.github.io/Bozorcha-Seller/profile-form.html'
-                    }
-                });
+                const { error } = await _supabase.auth.signInWithOtp({ email });
 
                 if (error) {
                     alert("Хатогӣ: " + error.message);
-                    submitBtn.innerText = i18n[lang].btn;
-                    submitBtn.disabled = false;
-                    submitBtn.classList.remove('disabled');
+                    sendBtn.disabled = false;
+                    sendBtn.innerText = "Фиристодани код";
                 } else {
-                    localStorage.setItem('userEmail', email);
-                    localStorage.setItem('authMethod', 'email');
-                    document.getElementById('success').classList.add('show');
-                    submitBtn.style.display = 'none';
-                    emailInput.disabled = true;
+                    localStorage.setItem('temp_email', email);
+                    emailSection.style.display = 'none';
+                    otpSection.style.display = 'block';
                 }
             } catch (err) {
                 alert("Хатои шабака");
-                submitBtn.innerText = i18n[lang].btn;
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('disabled');
+                sendBtn.disabled = false;
             }
         };
+
+        // Тасдиқи код
+        verifyBtn.onclick = async () => {
+            const token = otpInput.value.trim();
+            const email = localStorage.getItem('temp_email');
+
+            if (token.length !== 6) {
+                document.getElementById('otp-error').style.display = 'block';
+                return;
+            }
+
+            verifyBtn.disabled = true;
+            verifyBtn.innerText = "Санҷида истодаем...";
+
+            try {
+                const { data, error } = await _supabase.auth.verifyOtp({
+                    email: email,
+                    token: token,
+                    type: 'magiclink' // Супабейс барои OTP-и почта инро истифода мебарад
+                });
+
+                if (error) {
+                    alert("Код нодуруст аст ё вақташ гузаштааст");
+                    verifyBtn.disabled = false;
+                    verifyBtn.innerText = "Тасдиқ кардан";
+                } else {
+                    document.getElementById('success-msg').style.display = 'block';
+                    localStorage.setItem('userId', data.user.id);
+                    
+                    // Гузариш ба саҳифаи пур кардани профил
+                    setTimeout(() => {
+                        window.location.href = 'profile-form.html';
+                    }, 1500);
+                }
+            } catch (err) {
+                alert("Хатои техникӣ");
+                verifyBtn.disabled = false;
+            }
+        };
+
+        // Тоза кардани хатогиҳо ҳангоми навиштан
+        emailInput.oninput = () => document.getElementById('email-error').style.display = 'none';
+        otpInput.oninput = () => document.getElementById('otp-error').style.display = 'none';
     </script>
 </body>
 </html>
