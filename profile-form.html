@@ -302,8 +302,12 @@
                 position: defaultLocation
             });
 
-            // Autocomplete for search
-            autocomplete = new google.maps.places.Autocomplete(addressSearch);
+            // Autocomplete барои ҷустуҷӯ
+            autocomplete = new google.maps.places.Autocomplete(addressSearch, {
+                types: ['address'],
+                componentRestrictions: { country: 'tj' }
+            });
+            
             autocomplete.bindTo('bounds', map);
 
             autocomplete.addListener('place_changed', () => {
