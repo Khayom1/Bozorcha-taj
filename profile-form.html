@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Профил - Bozorcha</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>Пур кардани профил - Bozorcha</title>
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4oapSS6yn1NqBS9eR9IOM8lhFPrB4ZY8&libraries=places"></script>
     <style>
         :root {
             --bg: #FFFFFF;
@@ -14,7 +15,6 @@
             --accent-gradient: linear-gradient(135deg, #FF9F43 0%, #FF6B6B 100%);
             --border: #EEEEEE;
             --shadow: 0 15px 35px rgba(0,0,0,0.05);
-            --input-bg: #FFFFFF;
         }
 
         [data-theme="dark"] {
@@ -24,195 +24,399 @@
             --text-secondary: #ADB5BD;
             --border: #2C2E33;
             --shadow: 0 15px 35px rgba(0,0,0,0.3);
-            --input-bg: #1A1C1E;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.4s ease, color 0.4s ease; }
 
         body {
-            background-color: var(--bg);
-            color: var(--text-primary);
+            background-color: var(--bg); color: var(--text-primary);
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh; padding: 20px;
         }
 
-        /* Аниматсияи Логотип */
         .awning-part { transform-origin: top center; animation: windSwing 3s ease-in-out infinite; }
         @keyframes windSwing { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(3deg) skewX(2deg); } }
 
         .card {
             background: var(--surface); border-radius: 35px; padding: 40px 30px;
             box-shadow: var(--shadow); border: 1px solid var(--border);
-            max-width: 450px; width: 100%; position: relative;
+            max-width: 500px; width: 100%; position: relative; text-align: center;
         }
 
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .controls { display: flex; gap: 10px; }
+        header { display: flex; align-items: center; margin-bottom: 35px; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
 
-        .icon-btn {
+        .back-btn {
             width: 44px; height: 44px; border-radius: 14px;
             background: var(--bg); border: 1px solid var(--border);
             cursor: pointer; display: flex; justify-content: center; align-items: center;
-            font-size: 18px; position: relative;
+            font-size: 20px; color: var(--text-primary);
         }
 
-        /* Dropdown Забон */
-        .dropdown { position: relative; }
-        .dropdown-menu {
-            position: absolute; top: 55px; right: 0;
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 15px; box-shadow: var(--shadow);
-            display: none; flex-direction: column; overflow: hidden; z-index: 100; min-width: 130px;
-        }
-        .dropdown-menu.show { display: flex; }
-        .dropdown-item { padding: 12px; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; gap: 8px; color: var(--text-primary); }
-        .dropdown-item:hover { background: var(--accent-gradient); color: white; }
+        .title { font-size: 22px; font-weight: 800; margin-bottom: 8px; text-align: left; }
+        .subtitle { color: var(--text-secondary); font-size: 14px; margin-bottom: 20px; text-align: left; line-height: 1.4; }
 
-        .title { font-size: 24px; font-weight: 800; margin-bottom: 8px; text-align: left; }
-        .subtitle { color: var(--text-secondary); font-size: 14px; margin-bottom: 30px; text-align: left; line-height: 1.5; }
-
-        .input-group { margin-bottom: 20px; text-align: left; }
-        .input-group label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 13px; color: var(--text-secondary); text-transform: uppercase; }
-        
-        input {
-            width: 100%; padding: 16px; border-radius: 18px;
-            border: 2px solid var(--border); background: var(--input-bg);
-            color: var(--text-primary); font-size: 16px; outline: none;
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
         }
-        input:focus { border-color: #FF9F43; }
+        .form-group label {
+            display: block; font-weight: 600; margin-bottom: 8px;
+            color: var(--text-primary); font-size: 14px;
+        }
+        .form-group input {
+            width: 100%; padding: 15px;
+            background: var(--bg); border: 2px solid var(--border);
+            border-radius: 16px; font-size: 16px;
+            color: var(--text-primary); outline: none;
+        }
+        .form-group input:focus {
+            border-color: #FF9F43;
+        }
+
+        #map-container {
+            width: 100%;
+            height: 300px;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 15px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            font-size: 16px;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+        .search-box:focus {
+            border-color: #FF9F43;
+            outline: none;
+        }
+
+        .selected-address {
+            background: var(--accent-light);
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: var(--accent-dark);
+            text-align: left;
+        }
 
         .btn {
             width: 100%; padding: 20px; border-radius: 20px;
-            font-size: 16px; font-weight: 800; border: none; cursor: pointer;
-            background: var(--accent-gradient); color: white;
-            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2); margin-top: 10px;
+            font-size: 16px; font-weight: 700; border: none; cursor: pointer;
+            margin-top: 10px; transition: transform 0.2s, opacity 0.3s;
         }
-        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: var(--accent-gradient); color: white; box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2); }
+        .btn-primary:disabled { opacity: 0.5; pointer-events: none; }
 
-        footer { margin-top: 30px; color: var(--text-secondary); font-size: 12px; text-align: center; }
+        footer { margin-top: 40px; color: var(--text-secondary); font-size: 12px; }
+        .error-message { color: #ff4444; font-size: 13px; margin-top: 5px; display: none; }
+        .required::after { content: " *"; color: #ff4444; }
     </style>
 </head>
 <body data-theme="light">
-
     <div class="card">
         <header>
-            <svg width="45" height="45" viewBox="0 0 200 200">
-                <path class="awning-part" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="#FF9F43"/>
-                <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#FF6B6B"/>
-                <path d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z" fill="#FF9F43"/>
-            </svg>
-            <div class="controls">
-                <div class="dropdown">
-                    <button class="icon-btn" id="langBtn">🇹🇯</button>
-                    <div class="dropdown-menu" id="langMenu">
-                        <div class="dropdown-item" onclick="setLang('tj')">🇹🇯 Тоҷикӣ</div>
-                        <div class="dropdown-item" onclick="setLang('ru')">🇷🇺 Русский</div>
-                        <div class="dropdown-item" onclick="setLang('en')">🇬🇧 English</div>
-                    </div>
-                </div>
-                <button class="icon-btn" id="themeBtn">🌙</button>
+            <div class="header-left">
+                <button class="back-btn" id="backBtn">←</button>
+                <svg width="45" height="45" viewBox="0 0 200 200">
+                    <path class="awning-part" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="#f4ce9b"/>
+                    <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
+                    <path d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z" fill="#e45d27"/>
+                </svg>
             </div>
         </header>
 
         <h1 class="title" id="t-title">Маълумоти профил</h1>
-        <p class="subtitle" id="t-sub">Барои идома додани тиҷорат маълумоти худро пур кунед.</p>
+        <p class="subtitle" id="t-sub">Барои идома, маълумоти худро ворид кунед</p>
 
-        <div class="input-group">
-            <label id="l-name">Ном ва Насаб</label>
-            <input type="text" id="fullName" placeholder="Алишер Сафаров">
-        </div>
+        <form id="profileForm">
+            <div class="form-group">
+                <label id="l-name" class="required">Ном</label>
+                <input type="text" id="name" placeholder="Аҳмад">
+            </div>
+            <div class="form-group">
+                <label id="l-surname">Насаб (ихтиёрӣ)</label>
+                <input type="text" id="surname" placeholder="Раҳимов">
+            </div>
+            <div class="form-group">
+                <label id="l-shop">Номи мағоза (ихтиёрӣ)</label>
+                <input type="text" id="shopName" placeholder="Мағозаи ман">
+            </div>
+            <div class="form-group">
+                <label id="l-address" class="required">Суроғаи мағоза</label>
+                <input type="text" id="addressSearch" class="search-box" placeholder="Ҷустуҷӯи суроға...">
+                <div id="map-container"></div>
+                <div id="selectedAddress" class="selected-address"></div>
+                <div id="address-error" class="error-message">Суроғаро интихоб кунед</div>
+            </div>
+        </form>
 
-        <div class="input-group">
-            <label id="l-shop">Номи мағоза</label>
-            <input type="text" id="shopName" placeholder="Bozorcha Center">
-        </div>
-
-        <div class="input-group">
-            <label id="l-addr">Суроғаи мағоза</label>
-            <input type="text" id="shopAddress" placeholder="к. Рудакӣ, 15">
-        </div>
-
-        <button class="btn" id="saveBtn">Сабт кардан</button>
-
+        <button class="btn btn-primary" id="submitBtn">Сабт кардан</button>
         <footer id="t-foot">© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</footer>
     </div>
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script>
-        const _supabase = supabase.createClient('https://seagtlaujnnhoyitgsdd.supabase.co', 'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP');
-        const BOT_TOKEN = "8732575801:AAHMKSQF8wgs9BeNBhCnFfigzvTmB0iM5Js";
-        const ADMIN_ID = "6484601057";
+        const _supabase = supabase.createClient(
+            'https://seagtlaujnnhoyitgsdd.supabase.co',
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+        );
+
+        let map;
+        let marker;
+        let autocomplete;
+        let selectedLocation = null;
+        let selectedAddressText = '';
 
         const i18n = {
-            tj: { flag: "🇹🇯", title: "Маълумоти профил", sub: "Барои идома додани тиҷорат маълумоти худро пур кунед.", name: "Ном ва Насаб", shop: "Номи мағоза", addr: "Суроғаи мағоза", btn: "Сабт кардан", foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд." },
-            ru: { flag: "🇷🇺", title: "Профиль продавца", sub: "Заполните данные, чтобы начать продавать.", name: "Имя и Фамилия", shop: "Название магазина", addr: "Адрес магазина", btn: "Сохранить", foot: "© 2026 Bozorcha. Все права защищены." },
-            en: { flag: "🇬🇧", title: "Seller Profile", sub: "Complete your profile to start business.", name: "Full Name", shop: "Shop Name", addr: "Shop Address", btn: "Save Profile", foot: "© 2026 Bozorcha. All rights reserved." }
-        };
-
-        // Танзими забон
-        function setLang(lang) {
-            const d = i18n[lang];
-            document.getElementById('langBtn').innerText = d.flag;
-            document.getElementById('t-title').innerText = d.title;
-            document.getElementById('t-sub').innerText = d.sub;
-            document.getElementById('l-name').innerText = d.name;
-            document.getElementById('l-shop').innerText = d.shop;
-            document.getElementById('l-addr').innerText = d.addr;
-            document.getElementById('saveBtn').innerText = d.btn;
-            document.getElementById('t-foot').innerText = d.foot;
-            localStorage.setItem('lang', lang);
-            document.getElementById('langMenu').classList.remove('show');
-        }
-
-        document.getElementById('langBtn').onclick = (e) => {
-            e.stopPropagation();
-            document.getElementById('langMenu').classList.toggle('show');
-        };
-
-        document.getElementById('themeBtn').onclick = () => {
-            const theme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            document.body.setAttribute('data-theme', theme);
-            document.getElementById('themeBtn').innerText = theme === 'light' ? '🌙' : '☀️';
-            localStorage.setItem('theme', theme);
-        };
-
-        window.onload = () => {
-            setLang(localStorage.getItem('lang') || 'tj');
-            const theme = localStorage.getItem('theme') || 'light';
-            document.body.setAttribute('data-theme', theme);
-            document.getElementById('themeBtn').innerText = theme === 'light' ? '🌙' : '☀️';
-        };
-
-        async function notifyTelegram(name, shop, address) {
-            const email = localStorage.getItem('temp_email') || 'N/A';
-            const text = `📝 **Профили нав пур карда шуд!**\n\n👤 Фурӯшанда: ${name}\n📧 Почта: ${email}\n🏪 Мағоза: ${shop}\n📍 Суроға: ${address}`;
-            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_ID}&text=${encodeURIComponent(text)}&parse_mode=Markdown`);
-        }
-
-        document.getElementById('saveBtn').onclick = async () => {
-            const fullName = document.getElementById('fullName').value.trim();
-            const shopName = document.getElementById('shopName').value.trim();
-            const shopAddress = document.getElementById('shopAddress').value.trim();
-            const userId = localStorage.getItem('userId');
-
-            if(!fullName || !shopName || !shopAddress) return alert("Пур кунед!");
-
-            const btn = document.getElementById('saveBtn');
-            btn.disabled = true;
-            btn.innerText = "...";
-
-            const { error } = await _supabase.from('user').upsert({ id: userId, full_name: fullName, shop_name: shopName, shop_address: shopAddress });
-
-            if (error) {
-                alert(error.message);
-                btn.disabled = false;
-            } else {
-                await notifyTelegram(fullName, shopName, shopAddress);
-                window.location.href = 'dashboard.html';
+            tj: { 
+                title: "Маълумоти профил", 
+                sub: "Барои идома, маълумоти худро ворид кунед",
+                name: "Ном",
+                surname: "Насаб (ихтиёрӣ)",
+                shop: "Номи мағоза (ихтиёрӣ)",
+                address: "Суроғаи мағоза",
+                btn: "Сабт кардан",
+                foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.",
+                loading: "Сабт шуда истодааст...",
+                errorName: "Номро ворид кунед",
+                errorAddress: "Суроғаро интихоб кунед",
+                success: "Маълумот сабт шуд!",
+                selectAddress: "Суроғаи интихобшуда: "
+            },
+            ru: { 
+                title: "Информация профиля", 
+                sub: "Заполните информацию для продолжения",
+                name: "Имя",
+                surname: "Фамилия (необязательно)",
+                shop: "Название магазина (необязательно)",
+                address: "Адрес магазина",
+                btn: "Сохранить",
+                foot: "© 2026 Bozorcha. Все права защищены.",
+                loading: "Сохранение...",
+                errorName: "Введите имя",
+                errorAddress: "Выберите адрес",
+                success: "Информация сохранена!",
+                selectAddress: "Выбранный адрес: "
+            },
+            en: { 
+                title: "Profile Information", 
+                sub: "Fill in your information to continue",
+                name: "First name",
+                surname: "Last name (optional)",
+                shop: "Shop name (optional)",
+                address: "Shop address",
+                btn: "Save",
+                foot: "© 2026 Bozorcha. All rights reserved.",
+                loading: "Saving...",
+                errorName: "Enter your first name",
+                errorAddress: "Select an address",
+                success: "Information saved!",
+                selectAddress: "Selected address: "
             }
         };
 
-        window.onclick = () => document.getElementById('langMenu').classList.remove('show');
+        const nameInput = document.getElementById('name');
+        const surnameInput = document.getElementById('surname');
+        const shopNameInput = document.getElementById('shopName');
+        const addressSearch = document.getElementById('addressSearch');
+        const selectedAddressDiv = document.getElementById('selectedAddress');
+        const submitBtn = document.getElementById('submitBtn');
+        const backBtn = document.getElementById('backBtn');
+
+        let currentLang = localStorage.getItem('lang') || 'tj';
+        let currentTheme = localStorage.getItem('theme') || 'light';
+
+        document.body.setAttribute('data-theme', currentTheme);
+        applyLang(currentLang);
+
+        function applyLang(lang) {
+            const d = i18n[lang];
+            document.getElementById('t-title').innerText = d.title;
+            document.getElementById('t-sub').innerText = d.sub;
+            document.getElementById('l-name').innerText = d.name;
+            document.getElementById('l-surname').innerText = d.surname;
+            document.getElementById('l-shop').innerText = d.shop;
+            document.getElementById('l-address').innerText = d.address;
+            document.getElementById('submitBtn').innerText = d.btn;
+            document.getElementById('t-foot').innerText = d.foot;
+        }
+
+        backBtn.onclick = () => {
+            window.location.href = 'choose-method.html';
+        };
+
+        // Google Maps initialization
+        function initMap() {
+            const defaultLocation = { lat: 38.5736, lng: 68.7864 }; // Душанбе
+            
+            map = new google.maps.Map(document.getElementById('map-container'), {
+                center: defaultLocation,
+                zoom: 12,
+                mapTypeControl: false,
+                streetViewControl: false,
+                styles: currentTheme === 'dark' ? [
+                    { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
+                    { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
+                    { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
+                    {
+                        featureType: 'administrative.locality',
+                        elementType: 'labels.text.fill',
+                        stylers: [{ color: '#d59563' }]
+                    },
+                    {
+                        featureType: 'road',
+                        elementType: 'geometry',
+                        stylers: [{ color: '#38414e' }]
+                    },
+                    {
+                        featureType: 'road',
+                        elementType: 'geometry.stroke',
+                        stylers: [{ color: '#212a37' }]
+                    },
+                    {
+                        featureType: 'road',
+                        elementType: 'labels.text.fill',
+                        stylers: [{ color: '#9ca5b3' }]
+                    },
+                    {
+                        featureType: 'water',
+                        elementType: 'geometry',
+                        stylers: [{ color: '#17263c' }]
+                    }
+                ] : []
+            });
+
+            marker = new google.maps.Marker({
+                map: map,
+                draggable: true,
+                animation: google.maps.Animation.DROP,
+                position: defaultLocation
+            });
+
+            // Autocomplete for search
+            autocomplete = new google.maps.places.Autocomplete(addressSearch);
+            autocomplete.bindTo('bounds', map);
+
+            autocomplete.addListener('place_changed', () => {
+                const place = autocomplete.getPlace();
+                if (!place.geometry) return;
+
+                if (place.geometry.viewport) {
+                    map.fitBounds(place.geometry.viewport);
+                } else {
+                    map.setCenter(place.geometry.location);
+                    map.setZoom(17);
+                }
+
+                marker.setPosition(place.geometry.location);
+                updateSelectedAddress(place);
+            });
+
+            // Update when marker is dragged
+            marker.addListener('dragend', () => {
+                const position = marker.getPosition();
+                const geocoder = new google.maps.Geocoder();
+                
+                geocoder.geocode({ location: position }, (results, status) => {
+                    if (status === 'OK' && results[0]) {
+                        updateSelectedAddress(results[0]);
+                    }
+                });
+            });
+
+            // Update when map is clicked
+            map.addListener('click', (e) => {
+                marker.setPosition(e.latLng);
+                const geocoder = new google.maps.Geocoder();
+                
+                geocoder.geocode({ location: e.latLng }, (results, status) => {
+                    if (status === 'OK' && results[0]) {
+                        updateSelectedAddress(results[0]);
+                    }
+                });
+            });
+        }
+
+        function updateSelectedAddress(place) {
+            selectedLocation = {
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng()
+            };
+            selectedAddressText = place.formatted_address || place.name;
+            addressSearch.value = selectedAddressText;
+            
+            const lang = localStorage.getItem('lang') || 'tj';
+            selectedAddressDiv.innerHTML = `<strong>${i18n[lang].selectAddress}</strong> ${selectedAddressText}`;
+            document.getElementById('address-error').style.display = 'none';
+        }
+
+        // Load Google Maps
+        window.initMap = initMap;
+
+        submitBtn.onclick = async () => {
+            const name = nameInput.value.trim();
+            const surname = surnameInput.value.trim();
+            const shopName = shopNameInput.value.trim();
+            const lang = localStorage.getItem('lang') || 'tj';
+
+            if (!name) {
+                document.getElementById('address-error').innerText = i18n[lang].errorName;
+                document.getElementById('address-error').style.display = 'block';
+                return;
+            }
+
+            if (!selectedAddressText) {
+                document.getElementById('address-error').innerText = i18n[lang].errorAddress;
+                document.getElementById('address-error').style.display = 'block';
+                return;
+            }
+
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                alert("ID-и корбар ёфт нашуд. Лутфан аз нав ворид шавед.");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = i18n[lang].loading;
+
+            // Маълумоти суроғаро дар формати мувофиқ нигоҳ дорем
+            const addressData = {
+                full_address: selectedAddressText,
+                coordinates: selectedLocation,
+                google_place: selectedAddressText
+            };
+
+            const updates = {
+                full_name: name + (surname ? ' ' + surname : ''),
+                shop_name: shopName || null,
+                shop_address: JSON.stringify(addressData)
+            };
+
+            const { error } = await _supabase
+                .from('user')
+                .update(updates)
+                .eq('id', userId);
+
+            if (error) {
+                alert("Хатогӣ: " + error.message);
+                submitBtn.disabled = false;
+                submitBtn.innerText = i18n[lang].btn;
+            } else {
+                alert(i18n[lang].success);
+                window.location.href = 'dashboard.html';
+            }
+        };
     </script>
 </body>
 </html>
