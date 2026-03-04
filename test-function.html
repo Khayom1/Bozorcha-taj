@@ -7,10 +7,11 @@
 
 <style>
 body{
-font-family:Arial;
+font-family: Arial, sans-serif;
 padding:20px;
 max-width:500px;
 margin:auto;
+line-height:1.6;
 }
 
 button{
@@ -21,6 +22,11 @@ border:none;
 border-radius:5px;
 width:100%;
 font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+background:#e68900;
 }
 
 #result{
@@ -28,6 +34,7 @@ margin-top:20px;
 padding:15px;
 border:1px solid #ccc;
 border-radius:5px;
+min-height:40px;
 }
 </style>
 </head>
@@ -50,6 +57,7 @@ async function sendTest(){
 
 const result=document.getElementById("result");
 result.innerHTML="Фиристода истодааст...";
+result.style.color="blue";
 
 try{
 
@@ -69,12 +77,14 @@ if(!response.ok){
 throw new Error(data.error || "Server error");
 }
 
-result.innerHTML="✅ Паём фиристода шуд";
+result.innerHTML="✅ Паём ба Telegram фиристода шуд!";
+result.style.color="green";
 
 }
 catch(error){
 
 result.innerHTML="❌ Хатогӣ: "+error.message;
+result.style.color="red";
 
 }
 
