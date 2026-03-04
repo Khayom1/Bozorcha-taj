@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="tg">
 <head>
@@ -5,11 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Пур кардани профил - Bozorcha</title>
     
-    <!-- Leaflet Maps (бе ключ) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     
     <style>
         :root {
@@ -41,7 +39,6 @@
             align-items: center;
             min-height: 100vh; 
             padding: 20px;
-            transition: background-color 0.3s ease;
         }
 
         .card {
@@ -54,160 +51,57 @@
             width: 100%;
         }
 
-        header { 
-            display: flex; 
-            align-items: center; 
-            margin-bottom: 35px; 
-        }
-        
-        .header-left { 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-        }
+        header { display: flex; align-items: center; margin-bottom: 30px; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
 
         .back-btn {
-            width: 44px; 
-            height: 44px; 
-            border-radius: 14px;
-            background: var(--bg); 
-            border: 1px solid var(--border);
-            cursor: pointer; 
-            font-size: 20px; 
-            color: var(--text-primary);
+            width: 44px; height: 44px; border-radius: 14px;
+            background: var(--bg); border: 1px solid var(--border);
+            cursor: pointer; font-size: 20px; color: var(--text-primary);
         }
 
-        .title { 
-            font-size: 22px; 
-            font-weight: 800; 
-            margin-bottom: 8px; 
-        }
-        
-        .subtitle { 
-            color: var(--text-secondary); 
-            font-size: 14px; 
-            margin-bottom: 20px; 
-            line-height: 1.4; 
-        }
+        .title { font-size: 24px; font-weight: 800; margin-top: 15px; }
+        .subtitle { color: var(--text-secondary); font-size: 14px; margin-bottom: 25px; }
 
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        
-        .form-group label {
-            display: block; 
-            font-weight: 600; 
-            margin-bottom: 8px;
-            color: var(--text-primary); 
-            font-size: 14px;
-        }
-        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
         .form-group input {
-            width: 100%; 
-            padding: 15px;
-            background: var(--bg); 
-            border: 2px solid var(--border);
-            border-radius: 16px; 
-            font-size: 16px;
-            color: var(--text-primary); 
-            outline: none;
+            width: 100%; padding: 15px; background: var(--bg); 
+            border: 2px solid var(--border); border-radius: 16px; 
+            font-size: 16px; color: var(--text-primary); outline: none;
         }
-        
-        .form-group input:focus {
-            border-color: #FF9F43;
-        }
+        .form-group input:focus { border-color: #FF9F43; }
 
-        /* Харита */
         #map {
             width: 100%;
             height: 300px;
             border-radius: 16px;
-            margin-bottom: 10px;
+            margin-top: 10px;
             z-index: 1;
-        }
-
-        /* Қуттии ҷустуҷӯ */
-        .search-wrapper {
-            position: relative;
-            margin-bottom: 15px;
-        }
-        
-        .geocoder-control {
-            width: 100% !important;
-            max-width: 100% !important;
-            background: var(--bg) !important;
-            border: 2px solid var(--border) !important;
-            border-radius: 16px !important;
-        }
-        
-        .geocoder-control input {
-            padding: 15px !important;
-            font-size: 16px !important;
-            background: transparent !important;
-            color: var(--text-primary) !important;
         }
 
         .selected-address {
             background: rgba(255, 159, 67, 0.1);
-            padding: 15px;
-            border-radius: 12px;
-            margin: 15px 0;
-            font-size: 14px;
-            color: var(--text-primary);
-            border-left: 4px solid #FF9F43;
+            padding: 15px; border-radius: 12px; margin-top: 15px;
+            font-size: 14px; border-left: 4px solid #FF9F43;
             word-break: break-word;
         }
 
         .btn {
-            width: 100%; 
-            padding: 20px; 
-            border-radius: 20px;
-            font-size: 16px; 
-            font-weight: 700; 
-            border: none; 
-            cursor: pointer;
-            margin-top: 10px; 
+            width: 100%; padding: 18px; border-radius: 20px;
+            font-size: 16px; font-weight: 700; border: none; 
+            cursor: pointer; margin-top: 10px;
         }
-        
-        .btn-primary { 
-            background: var(--accent-gradient); 
-            color: white; 
-        }
-        
-        .btn-primary:disabled { 
-            opacity: 0.5; 
-            pointer-events: none; 
-        }
+        .btn-primary { background: var(--accent-gradient); color: white; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        footer { 
-            margin-top: 40px; 
-            color: var(--text-secondary); 
-            font-size: 12px; 
-            text-align: center; 
-        }
-        
-        .required::after { 
-            content: " *"; 
-            color: #ff4444; 
-        }
+        footer { margin-top: 40px; color: var(--text-secondary); font-size: 12px; text-align: center; }
+        .required::after { content: " *"; color: #ff4444; }
 
-        .error-message { 
-            color: #ff4444; 
-            font-size: 13px; 
-            margin-top: 5px; 
-            display: none; 
-        }
-
-        /* SVG аниматсия */
-        .awning-part { 
-            transform-origin: top center; 
-            animation: windSwing 3s ease-in-out infinite; 
-        }
-        
+        .awning-part { transform-origin: top center; animation: windSwing 3s ease-in-out infinite; }
         @keyframes windSwing { 
             0%, 100% { transform: rotate(0deg); } 
-            50% { transform: rotate(3deg) skewX(2deg); } 
+            50% { transform: rotate(3deg); } 
         }
     </style>
 </head>
@@ -215,7 +109,7 @@
     <div class="card">
         <header>
             <div class="header-left">
-                <button class="back-btn" id="backBtn">←</button>
+                <button class="back-btn" onclick="history.back()">←</button>
                 <svg width="45" height="45" viewBox="0 0 200 200">
                     <path class="awning-part" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="#f4ce9b"/>
                     <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
@@ -227,329 +121,278 @@
         <h1 class="title">Маълумоти профил</h1>
         <p class="subtitle">Барои идома, маълумоти худро ворид кунед</p>
 
-        <form id="profileForm">
-            <div class="form-group">
-                <label class="required">Ном</label>
-                <input type="text" id="name" placeholder="Аҳмад" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Насаб (ихтиёрӣ)</label>
-                <input type="text" id="surname" placeholder="Раҳимов">
-            </div>
-            
-            <div class="form-group">
-                <label>Номи мағоза</label>
-                <input type="text" id="shopName" placeholder="Мағозаи ман">
-            </div>
-            
-            <div class="form-group">
-                <label class="required">Ҷойгиршавии мағоза</label>
-                
-                <!-- Ҷустуҷӯи суроға (автоматикӣ) -->
-                <div class="search-wrapper" id="searchContainer"></div>
-                
-                <!-- Харита -->
-                <div id="map"></div>
-                
-                <!-- Суроғаи интихобшуда -->
-                <div id="selectedAddress" class="selected-address">
-                    Суроға интихоб нашудааст
-                </div>
-                <div id="addressError" class="error-message">Лутфан суроғаро интихоб кунед</div>
-            </div>
-        </form>
+        <div class="form-group">
+            <label class="required">Ном</label>
+            <input type="text" id="name" placeholder="Аҳмад">
+        </div>
+        
+        <div class="form-group">
+            <label>Насаб (ихтиёрӣ)</label>
+            <input type="text" id="surname" placeholder="Раҳимов">
+        </div>
+        
+        <div class="form-group">
+            <label class="required">Номи мағоза</label>
+            <input type="text" id="shopName" placeholder="Мағозаи ман">
+        </div>
+        
+        <div class="form-group">
+            <label class="required">Ҷойгиршавии мағоза</label>
+            <div id="map"></div>
+            <div id="selectedAddress" class="selected-address">Суроға интихоб нашудааст</div>
+        </div>
 
         <button class="btn btn-primary" id="submitBtn">Сабт кардан</button>
         <footer>© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</footer>
     </div>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
     <script>
         (function() {
+            'use strict';
+
             // ========== КОНФИГУРАТСИЯ ==========
             const SUPABASE_URL = 'https://seagtlaujnnhoyitgsdd.supabase.co';
             const SUPABASE_KEY = 'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP';
             
-            // ========== ТАҲИЯИ SUPABASE ==========
-            const supabase = supabaseCreateClient(SUPABASE_URL, SUPABASE_KEY);
+            // 🟢 ТОКЕНИ TELEGRAM (ИВАЗ КУНЕД)
+            const TELEGRAM_TOKEN = '8732575801:AAHMKSQF8wgs9BeNBhCnFfigzvTmB0iM5Js'; // Иваз бо токени худ
+            const TELEGRAM_CHAT_ID = '6484601057'; // ID-и шумо
             
-            // ========== ТАҒЙИРЁБАНДАҲО ==========
-            let map, marker, geocoder;
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            
+            let map, marker;
             let selectedLocation = { lat: 38.5736, lng: 68.7864 }; // Душанбе
             let selectedAddressText = '';
             let isAddressSelected = false;
-            
-            // Унсурҳо
-            const nameInput = document.getElementById('name');
-            const surnameInput = document.getElementById('surname');
-            const shopNameInput = document.getElementById('shopName');
-            const selectedAddressDiv = document.getElementById('selectedAddress');
-            const addressError = document.getElementById('addressError');
-            const submitBtn = document.getElementById('submitBtn');
-            const backBtn = document.getElementById('backBtn');
-            
-            // ========== ТЕМА ==========
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.body.setAttribute('data-theme', savedTheme);
-            
-            // ========== ФУНКСИЯҲО ==========
-            
-            // Боркунии харита
+
+            // ========== ФУНКСИЯ БАРОИ ФИРИСТОДАН БА TELEGRAM ==========
+            async function sendToTelegram(message, type = 'info') {
+                const icons = {
+                    info: 'ℹ️',
+                    success: '✅',
+                    warning: '⚠️',
+                    error: '❌',
+                    user: '👤',
+                    shop: '🏪'
+                };
+                
+                const icon = icons[type] || icons.info;
+                const fullMessage = `${icon} <b>Bozorcha Monitor</b>\n${message}\n🕐 ${new Date().toLocaleString('tj-TJ')}`;
+                
+                try {
+                    const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+                    await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: TELEGRAM_CHAT_ID,
+                            text: fullMessage,
+                            parse_mode: 'HTML'
+                        })
+                    });
+                    console.log('Паём ба Telegram фиристода шуд');
+                } catch (e) {
+                    console.error('Хато дар фиристодан ба Telegram:', e);
+                }
+            }
+
+            // ========== ГИРИФТАНИ IP ВА МАЪЛУМОТИ БРАУЗЕР ==========
+            async function getUserInfo() {
+                try {
+                    const ipRes = await fetch('https://api.ipify.org?format=json');
+                    const ipData = await ipRes.json();
+                    
+                    return {
+                        ip: ipData.ip,
+                        browser: navigator.userAgent,
+                        platform: navigator.platform,
+                        language: navigator.language,
+                        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                    };
+                } catch (e) {
+                    return {
+                        ip: 'Номаълум',
+                        browser: navigator.userAgent,
+                        platform: navigator.platform,
+                        language: navigator.language
+                    };
+                }
+            }
+
+            // ========== ГИРИФТАНИ МАЪЛУМОТИ КОРБАРИ ВОРИДШУДА ==========
+            async function getCurrentUser() {
+                const { data: { user } } = await supabase.auth.getUser();
+                return user;
+            }
+
+            // ========== ЛОГИРОВАНИИ АМАЛҲО ==========
+            async function logAction(action, details = {}) {
+                const user = await getCurrentUser();
+                const userInfo = await getUserInfo();
+                
+                let message = '';
+                
+                if (user) {
+                    message += `👤 Корбар: ${user.email || user.id}\n`;
+                    message += `🆔 ID: ${user.id}\n`;
+                } else {
+                    message += `👤 Корбар: Вориднашуда\n`;
+                }
+                
+                message += `⚡ Амал: ${action}\n`;
+                
+                if (Object.keys(details).length > 0) {
+                    message += `📋 Маълумот:\n`;
+                    for (let [key, value] of Object.entries(details)) {
+                        if (typeof value === 'object') value = JSON.stringify(value);
+                        message += `   • ${key}: ${value}\n`;
+                    }
+                }
+                
+                message += `🌐 IP: ${userInfo.ip}\n`;
+                message += `💻 Браузер: ${userInfo.browser.substring(0, 50)}...\n`;
+                message += `📱 Платформа: ${userInfo.platform}\n`;
+                message += `🌍 Забон: ${userInfo.language}`;
+                
+                await sendToTelegram(message, 'user');
+            }
+
+            // ========== ФУНКСИЯҲОИ ХАРИТА ==========
             function initMap() {
                 try {
-                    // Сохтани харита
                     map = L.map('map').setView([selectedLocation.lat, selectedLocation.lng], 13);
                     
-                    // Илова кардани tile layer (OpenStreetMap - бе ключ)
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '© OpenStreetMap contributors'
+                        attribution: '© OpenStreetMap'
                     }).addTo(map);
-                    
-                    // Сохтани маркер (кашолашаванда)
+
                     marker = L.marker([selectedLocation.lat, selectedLocation.lng], {
-                        draggable: true,
-                        autoPan: true
+                        draggable: true
                     }).addTo(map);
-                    
-                    // Ҷустуҷӯи суроға (Geocoder)
-                    geocoder = L.Control.geocoder({
-                        defaultMarkGeocode: false,
-                        placeholder: 'Ҷустуҷӯи суроға...',
-                        errorMessage: 'Суроға ёфт нашуд',
-                        geocoder: L.Control.Geocoder.nominatim(),
-                        collapsed: false,
-                        expand: 'click'
-                    }).on('markgeocode', function(e) {
-                        // Вақте суроға интихоб мекунем
-                        const center = e.geocode.center;
-                        marker.setLatLng(center);
-                        map.setView(center, 15);
-                        selectedLocation = { lat: center.lat, lng: center.lng };
-                        selectedAddressText = e.geocode.name;
-                        selectedAddressDiv.innerHTML = `<strong>Суроға:</strong> ${selectedAddressText}`;
-                        isAddressSelected = true;
-                        addressError.style.display = 'none';
-                    }).addTo(map);
-                    
-                    // Кашола кардани маркер
-                    marker.on('dragend', function() {
-                        const pos = marker.getLatLng();
-                        selectedLocation = { lat: pos.lat, lng: pos.lng };
-                        getAddressFromCoords(pos.lat, pos.lng);
+
+                    if (L.Control.Geocoder) {
+                        L.Control.geocoder({
+                            defaultMarkGeocode: false,
+                            placeholder: 'Ҷустуҷӯи суроға...',
+                            errorMessage: 'Ёфт нашуд'
+                        }).on('markgeocode', function(e) {
+                            const center = e.geocode.center;
+                            marker.setLatLng(center);
+                            map.setView(center, 16);
+                            updateLocation(center.lat, center.lng, e.geocode.name);
+                        }).addTo(map);
+                    }
+
+                    marker.on('dragend', function(e) {
+                        const pos = e.target.getLatLng();
+                        reverseGeocode(pos.lat, pos.lng);
                     });
-                    
-                    // Пахш кардан ба харита
+
                     map.on('click', function(e) {
                         marker.setLatLng(e.latlng);
-                        selectedLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
-                        getAddressFromCoords(e.latlng.lat, e.latlng.lng);
+                        reverseGeocode(e.latlng.lat, e.latlng.lng);
                     });
-                    
-                    // Боркунии аввалин суроға
-                    getAddressFromCoords(selectedLocation.lat, selectedLocation.lng);
-                    
-                    // Адаптер барои тема
-                    setTimeout(() => {
-                        map.invalidateSize();
-                    }, 200);
-                    
-                } catch (e) {
-                    console.error('Хато дар харита:', e);
-                    selectedAddressDiv.innerHTML = 'Хато дар боркунии харита';
+
+                    setTimeout(() => map.invalidateSize(), 500);
+
+                } catch (err) {
+                    console.error('Хато дар инициализатсияи харита:', err);
+                    document.getElementById('selectedAddress').innerHTML = 'Хато дар боркунии харита';
                 }
             }
-            
-            // Гирифтани суроға аз координатаҳо
-            async function getAddressFromCoords(lat, lng) {
+
+            async function reverseGeocode(lat, lng) {
                 try {
-                    const response = await fetch(
-                        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=tg`
-                    );
-                    
-                    if (!response.ok) throw new Error('Хато дар дархост');
-                    
-                    const data = await response.json();
-                    selectedAddressText = data.display_name || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-                    selectedAddressDiv.innerHTML = `<strong>Суроға:</strong> ${selectedAddressText}`;
-                    isAddressSelected = true;
-                    addressError.style.display = 'none';
+                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=tg`);
+                    const data = await res.json();
+                    updateLocation(lat, lng, data.display_name || `${lat.toFixed(4)}, ${lng.toFixed(4)}`);
                 } catch (e) {
-                    selectedAddressText = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-                    selectedAddressDiv.innerHTML = `<strong>Суроға:</strong> ${selectedAddressText}`;
-                    isAddressSelected = true;
+                    updateLocation(lat, lng, `${lat.toFixed(4)}, ${lng.toFixed(4)}`);
                 }
             }
-            
-            // Санҷиши ворид шудани корбар
-            async function checkUser() {
-                try {
-                    // Тарзи 1: Аз localStorage (барои соддагӣ)
-                    let userId = localStorage.getItem('userId');
-                    
-                    // Тарзи 2: Аз Supabase Auth
-                    const { data: { user } } = await supabase.auth.getUser();
-                    
-                    if (user) {
-                        userId = user.id;
-                        localStorage.setItem('userId', user.id);
-                    }
-                    
-                    if (!userId) {
-                        alert('Лутфан аввал ворид шавед');
-                        window.location.href = 'login.html';
-                        return false;
-                    }
-                    
-                    return userId;
-                } catch (e) {
-                    console.error('Хато дар санҷиши корбар:', e);
-                    return localStorage.getItem('userId');
-                }
+
+            function updateLocation(lat, lng, text) {
+                selectedLocation = { lat, lng };
+                selectedAddressText = text;
+                isAddressSelected = true;
+                document.getElementById('selectedAddress').innerHTML = `<strong>Суроға:</strong> ${text}`;
             }
-            
-            // Сабти маълумот
+
+            // ========== САБТИ ПРОФИЛ ==========
             async function saveProfile() {
+                const name = document.getElementById('name').value.trim();
+                const surname = document.getElementById('surname').value.trim();
+                const shopName = document.getElementById('shopName').value.trim();
+                const submitBtn = document.getElementById('submitBtn');
+
+                if (!name) return alert("Номро ворид кунед");
+                if (!shopName) return alert("Номи мағозаро ворид кунед");
+                if (!isAddressSelected) return alert("Суроғаро дар харита интихоб кунед");
+
+                submitBtn.disabled = true;
+                submitBtn.innerText = "Сабт...";
+
                 try {
-                    // Санҷиши ном
-                    const name = nameInput.value.trim();
-                    if (!name) {
-                        alert('Номро ворид кунед');
-                        nameInput.focus();
+                    const user = await getCurrentUser();
+                    
+                    if (!user) {
+                        alert("Шумо ворид нашудаед!");
+                        window.location.href = 'login.html';
                         return;
                     }
-                    
-                    // Санҷиши суроға
-                    if (!isAddressSelected) {
-                        addressError.style.display = 'block';
-                        alert('Лутфан суроғаро интихоб кунед');
-                        return;
-                    }
-                    
-                    // Гирифтани ID-и корбар
-                    const userId = await checkUser();
-                    if (!userId) return;
-                    
-                    // Тайёр кардани маълумот
-                    const surname = surnameInput.value.trim();
-                    const shopName = shopNameInput.value.trim();
-                    const fullName = surname ? `${name} ${surname}` : name;
-                    
-                    // Маълумот барои сабт
-                    const profileData = {
-                        full_name: fullName,
-                        shop_name: shopName || null,
+
+                    const updates = {
+                        full_name: surname ? `${name} ${surname}` : name,
+                        shop_name: shopName,
                         shop_address: JSON.stringify({
                             full_address: selectedAddressText,
-                            coordinates: selectedLocation,
-                            updated_at: new Date().toISOString()
+                            coordinates: selectedLocation
                         })
                     };
-                    
-                    // Тугмаро ғайрифаъол кунед
-                    submitBtn.disabled = true;
-                    submitBtn.textContent = 'Сабт шуда истодааст...';
-                    
-                    // Сабт ба Supabase
+
                     const { error } = await supabase
                         .from('user')
-                        .update(profileData)
-                        .eq('id', userId);
-                    
+                        .update(updates)
+                        .eq('id', user.id);
+
                     if (error) throw error;
-                    
-                    alert('Маълумот бомуваффақият сабт шуд!');
+
+                    // Логированиеи муваффақият
+                    await logAction('Сабти профил', {
+                        full_name: updates.full_name,
+                        shop_name: shopName,
+                        address: selectedAddressText
+                    });
+
+                    alert("Маълумот бомуваффақият сабт шуд!");
                     window.location.href = 'dashboard.html';
-                    
-                } catch (e) {
-                    console.error('Хато ҳангоми сабт:', e);
-                    alert('Хатогӣ: ' + (e.message || 'Сабт ба амал наомад'));
+                } catch (err) {
+                    await logAction('Хатогӣ дар сабти профил', { error: err.message });
+                    alert("Хатогӣ: " + err.message);
+                } finally {
                     submitBtn.disabled = false;
-                    submitBtn.textContent = 'Сабт кардан';
+                    submitBtn.innerText = "Сабт кардан";
                 }
             }
-            
-            // ========== БОРКУНИИ САҲИФА ==========
-            document.addEventListener('DOMContentLoaded', function() {
-                // Боркунии харита (бо таъхири кӯтоҳ)
-                setTimeout(initMap, 100);
-                
-                // Санҷиши корбар
-                checkUser();
-                
-                // Боркунии маълумоти мавҷуда (агар бошад)
-                loadExistingData();
-            });
-            
-            // Боркунии маълумоти мавҷуда
-            async function loadExistingData() {
-                try {
-                    const userId = await checkUser();
-                    if (!userId) return;
-                    
-                    const { data, error } = await supabase
-                        .from('user')
-                        .select('full_name, shop_name, shop_address')
-                        .eq('id', userId)
-                        .single();
-                    
-                    if (error) throw error;
-                    if (!data) return;
-                    
-                    // Пур кардани форма
-                    if (data.full_name) {
-                        const nameParts = data.full_name.split(' ');
-                        nameInput.value = nameParts[0] || '';
-                        surnameInput.value = nameParts.slice(1).join(' ') || '';
-                    }
-                    
-                    if (data.shop_name) {
-                        shopNameInput.value = data.shop_name;
-                    }
-                    
-                    if (data.shop_address) {
-                        try {
-                            const addressData = JSON.parse(data.shop_address);
-                            if (addressData.full_address) {
-                                selectedAddressText = addressData.full_address;
-                                selectedAddressDiv.innerHTML = `<strong>Суроға:</strong> ${selectedAddressText}`;
-                                isAddressSelected = true;
-                            }
-                            
-                            if (addressData.coordinates) {
-                                selectedLocation = addressData.coordinates;
-                                if (map && marker) {
-                                    marker.setLatLng([selectedLocation.lat, selectedLocation.lng]);
-                                    map.setView([selectedLocation.lat, selectedLocation.lng], 13);
-                                }
-                            }
-                        } catch (e) {
-                            // Агар JSON набошад, чизе накун
-                        }
-                    }
-                    
-                } catch (e) {
-                    console.error('Хато дар боркунии маълумот:', e);
+
+            // ========== БОРКУНИИ АВВАЛИН ==========
+            document.addEventListener('DOMContentLoaded', async () => {
+                initMap();
+                document.getElementById('submitBtn').addEventListener('click', saveProfile);
+
+                // Логированиеи воридшавӣ
+                const user = await getCurrentUser();
+                if (user) {
+                    await logAction('Ворид шуд ба саҳифаи профил', {
+                        email: user.email,
+                        method: 'profile_page'
+                    });
                 }
-            }
-            
-            // ========== EVENT LISTENERS ==========
-            submitBtn.addEventListener('click', saveProfile);
-            
-            backBtn.addEventListener('click', function() {
-                window.location.href = 'choose-method.html';
             });
-            
-            // Тасдиқ бо Enter
-            nameInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') saveProfile();
-            });
-            
-            // ========== FUNCTIONS ==========
-            function supabaseCreateClient(url, key) {
-                return supabase.createClient(url, key);
-            }
-            
         })();
     </script>
 </body>
