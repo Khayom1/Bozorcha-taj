@@ -221,73 +221,99 @@
             color: var(--accent);
         }
 
-        .info-row {
+        .contact-item {
             display: flex;
             align-items: center;
             padding: 12px 0;
             border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
         }
-        .info-row:last-child {
+        .contact-item:hover {
+            background: var(--bg);
+        }
+        .contact-item:last-child {
             border-bottom: none;
         }
 
-        .info-label {
-            width: 100px;
-            color: var(--text-light);
-            font-size: 14px;
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            margin-right: 12px;
         }
 
-        .info-value {
+        .contact-info {
             flex: 1;
-            font-weight: 500;
         }
 
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            margin-left: 8px;
-        }
-        .badge.main { background: var(--accent-light); color: var(--accent); }
-        .badge.extra { background: var(--bg); color: var(--text-light); border: 1px solid var(--border); }
-
-        .phone-extra-toggle {
+        .contact-label {
+            font-size: 12px;
             color: var(--text-light);
-            cursor: pointer;
-            transition: transform 0.3s;
-            margin-left: 8px;
-        }
-        .phone-extra-toggle.rotated {
-            transform: rotate(180deg);
+            margin-bottom: 2px;
         }
 
-        .extra-phones {
-            display: none;
-            padding-left: 20px;
-            margin-top: 10px;
-        }
-        .extra-phones.show {
-            display: block;
-        }
-        .extra-phone-item {
-            padding: 8px 0;
-            font-size: 14px;
+        .contact-value {
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .address-link {
-            color: var(--accent);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
         }
-        .address-link:hover {
-            text-decoration: underline;
+        .badge.main { background: var(--accent-light); color: var(--accent); }
+        .badge.extra { background: var(--bg); color: var(--text-light); border: 1px solid var(--border); }
+
+        .expand-icon {
+            margin-left: 8px;
+            color: var(--text-light);
+            transition: transform 0.3s;
+        }
+        .expand-icon.rotated {
+            transform: rotate(180deg);
+        }
+
+        .extra-items {
+            display: none;
+            padding-left: 52px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        .extra-items.show {
+            display: block;
+        }
+        .extra-item {
+            padding: 8px 0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px dashed var(--border);
+        }
+        .extra-item:last-child {
+            border-bottom: none;
+        }
+        .extra-item i {
+            width: 20px;
+            color: var(--accent);
+        }
+
+        .bio-text {
+            padding: 12px 0;
+            line-height: 1.6;
+            color: var(--text-light);
+            white-space: pre-wrap;
         }
 
         .action-buttons {
@@ -366,7 +392,7 @@
             <div class="profile-status" id="profileStatus">Дар ҳоли интизор</div>
         </div>
 
-        <!-- Warning Card (барои корбарони тасдиқнашуда) -->
+        <!-- Warning Card -->
         <div class="warning-card" id="warningCard" style="display: none;">
             <div class="warning-icon">
                 <i class="fas fa-clock"></i>
@@ -397,46 +423,51 @@
             </div>
         </div>
 
-        <!-- Personal Info -->
+        <!-- Contact Info Card -->
         <div class="info-card">
-            <div class="info-title"><i class="fas fa-user"></i> Маълумоти шахсӣ</div>
-            <div class="info-row">
-                <span class="info-label">Ном</span>
-                <span class="info-value" id="displayName">—</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Рақам</span>
-                <span class="info-value" id="displayPhone">—</span>
-            </div>
-            <div class="info-row" id="extraPhonesRow">
-                <span class="info-label">Рақамҳои иловагӣ</span>
-                <div class="info-value">
-                    <span id="extraPhonesCount">0</span>
-                    <i class="fas fa-chevron-down phone-extra-toggle" id="extraPhonesToggle"></i>
+            <div class="info-title"><i class="fas fa-address-card"></i> Маълумоти тамос</div>
+            
+            <!-- Main Phone -->
+            <div class="contact-item" id="mainPhoneItem" onclick="window.open('https://wa.me/' + this.dataset.phone)">
+                <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+                <div class="contact-info">
+                    <div class="contact-label">Рақами асосӣ</div>
+                    <div class="contact-value">
+                        <span id="displayMainPhone">—</span>
+                        <span class="badge main">Асосӣ</span>
+                    </div>
                 </div>
             </div>
-            <div class="extra-phones" id="extraPhonesList"></div>
-            <div class="info-row">
-                <span class="info-label">Почта</span>
-                <span class="info-value" id="displayEmail">—</span>
+
+            <!-- Extra Phones Toggle -->
+            <div class="contact-item" id="extraPhonesToggle">
+                <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                <div class="contact-info">
+                    <div class="contact-label">Рақамҳои иловагӣ</div>
+                    <div class="contact-value">
+                        <span id="extraPhonesCount">0</span>
+                        <i class="fas fa-chevron-down expand-icon" id="extraPhonesIcon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="extra-items" id="extraPhonesList"></div>
+
+            <!-- Email -->
+            <div class="contact-item" id="emailItem" onclick="window.location.href='mailto:' + this.dataset.email">
+                <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                <div class="contact-info">
+                    <div class="contact-label">Почтаи электронӣ</div>
+                    <div class="contact-value">
+                        <span id="displayEmail">—</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Shop Info -->
+        <!-- Bio Card -->
         <div class="info-card">
-            <div class="info-title"><i class="fas fa-store"></i> Маълумоти мағоза</div>
-            <div class="info-row">
-                <span class="info-label">Ном</span>
-                <span class="info-value" id="displayShopName">—</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Тавсиф</span>
-                <span class="info-value" id="displayBio">—</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Суроға</span>
-                <span class="info-value" id="displayAddress">—</span>
-            </div>
+            <div class="info-title"><i class="fas fa-info-circle"></i> Маълумот дар бораи мағоза</div>
+            <div class="bio-text" id="displayBio">—</div>
         </div>
 
         <!-- Logout Button -->
@@ -449,7 +480,7 @@
     <script>
         const _supabase = supabase.createClient(
             'https://seagtlaujnnhoyitgsdd.supabase.co',
-            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlYWd0bGF1am5uaG95aXRnc2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA4MjY4NTAsImV4cCI6MjA1NjQwMjg1MH0.TPmZpCwYlVh5mZLjArPqIEnUq-kEOOR6nWpOjvU3VaI'
         );
 
         let currentUser = null;
@@ -464,7 +495,7 @@
             tj: {
                 pending: "Дар ҳоли интизор",
                 verified: "Тасдиқшуда",
-                waiting: "Интизори тасдиқ",
+                waiting: "Тасдиқ нашуда",
                 verify: "Тасдиқи ҳисоб",
                 edit: "Таҳрири профил",
                 other: "Дигар мағозаҳо",
@@ -478,7 +509,7 @@
             ru: {
                 pending: "На проверке",
                 verified: "Подтвержден",
-                waiting: "Ожидание",
+                waiting: "Не подтвержден",
                 verify: "Подтвердить аккаунт",
                 edit: "Редактировать",
                 other: "Другие магазины",
@@ -492,7 +523,7 @@
             en: {
                 pending: "Pending",
                 verified: "Verified",
-                waiting: "Waiting",
+                waiting: "Not verified",
                 verify: "Verify account",
                 edit: "Edit profile",
                 other: "Other shops",
@@ -563,9 +594,9 @@
             }
 
             // Profile photo
-            if (currentUser?.profile_photo) {
+            if (currentShop?.profile_image) {
                 document.getElementById('profileAvatar').innerHTML = 
-                    `<img src="${currentUser.profile_photo}" alt="avatar">`;
+                    `<img src="${currentShop.profile_image}" alt="avatar">`;
             }
 
             // Status
@@ -574,13 +605,15 @@
             const verifyBtn = document.getElementById('verifyBtn');
             const editBtn = document.getElementById('editBtn');
 
-            if (currentUser?.moderation_status === 'approved') {
+            const moderationStatus = currentShop?.moderation_status || 'none';
+
+            if (moderationStatus === 'approved') {
                 statusEl.innerText = i18n[currentLang].verified;
                 statusEl.className = 'profile-status verified';
                 warningCard.style.display = 'none';
                 verifyBtn.style.display = 'none';
                 editBtn.style.display = 'block';
-            } else if (currentUser?.moderation_status === 'pending') {
+            } else if (moderationStatus === 'pending') {
                 statusEl.innerText = i18n[currentLang].pending;
                 statusEl.className = 'profile-status pending';
                 warningCard.style.display = 'flex';
@@ -594,59 +627,70 @@
                 editBtn.style.display = 'none';
             }
 
-            // Personal info
-            document.getElementById('displayName').innerText = currentUser?.full_name || '—';
-            document.getElementById('displayPhone').innerText = currentUser?.phone || '—';
-            document.getElementById('displayEmail').innerText = currentUser?.email || '—';
+            // Main Phone
+            const mainPhone = currentShop?.phone || currentUser?.phone || '—';
+            document.getElementById('displayMainPhone').innerText = mainPhone;
+            const mainPhoneItem = document.getElementById('mainPhoneItem');
+            if (mainPhone !== '—') {
+                mainPhoneItem.dataset.phone = mainPhone.replace(/[^0-9+]/g, '');
+            }
 
-            // Extra phones
-            const extraPhones = currentUser?.extra_phones || [];
+            // Extra Phones
+            const extraPhones = [];
+            
+            // Аз shop
+            if (currentShop?.extra_phones) {
+                if (Array.isArray(currentShop.extra_phones)) {
+                    extraPhones.push(...currentShop.extra_phones);
+                } else if (typeof currentShop.extra_phones === 'string') {
+                    try {
+                        extraPhones.push(...JSON.parse(currentShop.extra_phones));
+                    } catch {}
+                }
+            }
+            
+            // Аз user
+            if (currentUser?.extra_phones) {
+                if (Array.isArray(currentUser.extra_phones)) {
+                    extraPhones.push(...currentUser.extra_phones);
+                }
+            }
+
+            // Фильтр кардани такрорҳо
+            const uniquePhones = [...new Set(extraPhones)];
+            
             const extraPhonesCount = document.getElementById('extraPhonesCount');
             const extraPhonesList = document.getElementById('extraPhonesList');
             
-            if (extraPhones.length > 0) {
-                extraPhonesCount.innerText = `${extraPhones.length} ${i18n[currentLang].extraPhones}`;
-                extraPhonesList.innerHTML = extraPhones.map(phone => 
-                    `<div class="extra-phone-item"><i class="fas fa-phone"></i> ${phone}</div>`
+            if (uniquePhones.length > 0) {
+                extraPhonesCount.innerText = `${uniquePhones.length} ${i18n[currentLang].extraPhones}`;
+                extraPhonesList.innerHTML = uniquePhones.map(phone => 
+                    `<div class="extra-item" onclick="window.open('https://wa.me/${phone.replace(/[^0-9+]/g, '')}')">
+                        <i class="fas fa-phone"></i> ${phone}
+                    </div>`
                 ).join('');
             } else {
-                document.getElementById('extraPhonesRow').style.display = 'none';
+                extraPhonesCount.innerText = '0';
+                extraPhonesList.innerHTML = '';
             }
 
-            // Shop info
-            if (currentShop) {
-                document.getElementById('displayShopName').innerText = currentShop.shop_name || '—';
-                document.getElementById('displayBio').innerText = currentShop.bio || '—';
-                
-                // Address
-                if (currentShop.shop_address) {
-                    try {
-                        const addr = JSON.parse(currentShop.shop_address);
-                        const addressText = addr.full_address || addr.google_address || '—';
-                        const coords = addr.coordinates;
-                        
-                        if (coords) {
-                            document.getElementById('displayAddress').innerHTML = 
-                                `<a href="https://maps.google.com/?q=${coords.lat},${coords.lng}" target="_blank" class="address-link">
-                                    <i class="fas fa-map-marker-alt"></i> ${addressText}
-                                </a>`;
-                        } else {
-                            document.getElementById('displayAddress').innerHTML = addressText;
-                        }
-                    } catch {
-                        document.getElementById('displayAddress').innerHTML = currentShop.shop_address;
-                    }
-                } else {
-                    document.getElementById('displayAddress').innerHTML = '—';
-                }
+            // Email
+            const email = currentShop?.email || currentUser?.email || '—';
+            document.getElementById('displayEmail').innerText = email;
+            const emailItem = document.getElementById('emailItem');
+            if (email !== '—') {
+                emailItem.dataset.email = email;
             }
+
+            // Bio
+            document.getElementById('displayBio').innerHTML = (currentShop?.bio || '—').replace(/\n/g, '<br>');
         }
 
         // Toggle extra phones
         document.getElementById('extraPhonesToggle').onclick = () => {
             extraPhonesVisible = !extraPhonesVisible;
             document.getElementById('extraPhonesList').classList.toggle('show', extraPhonesVisible);
-            document.getElementById('extraPhonesToggle').classList.toggle('rotated', extraPhonesVisible);
+            document.getElementById('extraPhonesIcon').classList.toggle('rotated', extraPhonesVisible);
         };
 
         // Action buttons
