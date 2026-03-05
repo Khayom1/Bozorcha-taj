@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Интихоби усул - Bozorcha</title>
+    
+    <!-- Пайваст кардани файлҳои CSS -->
+    <link rel="stylesheet" href="../../../src/styles/main.css">
+    <link rel="stylesheet" href="../../../src/styles/theme.css">
+    
+    <!-- Пайваст кардани файлҳои JavaScript -->
+    <script src="../../../src/js/config.js"></script>
+    <script src="../../../src/js/i18n.js"></script>
+    <script src="../../../src/js/theme.js"></script>
+    <script src="../../../src/js/utils.js"></script>
+    
     <style>
         :root {
             --bg: #FFFFFF;
@@ -32,7 +43,6 @@
             min-height: 100vh; padding: 20px;
         }
 
-        /* --- LOGO ANIMATION (WIND EFFECT) --- */
         .awning-part { transform-origin: top center; animation: windSwing 3s ease-in-out infinite; }
         @keyframes windSwing { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(3deg) skewX(2deg); } }
 
@@ -138,84 +148,69 @@
     </div>
 
     <script>
-        // Тарҷумаҳо
-        const i18n = {
-            tj: { title: "Усули воридшавиро интихоб кунед", phone: "Бо рақами телефон", email: "Бо почтаи электронӣ", foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.", flag: "🇹🇯" },
-            ru: { title: "Выберите способ входа", phone: "По номеру телефона", email: "По электронной почте", foot: "© 2026 Bozorcha. Все права защищены.", flag: "🇷🇺" },
-            en: { title: "Choose login method", phone: "By phone number", email: "By email", foot: "© 2026 Bozorcha. All rights reserved.", flag: "🇬🇧" }
-        };
-
-        // Хондани танзимоти қаблӣ
-        let currentLang = localStorage.getItem('lang') || 'tj';
-        let currentTheme = localStorage.getItem('theme') || 'light';
-
-        // Танзими ибтидоӣ
-        document.body.setAttribute('data-theme', currentTheme);
+        // ========== ТАНЗИМИ МАВЗӮЪ ==========
+        initTheme();
         
-        // Элементҳо
-        const themeBtn = document.getElementById('themeBtn');
-        const langBtn = document.getElementById('langBtn');
-        const langMenu = document.getElementById('langMenu');
-        const phoneBtn = document.getElementById('phoneBtn');
-        const emailBtn = document.getElementById('emailBtn');
-
-        // Тугмаи тема
-        if (themeBtn) {
-            themeBtn.onclick = function() {
-                currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-                document.body.setAttribute('data-theme', currentTheme);
-                localStorage.setItem('theme', currentTheme);
-            };
-        }
-
-        // Тугмаи забон
-        if (langBtn) {
-            langBtn.onclick = function(e) {
-                e.stopPropagation();
-                if (langMenu) langMenu.classList.toggle('show');
-            };
-        }
-
-        // Пӯшидани менюи забон бо пахши берун
-        window.onclick = function() {
-            if (langMenu) langMenu.classList.remove('show');
-        };
-
-        // Ивази забон
+        // ========== ЗАБОНИ ҶОРӢ ==========
+        let currentLang = localStorage.getItem('lang') || 'tj';
+        
+        // ========== ФУНКСИЯИ ИВАЗИ ЗАБОН ==========
         function setLang(lang) {
             currentLang = lang;
             localStorage.setItem('lang', lang);
             
-            const d = i18n[lang];
-            if (langBtn) langBtn.innerText = d.flag;
+            // Танзими парчам
+            const flag = lang === 'tj' ? '🇹🇯' : (lang === 'ru' ? '🇷🇺' : '🇬🇧');
+            document.getElementById('langBtn').innerText = flag;
             
-            const titleEl = document.getElementById('t-title');
-            if (titleEl) titleEl.innerText = d.title;
+            // Танзими матнҳо
+            document.getElementById('t-title').innerText = 
+                lang === 'tj' ? 'Усули воридшавиро интихоб кунед' : 
+                (lang === 'ru' ? 'Выберите способ входа' : 'Choose login method');
             
-            if (phoneBtn) phoneBtn.innerText = d.phone;
-            if (emailBtn) emailBtn.innerText = d.email;
+            document.getElementById('phoneBtn').innerText = 
+                lang === 'tj' ? 'Бо рақами телефон' : 
+                (lang === 'ru' ? 'По номеру телефона' : 'By phone number');
             
-            const footEl = document.getElementById('t-foot');
-            if (footEl) footEl.innerText = d.foot;
+            document.getElementById('emailBtn').innerText = 
+                lang === 'tj' ? 'Бо почтаи электронӣ' : 
+                (lang === 'ru' ? 'По электронной почте' : 'By email');
             
-            if (langMenu) langMenu.classList.remove('show');
-        }
-
-        // Танзими забон
-        setLang(currentLang);
-
-        // Пайваст кардани тугмаҳои асосӣ
-        if (phoneBtn) {
-            phoneBtn.onclick = function() {
-                window.location.href = 'step2-phone.html';
-            };
+            document.getElementById('t-foot').innerText = 
+                lang === 'tj' ? '© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.' : 
+                (lang === 'ru' ? '© 2026 Bozorcha. Все права защищены.' : '© 2026 Bozorcha. All rights reserved.');
+            
+            // Бастани меню
+            document.getElementById('langMenu').classList.remove('show');
         }
         
-        if (emailBtn) {
-            emailBtn.onclick = function() {
-                window.location.href = 'step2-email.html';
-            };
-        }
+        // ========== ТУГМАИ ЗАБОН ==========
+        document.getElementById('langBtn').onclick = (e) => {
+            e.stopPropagation();
+            document.getElementById('langMenu').classList.toggle('show');
+        };
+        
+        // ========== ТУГМАИ МАВЗӮЪ ==========
+        document.getElementById('themeBtn').onclick = () => {
+            toggleTheme();
+        };
+        
+        // ========== ТУГМАҲО ==========
+        document.getElementById('phoneBtn').onclick = () => {
+            window.location.href = 'register-phone.html';
+        };
+        
+        document.getElementById('emailBtn').onclick = () => {
+            window.location.href = 'register-email.html';
+        };
+        
+        // ========== ПӮШИДАНИ МЕНЮ ==========
+        window.onclick = () => {
+            document.getElementById('langMenu').classList.remove('show');
+        };
+        
+        // ========== ТАНЗИМИ АВВАЛ ==========
+        setLang(currentLang);
     </script>
 </body>
 </html>
