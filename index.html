@@ -10,16 +10,13 @@
     <meta property="og:description" content="Платформаи муосири фурӯшандагон">
     <meta property="og:type" content="website">
     
-    <!-- Пайваст кардани шрифтҳо -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Пайваст кардани файлҳои CSS -->
     <link rel="stylesheet" href="src/styles/main.css">
     <link rel="stylesheet" href="src/styles/theme.css">
     
-    <!-- Пайваст кардани файлҳои JavaScript -->
     <script src="src/js/config.js" defer></script>
     <script src="src/js/i18n.js" defer></script>
     <script src="src/js/theme.js" defer></script>
@@ -27,6 +24,7 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2" defer></script>
     
     <style>
+        /* ИН ҶО ТАМОМИ CSS-И АСЛИИ ШУМО БЕ ИХТИСОР */
         * {
             margin: 0;
             padding: 0;
@@ -63,6 +61,7 @@
         /* Main App */
         #app {
             opacity: 0;
+            display: none; /* Илова шуд барои пешгирии лағжиши экран */
             transform: translateY(20px);
             transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
@@ -70,6 +69,7 @@
         #app.visible {
             opacity: 1;
             transform: translateY(0);
+            display: block !important;
         }
 
         /* Landing Page */
@@ -420,18 +420,15 @@
     </style>
 </head>
 <body data-theme="light">
-    <!-- Splash Screen бо аниматсияи Brand Loader -->
     <div id="splash">
         <div class="splash-content">
-            <div include-html="../src/components/brand-loader.html"></div>
+            <div include-html="src/components/brand-loader.html"></div>
         </div>
     </div>
 
-    <!-- Саҳифаи асосӣ -->
-    <div id="app" style="display: none;">
+    <div id="app">
         <div class="landing-page">
             <div class="welcome-card">
-                <!-- Header -->
                 <header class="welcome-header">
                     <div class="logo-area">
                         <svg width="45" height="45" viewBox="0 0 200 200">
@@ -461,7 +458,6 @@
                     </div>
                 </header>
 
-                <!-- Hero Section -->
                 <div class="hero">
                     <div class="hero-content">
                         <h1>
@@ -478,12 +474,10 @@
                     </div>
                     <div class="hero-image">
                         <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1000&q=80"
-                             alt="Bozorcha seller dashboard interface preview"
-                             loading="lazy">
+                             alt="Bozorcha seller dashboard interface preview">
                     </div>
                 </div>
 
-                <!-- Features -->
                 <div class="features">
                     <div class="feature-card">
                         <div class="feature-icon">📦</div>
@@ -507,7 +501,6 @@
                     </div>
                 </div>
 
-                <!-- Stats -->
                 <div class="stats">
                     <div>
                         <div class="stat-number">50k+</div>
@@ -527,7 +520,6 @@
                     </div>
                 </div>
 
-                <!-- Footer -->
                 <footer class="footer">
                     <p>© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</p>
                 </footer>
@@ -536,40 +528,48 @@
     </div>
 
     <script>
-        // ========== БОРГИРИИ КОМПОНЕНТҲО (include HTML) ==========
+        // ========== ФУНКСИЯҲОИ ИСЛОҲШУДАИ ШУМО (БЕ ИХТИСОР) ==========
         async function includeHTML() {
             const elements = document.querySelectorAll('[include-html]');
+            
+            // Механизми бехатарӣ (Fail-safe)
+            const safetyTimer = setTimeout(hideSplash, 5000);
+
             for (const el of elements) {
-                const file = el.getAttribute('include-html');
+                let file = el.getAttribute('include-html');
+                file = file.replace('../', ''); // Ислоҳи роҳ барои GitHub Pages
+                
                 try {
                     const response = await fetch(file);
-                    const data = await response.text();
-                    el.innerHTML = data;
-                    el.removeAttribute('include-html');
-                    
-                    // Пас аз бор шудани brand-loader, splash-ро пинҳон кун
-                    if (file.includes('brand-loader.html')) {
-                        setTimeout(() => {
-                            document.getElementById('splash').style.opacity = '0';
-                            setTimeout(() => {
-                                document.getElementById('splash').style.display = 'none';
-                                document.getElementById('app').style.display = 'block';
-                                setTimeout(() => {
-                                    document.getElementById('app').classList.add('visible');
-                                }, 100);
-                            }, 800);
-                        }, 3500);
+                    if (response.ok) {
+                        const data = await response.text();
+                        el.innerHTML = data;
+                        
+                        if (file.includes('brand-loader.html')) {
+                            clearTimeout(safetyTimer);
+                            setTimeout(hideSplash, 3500);
+                        }
                     }
                 } catch (err) {
-                    console.error('Error loading ' + file, err);
+                    console.error('Error loading file:', file);
                 }
             }
         }
 
-        // ========== ТАНЗИМИ SUPABASE ==========
-        const supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
-        
-        // ========== ТАНЗИМИ МАВЗӮЪ (THEME) ==========
+        function hideSplash() {
+            const splash = document.getElementById('splash');
+            const app = document.getElementById('app');
+            if (splash && splash.style.display !== 'none') {
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    app.style.display = 'block';
+                    setTimeout(() => app.classList.add('visible'), 50);
+                }, 800);
+            }
+        }
+
+        // ========== ТАНЗИМОТИ АВВАЛИЯ ==========
         function initTheme() {
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.body.setAttribute('data-theme', savedTheme);
@@ -581,63 +581,46 @@
             document.body.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
         }
-        
-        // ========== ТАНЗИМИ ЗАБОН (LANGUAGE) ==========
-        let currentLang = localStorage.getItem('lang') || 'tj';
-        
+
         function updateLangButton(lang) {
             const flag = lang === 'tj' ? '🇹🇯' : (lang === 'ru' ? '🇷🇺' : '🇬🇧');
             document.getElementById('langBtn').innerText = flag;
         }
-        
+
         window.setLang = function(lang) {
-            currentLang = lang;
             localStorage.setItem('lang', lang);
-            updateLangButton(lang);
-            document.getElementById('langMenu').classList.remove('show');
+            location.reload();
         }
-        
-        // ========== EVENT LISTENERS (ТУГМАҲО) ==========
-        document.addEventListener('DOMContentLoaded', function() {
-            // Тугмаи забон
-            document.getElementById('langBtn').addEventListener('click', function(e) {
-                e.stopPropagation();
-                document.getElementById('langMenu').classList.toggle('show');
-            });
+
+        window.onload = async function() {
+            initTheme();
+            const currentLang = localStorage.getItem('lang') || 'tj';
+            updateLangButton(currentLang);
             
-            // Тугмаи мавзӯъ
-            document.getElementById('themeBtn').addEventListener('click', toggleTheme);
-            
-            // Тугмаҳои сабти ном ва воридшавӣ
-            document.getElementById('registerBtn').addEventListener('click', function() {
-                window.location.href = 'choose-method.html';
-            });
-            
-            document.getElementById('loginBtn').addEventListener('click', function() {
-                window.location.href = 'login.html';
-            });
-            
-            // Пӯшидани менюи забон бо пахши берун
-            window.addEventListener('click', function() {
-                document.getElementById('langMenu').classList.remove('show');
-            });
+            // Иҷрои includeHTML ва санҷиши авторизатсия
+            await includeHTML();
+
+            if (typeof CONFIG !== 'undefined' && typeof window.supabase !== 'undefined') {
+                const supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session?.user) {
+                    window.location.href = 'dashboard.html';
+                }
+            }
+        };
+
+        // Event Listeners
+        document.getElementById('langBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('langMenu').classList.toggle('show');
         });
         
-        // ========== САНҶИШИ АВТОРИЗАТСИЯ ==========
-        async function checkAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session?.user) {
-                window.location.href = 'dashboard.html';
-            }
-        }
+        document.getElementById('themeBtn').addEventListener('click', toggleTheme);
         
-        // ========== БОРГИРИИ ИБТИДОӢ ==========
-        window.onload = function() {
-            initTheme();
-            updateLangButton(currentLang);
-            checkAuth();
-            includeHTML();
-        };
+        document.getElementById('registerBtn').addEventListener('click', () => window.location.href = 'choose-method.html');
+        document.getElementById('loginBtn').addEventListener('click', () => window.location.href = 'login.html');
+        
+        window.addEventListener('click', () => document.getElementById('langMenu').classList.remove('show'));
     </script>
 </body>
 </html>
