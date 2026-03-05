@@ -376,6 +376,14 @@
             'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
         );
 
+        // Функсияи муҳофизатӣ барои тоза кардани матн
+        function escapeHTML(str) {
+            if (!str) return '';
+            const p = document.createElement('p');
+            p.textContent = str;
+            return p.innerHTML;
+        }
+
         let currentUserId = null;
         let chats = [];
         let users = [];
@@ -387,16 +395,22 @@
         });
 
         document.addEventListener('DOMContentLoaded', async () => {
-    // Гирифтани корбари воқеӣ аз Supabase
-    const { data: { user }, error } = await _supabase.auth.getUser();
+            // Гирифтани корбари воқеӣ аз Supabase
+            const { data: { user }, error } = await _supabase.auth.getUser();
 
-    if (error || !user) {
-        window.location.href = 'index.html';
-        return;
-    }
+            if (error || !user) {
+                window.location.href = 'index.html';
+                return;
+            }
 
-    currentUserId = user.id; // Акнун ID аз сессияи тасдиқшуда гирифта мешавад
-    // ... боқимондаи код
+            currentUserId = user.id;
+
+            // Назорати доимии сессия (Auth Observer)
+            _supabase.auth.onAuthStateChange((event, session) => {
+                if (event === 'SIGNED_OUT' || !session) {
+                    window.location.href = 'index.html';
+                }
+            });
 
             await loadChats();
             setupRealtime();
@@ -470,20 +484,22 @@
             let html = '';
             chats.forEach(chat => {
                 const otherName = chat.otherUser?.full_name || chat.otherUser?.shop_name || 'Корбар';
+                // Истифодаи escapeHTML барои муҳофизат аз ҳамлаҳои XSS
+                const safeName = escapeHTML(otherName);
                 const lastTime = chat.last_message_time ? new Date(chat.last_message_time).toLocaleTimeString('tg', { hour: '2-digit', minute: '2-digit' }) : '';
                 
                 html += `
                     <div class="chat-item" onclick="openChat('${chat.id}')">
                         <div class="chat-avatar">
-                            ${otherName.charAt(0)}
+                            ${safeName.charAt(0)}
                         </div>
                         <div class="chat-info">
                             <div class="chat-row">
-                                <span class="chat-name">${otherName}</span>
+                                <span class="chat-name">${safeName}</span>
                                 <span class="chat-time">${lastTime}</span>
                             </div>
                             <div class="chat-row">
-                                <span class="chat-last">${chat.last_message || '...'}</span>
+                                <span class="chat-last">${escapeHTML(chat.last_message || '...')}</span>
                                 <span class="chat-badge" style="${!chat.unread ? 'display:none' : ''}">${chat.unread || 0}</span>
                             </div>
                         </div>
@@ -537,10 +553,12 @@
             let html = '';
             filtered.forEach(user => {
                 const name = user.full_name || user.shop_name || 'Корбар';
+                // Истифодаи escapeHTML барои муҳофизат
+                const safeName = escapeHTML(name);
                 html += `
                     <div class="user-item" onclick="startChat('${user.id}')">
-                        <div class="user-avatar">${name.charAt(0)}</div>
-                        <span class="user-name">${name}</span>
+                        <div class="user-avatar">${safeName.charAt(0)}</div>
+                        <span class="user-name">${safeName}</span>
                     </div>
                 `;
             });
