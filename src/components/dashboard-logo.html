@@ -1,0 +1,160 @@
+<!-- Логотипи аниматсионии dashboard - ҳамеша намоён -->
+<div class="logo-wrap" aria-hidden="false" role="img" aria-label="Bozorcha logo">
+    <!-- SVG логотипи шумо (бо id="brand-svg") -->
+    <svg id="brand-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <!-- ИН ҶО ЛОГОТИПИ АСЛИИ ХУДРО ГУЗОРЕД -->
+        <!-- Мисол: -->
+        <defs>
+            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FF9F43"/>
+                <stop offset="100%" stop-color="#FF6B6B"/>
+            </linearGradient>
+        </defs>
+        <rect width="100" height="100" rx="20" fill="url(#logoGradient)"/>
+        <text x="50" y="68" font-size="40" text-anchor="middle" fill="white" font-weight="bold">B</text>
+    </svg>
+
+    <!-- Sheen overlay - нури гузаранда -->
+    <div class="logo-sheen" aria-hidden="true"></div>
+    <div class="logo-vignette" aria-hidden="true"></div>
+</div>
+
+<style>
+    /* Container: дар кунҷи болои чап ҷойгир аст */
+    .logo-wrap {
+        position: fixed;
+        top: 18px;
+        left: 18px;
+        width: 48px;
+        height: 48px;
+        display: inline-block;
+        z-index: 1000;
+        pointer-events: none;
+        -webkit-tap-highlight-color: transparent;
+        will-change: transform, filter, opacity;
+    }
+
+    /* Андозаи SVG */
+    .logo-wrap svg,
+    .logo-wrap svg > g {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+
+    /* Аниматсияи асосӣ */
+    #brand-svg {
+        transform-origin: 50% 50%;
+        will-change: transform, filter;
+        animation:
+            breathe 6s cubic-bezier(.2,.9,.2,1) infinite,
+            floatY 6s cubic-bezier(.2,.9,.2,1) infinite,
+            pulseEnergy 6s cubic-bezier(.4,0,.2,1) infinite;
+    }
+
+    /* Нури гузаранда */
+    .logo-sheen {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        mix-blend-mode: screen;
+        opacity: 0.0;
+        background: linear-gradient(
+            90deg,
+            rgba(255,255,255,0) 0%,
+            rgba(255,255,255,0.12) 50%,
+            rgba(255,255,255,0) 100%
+        );
+        transform: translateX(-120%);
+        will-change: transform, opacity;
+        filter: blur(8px);
+        border-radius: 6px;
+        animation: sheen 6s cubic-bezier(.2,.9,.2,1) infinite;
+    }
+
+    /* Vignette - доираи торик дар атроф */
+    .logo-vignette {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        border-radius: 6px;
+        box-shadow: inset 0 0 18px rgba(0,0,0,0.02);
+        opacity: 1;
+    }
+
+    /* KEYFRAMES */
+    @keyframes breathe {
+        0%   { transform: scale(1); }
+        12%  { transform: scale(1.006); }
+        30%  { transform: scale(1.015); }
+        52%  { transform: scale(1.006); }
+        70%  { transform: scale(1.002); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes floatY {
+        0%   { transform: translateY(0); }
+        18%  { transform: translateY(-1px); }
+        36%  { transform: translateY(-2px); }
+        54%  { transform: translateY(-1px); }
+        100% { transform: translateY(0); }
+    }
+
+    @keyframes sheen {
+        0% {
+            transform: translateX(-120%);
+            opacity: 0;
+        }
+        20% {
+            opacity: 0;
+        }
+        30% {
+            opacity: 0.18;
+        }
+        50% {
+            transform: translateX(120%);
+            opacity: 0.12;
+        }
+        70% {
+            opacity: 0;
+        }
+        100% {
+            transform: translateX(120%);
+            opacity: 0;
+        }
+    }
+
+    @keyframes pulseEnergy {
+        0%   { filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
+        28%  { filter: drop-shadow(0 2px 6px rgba(0,0,0,0.04)); }
+        36%  { filter: drop-shadow(0 4px 12px rgba(0,0,0,0.06)); }
+        44%  { filter: drop-shadow(0 2px 6px rgba(0,0,0,0.04)); }
+        100% { filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
+    }
+
+    /* Барои дастгоҳҳое ки ҳаракатро кам кардаанд */
+    @media (prefers-reduced-motion: reduce) {
+        #brand-svg,
+        .logo-sheen {
+            animation: none !important;
+            transform: none !important;
+            filter: none !important;
+        }
+    }
+
+    /* Performance hints */
+    .logo-wrap,
+    #brand-svg,
+    .logo-sheen {
+        backface-visibility: hidden;
+        -webkit-font-smoothing: antialiased;
+        -webkit-transform: translateZ(0);
+    }
+</style>
+
+<script>
+    (function() {
+        // Тамоми элементҳоро аз интерференсия бо UI ҷудо кунед
+        document.querySelectorAll('.logo-wrap *').forEach(el => el.style.pointerEvents = 'none');
+    })();
+</script>
