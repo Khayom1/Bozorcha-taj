@@ -3,293 +3,640 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bozorcha - Хуш омадед!</title>
+    <title>Bozorcha - Платформаи фурӯшандагон</title>
+    
+    <meta name="description" content="Bozorcha — платформаи муосири фурӯшандагон барои фурӯши онлайн ва идоракунии маҳсулот.">
+    <meta property="og:title" content="Bozorcha Marketplace">
+    <meta property="og:description" content="Платформаи муосири фурӯшандагон">
+    <meta property="og:type" content="website">
+    
+    <!-- Пайваст кардани шрифтҳо -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Пайваст кардани файлҳои CSS -->
     <link rel="stylesheet" href="../src/styles/main.css">
     <link rel="stylesheet" href="../src/styles/theme.css">
     
     <!-- Пайваст кардани файлҳои JavaScript -->
-    <script src="../src/js/config.js"></script>
-    <script src="../src/js/i18n.js"></script>
-    <script src="../src/js/theme.js"></script>
-    <script src="../src/js/utils.js"></script>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="../src/js/config.js" defer></script>
+    <script src="../src/js/i18n.js" defer></script>
+    <script src="../src/js/theme.js" defer></script>
+    <script src="../src/js/utils.js" defer></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2" defer></script>
     
     <style>
-        :root {
-            --bg: #FFFFFF;
-            --surface: #F8F9FA;
-            --text-primary: #1A1C1E;
-            --text-secondary: #6C757D;
-            --accent-gradient: linear-gradient(135deg, #FF9F43 0%, #FF6B6B 100%);
-            --border: #EEEEEE;
-            --shadow: 0 15px 35px rgba(0,0,0,0.05);
-        }
-
-        [data-theme="dark"] {
-            --bg: #0A0A0B;
-            --surface: #161618;
-            --text-primary: #F8F9FA;
-            --text-secondary: #ADB5BD;
-            --border: #2C2E33;
-            --shadow: 0 15px 35px rgba(0,0,0,0.3);
-        }
-
         * {
-            margin: 0; padding: 0; box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-            transition: background-color 0.5s ease, color 0.5s ease;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text-primary);
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh; overflow: hidden;
+            background: #0F172A;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* --- SPLASH SCREEN --- */
+        /* Splash Screen */
         #splash {
-            position: fixed; inset: 0;
-            background: #FFFFFF;
-            z-index: 1000; display: flex; justify-content: center; align-items: center;
+            position: fixed;
+            inset: 0;
+            background: #0F172A;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: opacity 0.8s ease;
         }
 
-        .splash-svg { width: 140px; }
-
-        .path-draw {
-            fill: none; stroke: #FF9F43; stroke-width: 1.5;
-            stroke-dasharray: 800; stroke-dashoffset: 800;
-            animation: draw 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        .splash-content {
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        @keyframes draw { to { stroke-dashoffset: 0; } }
-
-        .awning-part {
-            transform-origin: top center;
-            animation: windSwing 3s ease-in-out infinite;
-        }
-
-        @keyframes windSwing {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(3deg) skewX(2deg); }
-        }
-
-        .fill-animate { opacity: 0; animation: fadeIn 0.8s ease forwards 2s; }
-        @keyframes fadeIn { to { opacity: 1; } }
-
+        /* Main App */
         #app {
-            width: 100%; max-width: 400px; padding: 20px;
-            opacity: 0; transform: translateY(20px);
+            opacity: 0;
+            transform: translateY(20px);
             transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        #app.visible { opacity: 1; transform: translateY(0); }
+        #app.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-        .card {
-            background: var(--surface);
-            border-radius: 35px; padding: 45px 30px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            text-align: center;
+        /* Landing Page */
+        .landing-page {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .welcome-card {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border-radius: 48px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Header */
+        .welcome-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 60px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-area svg {
+            width: 48px;
+            height: 48px;
+            filter: drop-shadow(0 10px 20px rgba(255, 159, 67, 0.3));
+        }
+
+        .logo-area span {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FF9F43, #FF6B6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        /* Тугмаи забон */
+        .lang-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
             position: relative;
         }
 
-        header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 50px;
+        .lang-btn:hover {
+            background: #FF9F43;
+            border-color: #FF9F43;
+            transform: scale(1.05);
         }
 
-        .logo-group { display: flex; align-items: center; gap: 12px; }
-
-        .controls { display: flex; gap: 10px; }
-
-        .icon-btn {
-            width: 48px; height: 48px; border-radius: 16px;
-            background: var(--bg); border: 1px solid var(--border);
-            cursor: pointer; display: flex; justify-content: center; align-items: center;
-            font-size: 20px; position: relative; overflow: hidden;
+        /* Менюи забон */
+        .lang-selector {
+            position: relative;
         }
 
-        .dropdown { position: relative; }
-        .dropdown-menu {
-            position: absolute; top: 55px; right: 0;
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 18px; box-shadow: var(--shadow);
-            display: none; flex-direction: column; overflow: hidden; z-index: 100; min-width: 120px;
+        .lang-dropdown {
+            position: absolute;
+            top: 55px;
+            right: 0;
+            background: #1E293B;
+            border-radius: 16px;
+            padding: 8px;
+            min-width: 150px;
+            display: none;
+            border: 1px solid #334155;
+            z-index: 100;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
         }
-        .dropdown-menu.show { display: flex; }
-        .dropdown-item {
-            padding: 14px; cursor: pointer; display: flex; align-items: center; gap: 10px;
-            font-weight: 600; font-size: 14px;
+
+        .lang-dropdown.show {
+            display: block;
+            animation: fadeIn 0.2s ease;
         }
-        .dropdown-item:hover { background: var(--accent-gradient); color: white; }
 
-        .theme-icon-box { position: relative; width: 22px; height: 22px; }
-        .sun, .moon { position: absolute; inset: 0; transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
-        [data-theme="light"] .sun { transform: translateY(0); opacity: 1; }
-        [data-theme="light"] .moon { transform: translateY(30px); opacity: 0; }
-        [data-theme="dark"] .sun { transform: translateY(-30px); opacity: 0; }
-        [data-theme="dark"] .moon { transform: translateY(0); opacity: 1; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        .welcome-title { font-size: 30px; font-weight: 800; margin-bottom: 12px; }
-        .welcome-sub { color: var(--text-secondary); font-size: 16px; margin-bottom: 40px; }
+        .lang-dropdown-item {
+            padding: 12px 16px;
+            color: #94A3B8;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lang-dropdown-item:hover {
+            background: #FF9F43;
+            color: white;
+        }
+
+        /* Тугмаи мавзӯъ */
+        .theme-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-btn:hover {
+            background: #FF9F43;
+            border-color: #FF9F43;
+            transform: scale(1.05);
+        }
+
+        .theme-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .theme-icon.sun {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+
+        .theme-icon.moon {
+            opacity: 0;
+            transform: translate(-50%, 30px);
+        }
+
+        [data-theme="dark"] .theme-icon.sun {
+            opacity: 0;
+            transform: translate(-50%, -30px);
+        }
+
+        [data-theme="dark"] .theme-icon.moon {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Hero Section */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+
+        .hero-content {
+            color: white;
+        }
+
+        .hero-content h1 {
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            color: white;
+        }
+
+        .hero-content h1 span {
+            background: linear-gradient(135deg, #FF9F43, #FF6B6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            color: #94A3B8;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        /* Тугмаҳо */
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+        }
 
         .btn {
-            width: 100%; padding: 20px; border-radius: 20px;
-            font-size: 16px; font-weight: 700; border: none; cursor: pointer;
-            margin-bottom: 15px; transition: transform 0.2s;
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
         }
-        .btn-reg { background: var(--accent-gradient); color: white; box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2); }
-        .btn-login { background: transparent; border: 2px solid var(--border); color: var(--text-primary); }
-        .btn:active { transform: scale(0.96); }
 
-        footer { margin-top: 40px; color: var(--text-secondary); font-size: 13px; }
+        .btn-primary {
+            background: linear-gradient(135deg, #FF9F43, #FF6B6B);
+            color: white;
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .btn-outline:hover {
+            border-color: #FF9F43;
+            color: #FF9F43;
+            transform: translateY(-2px);
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: 32px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .hero-image img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-5px);
+            border-color: rgba(255, 159, 67, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            color: #94A3B8;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 40px;
+        }
+
+        .stat-number {
+            font-size: 40px;
+            font-weight: 800;
+            color: #FF9F43;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #94A3B8;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            color: #64748B;
+            font-size: 14px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-content h1 { font-size: 48px; }
+            .features { grid-template-columns: repeat(2, 1fr); }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .hero { grid-template-columns: 1fr; gap: 40px; }
+            .hero-content h1 { font-size: 36px; }
+            .hero-content { text-align: center; }
+            .hero-buttons { justify-content: center; }
+            .features { grid-template-columns: 1fr; }
+            .stats { grid-template-columns: 1fr; }
+            .welcome-card { padding: 30px 20px; }
+        }
     </style>
 </head>
 <body data-theme="light">
-    <!-- Splash Screen -->
+    <!-- Splash Screen бо аниматсияи Brand Loader -->
     <div id="splash">
-        <svg class="splash-svg" viewBox="0 0 200 200">
-            <path class="path-draw" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z"/>
-            <g class="fill-animate">
-                <path class="awning-part" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="#f4ce9b"/>
-                <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
-                <path d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z" fill="#e45d27"/>
-            </g>
-        </svg>
+        <div class="splash-content">
+            <div include-html="../src/components/brand-loader.html"></div>
+        </div>
     </div>
 
-    <!-- Main App -->
-    <div id="app">
-        <div class="card">
-            <header>
-                <div class="logo-group">
-                    <svg width="45" height="45" viewBox="0 0 200 200">
-                        <path class="awning-part" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="#f4ce9b"/>
-                        <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
-                        <path d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z" fill="#e45d27"/>
-                    </svg>
-                    <span style="font-weight: 900; font-size: 22px; letter-spacing: -0.5px;">Bozorcha</span>
-                </div>
-                <div class="controls">
-                    <div class="dropdown">
-                        <button class="icon-btn" id="langBtn"><span id="activeFlag">🇹🇯</span></button>
-                        <div class="dropdown-menu" id="langMenu">
-                            <div class="dropdown-item" onclick="setLang('tj')"><span>🇹🇯</span> Тоҷикӣ</div>
-                            <div class="dropdown-item" onclick="setLang('ru')"><span>🇷🇺</span> Русский</div>
-                            <div class="dropdown-item" onclick="setLang('en')"><span>🇬🇧</span> English</div>
+    <!-- Саҳифаи асосӣ -->
+    <div id="app" style="display: none;">
+        <div class="landing-page">
+            <div class="welcome-card">
+                <!-- Header -->
+                <header class="welcome-header">
+                    <div class="logo-area">
+                        <svg width="45" height="45" viewBox="0 0 200 200">
+                            <defs>
+                                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#FF9F43"/>
+                                    <stop offset="100%" stop-color="#FF6B6B"/>
+                                </linearGradient>
+                            </defs>
+                            <path d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="url(#logoGradient)"/>
+                        </svg>
+                        <span>Bozorcha</span>
+                    </div>
+                    <div class="header-actions">
+                        <div class="lang-selector">
+                            <button class="lang-btn" id="langBtn">🇹🇯</button>
+                            <div class="lang-dropdown" id="langMenu">
+                                <div class="lang-dropdown-item" onclick="setLang('tj')">🇹🇯 Тоҷикӣ</div>
+                                <div class="lang-dropdown-item" onclick="setLang('ru')">🇷🇺 Русский</div>
+                                <div class="lang-dropdown-item" onclick="setLang('en')">🇬🇧 English</div>
+                            </div>
+                        </div>
+                        <button class="theme-btn" id="themeBtn">
+                            <span class="theme-icon sun">☀️</span>
+                            <span class="theme-icon moon">🌙</span>
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Hero Section -->
+                <div class="hero">
+                    <div class="hero-content">
+                        <h1>
+                            Фурӯши осон дар<br>
+                            <span>Bozorcha</span>
+                        </h1>
+                        <p>
+                            Ба миллионҳо харидор дастрасӣ пайдо кунед ва фурӯши худро бо воситаҳои муосири тиҷорати электронӣ афзоиш диҳед.
+                        </p>
+                        <div class="hero-buttons">
+                            <button class="btn btn-primary" id="registerBtn">Оғози кор</button>
+                            <button class="btn btn-outline" id="loginBtn">Ворид шудан</button>
                         </div>
                     </div>
-                    <button class="icon-btn" id="themeBtn">
-                        <div class="theme-icon-box">
-                            <span class="sun">☀️</span>
-                            <span class="moon">🌙</span>
-                        </div>
-                    </button>
+                    <div class="hero-image">
+                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1000&q=80"
+                             alt="Bozorcha seller dashboard interface preview"
+                             loading="lazy">
+                    </div>
                 </div>
-            </header>
 
-            <h1 class="welcome-title" id="t-title">Хуш омадед!</h1>
-            <p class="welcome-sub" id="t-sub">Барои оғоз ворид шавед ё сабти ном кунед.</p>
+                <!-- Features -->
+                <div class="features">
+                    <div class="feature-card">
+                        <div class="feature-icon">📦</div>
+                        <h3>Идоракунии осон</h3>
+                        <p>Маҳсулотҳои худро зуд илова ва идора кунед</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3>Таҳлили пешрафта</h3>
+                        <p>Омор ва таҳлили фурӯшро дар вақти воқеӣ бинед</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💬</div>
+                        <h3>Чат бо харидорон</h3>
+                        <p>Бо мизоҷон мустақиман тамос гиред</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡️</div>
+                        <h3>Пардохти зуд</h3>
+                        <p>Пардохтҳоро бо суръати баланд қабул кунед</p>
+                    </div>
+                </div>
 
-            <button class="btn btn-reg" id="t-reg">Сабти ном</button>
-            <button class="btn btn-login" id="t-login">Дохилшавӣ</button>
+                <!-- Stats -->
+                <div class="stats">
+                    <div>
+                        <div class="stat-number">50k+</div>
+                        <div class="stat-label">Фурӯшандагон</div>
+                    </div>
+                    <div>
+                        <div class="stat-number">1M+</div>
+                        <div class="stat-label">Маҳсулот</div>
+                    </div>
+                    <div>
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Дастгирӣ</div>
+                    </div>
+                    <div>
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Бехатарӣ</div>
+                    </div>
+                </div>
 
-            <footer id="t-foot">© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</footer>
+                <!-- Footer -->
+                <footer class="footer">
+                    <p>© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</p>
+                </footer>
+            </div>
         </div>
     </div>
 
     <script>
+        // ========== БОРГИРИИ КОМПОНЕНТҲО (include HTML) ==========
+        async function includeHTML() {
+            const elements = document.querySelectorAll('[include-html]');
+            for (const el of elements) {
+                const file = el.getAttribute('include-html');
+                try {
+                    const response = await fetch(file);
+                    const data = await response.text();
+                    el.innerHTML = data;
+                    el.removeAttribute('include-html');
+                    
+                    // Пас аз бор шудани brand-loader, splash-ро пинҳон кун
+                    if (file.includes('brand-loader.html')) {
+                        setTimeout(() => {
+                            document.getElementById('splash').style.opacity = '0';
+                            setTimeout(() => {
+                                document.getElementById('splash').style.display = 'none';
+                                document.getElementById('app').style.display = 'block';
+                                setTimeout(() => {
+                                    document.getElementById('app').classList.add('visible');
+                                }, 100);
+                            }, 800);
+                        }, 3500);
+                    }
+                } catch (err) {
+                    console.error('Error loading ' + file, err);
+                }
+            }
+        }
+
         // ========== ТАНЗИМИ SUPABASE ==========
-        const supabase = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+        const supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
         
-        // ========== ТАНЗИМИ МАВЗӮЪ ==========
-        initTheme();
+        // ========== ТАНЗИМИ МАВЗӮЪ (THEME) ==========
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+        }
         
-        // ========== ЗАБОНИ ҶОРӢ ==========
+        function toggleTheme() {
+            const current = document.body.getAttribute('data-theme');
+            const newTheme = current === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+        
+        // ========== ТАНЗИМИ ЗАБОН (LANGUAGE) ==========
         let currentLang = localStorage.getItem('lang') || 'tj';
         
-        // ========== ФУНКСИЯИ ИВАЗИ ЗАБОН ==========
-        function setLang(lang) {
+        function updateLangButton(lang) {
+            const flag = lang === 'tj' ? '🇹🇯' : (lang === 'ru' ? '🇷🇺' : '🇬🇧');
+            document.getElementById('langBtn').innerText = flag;
+        }
+        
+        window.setLang = function(lang) {
             currentLang = lang;
             localStorage.setItem('lang', lang);
-            
-            // Танзими парчам
-            const flag = lang === 'tj' ? '🇹🇯' : (lang === 'ru' ? '🇷🇺' : '🇬🇧');
-            document.getElementById('activeFlag').innerText = flag;
-            
-            // Танзими матнҳо
-            document.getElementById('t-title').innerText = 
-                lang === 'tj' ? 'Хуш омадед!' : 
-                (lang === 'ru' ? 'Добро пожаловать!' : 'Welcome!');
-            
-            document.getElementById('t-sub').innerText = 
-                lang === 'tj' ? 'Барои оғоз ворид шавед ё сабти ном кунед.' : 
-                (lang === 'ru' ? 'Войдите или зарегистрируйтесь для начала.' : 'Login or register to get started.');
-            
-            document.getElementById('t-reg').innerText = 
-                lang === 'tj' ? 'Сабти ном' : 
-                (lang === 'ru' ? 'Регистрация' : 'Register');
-            
-            document.getElementById('t-login').innerText = 
-                lang === 'tj' ? 'Дохилшавӣ' : 
-                (lang === 'ru' ? 'Вход' : 'Login');
-            
-            document.getElementById('t-foot').innerText = 
-                lang === 'tj' ? '© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.' : 
-                (lang === 'ru' ? '© 2026 Bozorcha. Все права защищены.' : '© 2026 Bozorcha. All rights reserved.');
-            
-            // Бастани меню
+            updateLangButton(lang);
             document.getElementById('langMenu').classList.remove('show');
         }
         
-        // ========== ТУГМАИ ЗАБОН ==========
-        document.getElementById('langBtn').onclick = (e) => {
-            e.stopPropagation();
-            document.getElementById('langMenu').classList.toggle('show');
-        };
-        
-        // ========== ТУГМАИ МАВЗӮЪ ==========
-        document.getElementById('themeBtn').onclick = () => {
-            toggleTheme();
-        };
-        
-        // ========== ТУГМАҲО ==========
-        document.getElementById('t-reg').onclick = () => {
-            window.location.href = 'choose-method.html';
-        };
-        
-        document.getElementById('t-login').onclick = () => {
-            window.location.href = 'login.html';
-        };
-        
-        // ========== ПӮШИДАНИ МЕНЮ ==========
-        window.onclick = () => {
-            document.getElementById('langMenu').classList.remove('show');
-        };
+        // ========== EVENT LISTENERS (ТУГМАҲО) ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // Тугмаи забон
+            document.getElementById('langBtn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                document.getElementById('langMenu').classList.toggle('show');
+            });
+            
+            // Тугмаи мавзӯъ
+            document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+            
+            // Тугмаҳои сабти ном ва воридшавӣ
+            document.getElementById('registerBtn').addEventListener('click', function() {
+                window.location.href = 'choose-method.html';
+            });
+            
+            document.getElementById('loginBtn').addEventListener('click', function() {
+                window.location.href = 'login.html';
+            });
+            
+            // Пӯшидани менюи забон бо пахши берун
+            window.addEventListener('click', function() {
+                document.getElementById('langMenu').classList.remove('show');
+            });
+        });
         
         // ========== САНҶИШИ АВТОРИЗАТСИЯ ==========
         async function checkAuth() {
-            const { data: { session }, error } = await supabase.auth.getSession();
+            const { data: { session } } = await supabase.auth.getSession();
             if (session?.user) {
                 window.location.href = 'dashboard.html';
             }
         }
         
-        // ========== SPLASH SCREEN ==========
-        window.onload = () => {
+        // ========== БОРГИРИИ ИБТИДОӢ ==========
+        window.onload = function() {
+            initTheme();
+            updateLangButton(currentLang);
             checkAuth();
-            
-            setTimeout(() => {
-                document.getElementById('splash').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('splash').style.display = 'none';
-                    document.getElementById('app').classList.add('visible');
-                }, 800);
-            }, 3200);
+            includeHTML();
         };
     </script>
 </body>
