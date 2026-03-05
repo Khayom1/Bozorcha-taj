@@ -4,7 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bozorcha - Хуш омадед!</title>
+    
+    <!-- Пайваст кардани файлҳои CSS -->
+    <link rel="stylesheet" href="../src/styles/main.css">
+    <link rel="stylesheet" href="../src/styles/theme.css">
+    
+    <!-- Пайваст кардани файлҳои JavaScript -->
+    <script src="../src/js/config.js"></script>
+    <script src="../src/js/i18n.js"></script>
+    <script src="../src/js/theme.js"></script>
+    <script src="../src/js/utils.js"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
     <style>
         :root {
             --bg: #FFFFFF;
@@ -56,7 +67,6 @@
 
         @keyframes draw { to { stroke-dashoffset: 0; } }
 
-        /* --- LOGO ANIMATION (WIND EFFECT) --- */
         .awning-part {
             transform-origin: top center;
             animation: windSwing 3s ease-in-out infinite;
@@ -70,7 +80,6 @@
         .fill-animate { opacity: 0; animation: fadeIn 0.8s ease forwards 2s; }
         @keyframes fadeIn { to { opacity: 1; } }
 
-        /* --- MAIN UI --- */
         #app {
             width: 100%; max-width: 400px; padding: 20px;
             opacity: 0; transform: translateY(20px);
@@ -104,7 +113,6 @@
             font-size: 20px; position: relative; overflow: hidden;
         }
 
-        /* DROPDOWN */
         .dropdown { position: relative; }
         .dropdown-menu {
             position: absolute; top: 55px; right: 0;
@@ -119,7 +127,6 @@
         }
         .dropdown-item:hover { background: var(--accent-gradient); color: white; }
 
-        /* THEME ICON ANIMATION */
         .theme-icon-box { position: relative; width: 22px; height: 22px; }
         .sun, .moon { position: absolute; inset: 0; transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
         [data-theme="light"] .sun { transform: translateY(0); opacity: 1; }
@@ -196,68 +203,84 @@
     </div>
 
     <script>
-        // ========== ФУНКСИЯИ МУҲОФИЗАТӢ (XSS) ==========
-        function escapeHTML(str) {
-            if (!str) return '';
-            const p = document.createElement('p');
-            p.textContent = str;
-            return p.innerHTML;
-        }
-
         // ========== ТАНЗИМИ SUPABASE ==========
-        const _supabase = supabase.createClient(
-            'https://seagtlaujnnhoyitgsdd.supabase.co',
-            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'  // Ин anon_key аст, бехатар аст
-        );
-
-        // ========== ТАРҶУМАҲО ==========
-        const i18n = {
-            tj: { flag: "🇹🇯", title: "Хуш омадед!", sub: "Барои оғоз ворид шавед ё сабти ном кунед.", reg: "Сабти ном", login: "Дохилшавӣ", foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд." },
-            ru: { flag: "🇷🇺", title: "Добро пожаловать!", sub: "Войдите или зарегистрируйтесь для начала.", reg: "Регистрация", login: "Вход", foot: "© 2026 Bozorcha. Все права защищены." },
-            en: { flag: "🇬🇧", title: "Welcome!", sub: "Login or register to get started.", reg: "Register", login: "Login", foot: "© 2026 Bozorcha. All rights reserved." }
-        };
-
-        // ========== ТАҒЙИРЁБАНДАҲО ==========
+        const supabase = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+        
+        // ========== ТАНЗИМИ МАВЗӮЪ ==========
+        initTheme();
+        
+        // ========== ЗАБОНИ ҶОРӢ ==========
         let currentLang = localStorage.getItem('lang') || 'tj';
-        let currentTheme = localStorage.getItem('theme') || 'light';
-
-        // ========== ЭЛЕМЕНТҲО ==========
-        const themeBtn = document.getElementById('themeBtn');
-        const langBtn = document.getElementById('langBtn');
-        const langMenu = document.getElementById('langMenu');
-        const regBtn = document.getElementById('t-reg');
-        const loginBtn = document.getElementById('t-login');
-
-        // ========== ТАНЗИМИ ИБТИДОӢ ==========
-        document.body.setAttribute('data-theme', currentTheme);
-        applyLanguage(currentLang);
-
+        
+        // ========== ФУНКСИЯИ ИВАЗИ ЗАБОН ==========
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            
+            // Танзими парчам
+            const flag = lang === 'tj' ? '🇹🇯' : (lang === 'ru' ? '🇷🇺' : '🇬🇧');
+            document.getElementById('activeFlag').innerText = flag;
+            
+            // Танзими матнҳо
+            document.getElementById('t-title').innerText = 
+                lang === 'tj' ? 'Хуш омадед!' : 
+                (lang === 'ru' ? 'Добро пожаловать!' : 'Welcome!');
+            
+            document.getElementById('t-sub').innerText = 
+                lang === 'tj' ? 'Барои оғоз ворид шавед ё сабти ном кунед.' : 
+                (lang === 'ru' ? 'Войдите или зарегистрируйтесь для начала.' : 'Login or register to get started.');
+            
+            document.getElementById('t-reg').innerText = 
+                lang === 'tj' ? 'Сабти ном' : 
+                (lang === 'ru' ? 'Регистрация' : 'Register');
+            
+            document.getElementById('t-login').innerText = 
+                lang === 'tj' ? 'Дохилшавӣ' : 
+                (lang === 'ru' ? 'Вход' : 'Login');
+            
+            document.getElementById('t-foot').innerText = 
+                lang === 'tj' ? '© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.' : 
+                (lang === 'ru' ? '© 2026 Bozorcha. Все права защищены.' : '© 2026 Bozorcha. All rights reserved.');
+            
+            // Бастани меню
+            document.getElementById('langMenu').classList.remove('show');
+        }
+        
+        // ========== ТУГМАИ ЗАБОН ==========
+        document.getElementById('langBtn').onclick = (e) => {
+            e.stopPropagation();
+            document.getElementById('langMenu').classList.toggle('show');
+        };
+        
+        // ========== ТУГМАИ МАВЗӮЪ ==========
+        document.getElementById('themeBtn').onclick = () => {
+            toggleTheme();
+        };
+        
+        // ========== ТУГМАҲО ==========
+        document.getElementById('t-reg').onclick = () => {
+            window.location.href = 'choose-method.html';
+        };
+        
+        document.getElementById('t-login').onclick = () => {
+            window.location.href = 'login.html';
+        };
+        
+        // ========== ПӮШИДАНИ МЕНЮ ==========
+        window.onclick = () => {
+            document.getElementById('langMenu').classList.remove('show');
+        };
+        
         // ========== САНҶИШИ АВТОРИЗАТСИЯ ==========
         async function checkAuth() {
-            const { data: { session }, error } = await _supabase.auth.getSession();
-            
+            const { data: { session }, error } = await supabase.auth.getSession();
             if (session?.user) {
-                // Агар корбар ворид шуда бошад, ба dashboard мегузарем
                 window.location.href = 'dashboard.html';
             }
         }
-
-        // ========== НАЗОРАТИ ДОИМИИ СЕССИЯ (AUTH OBSERVER) ==========
-        _supabase.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN' && session) {
-                // Агар корбар ҳозир ворид шуда бошад
-                window.location.href = 'dashboard.html';
-            } else if (event === 'SIGNED_OUT') {
-                // Агар корбар баромада бошад, дар ҳамин саҳифа мемонад
-                console.log('Корбар баромад');
-            }
-        });
-
-        // ========== ФУНКСИЯҲО ==========
-
-        // Splash Screen (бо 3.2 сония аниматсия)
+        
+        // ========== SPLASH SCREEN ==========
         window.onload = () => {
-            // Аввал санҷиши авторизатсия
             checkAuth();
             
             setTimeout(() => {
@@ -267,53 +290,6 @@
                     document.getElementById('app').classList.add('visible');
                 }, 800);
             }, 3200);
-        };
-
-        // Тугмаи тема
-        themeBtn.onclick = () => {
-            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', currentTheme);
-            localStorage.setItem('theme', currentTheme);
-        };
-
-        // Тугмаи забон
-        langBtn.onclick = (e) => {
-            e.stopPropagation();
-            langMenu.classList.toggle('show');
-        };
-
-        // Пӯшидани менюи забон
-        window.onclick = () => {
-            langMenu.classList.remove('show');
-        };
-
-        // Ивази забон
-        function setLang(lang) {
-            currentLang = lang;
-            localStorage.setItem('lang', lang);
-            applyLanguage(lang);
-        }
-
-        function applyLanguage(lang) {
-            const d = i18n[lang];
-            document.getElementById('activeFlag').innerText = d.flag;
-            document.getElementById('t-title').innerText = d.title;
-            document.getElementById('t-sub').innerText = d.sub;
-            document.getElementById('t-reg').innerText = d.reg;
-            document.getElementById('t-login').innerText = d.login;
-            document.getElementById('t-foot').innerText = d.foot;
-            
-            // Бастани меню
-            langMenu.classList.remove('show');
-        }
-
-        // Пайваст кардани тугмаҳо
-        regBtn.onclick = () => {
-            window.location.href = 'choose-method.html';
-        };
-
-        loginBtn.onclick = () => {
-            window.location.href = 'login.html';
         };
     </script>
 </body>
