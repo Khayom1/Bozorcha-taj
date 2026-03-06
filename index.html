@@ -5,27 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bozorcha - Платформаи фурӯшандагон</title>
     
-    <!-- Meta tags барои SEO -->
+    <!-- Meta tags -->
     <meta name="description" content="Bozorcha — платформаи муосири фурӯшандагон барои фурӯши онлайн ва идоракунии маҳсулот.">
     <meta property="og:title" content="Bozorcha Marketplace">
     <meta property="og:description" content="Платформаи муосири фурӯшандагон">
     <meta property="og:type" content="website">
     
-    <!-- Пайваст кардани шрифтҳо -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Пайваст кардани файлҳои CSS -->
+    <!-- Font Awesome Icons (барои иконкаҳо) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- CSS -->
     <link rel="stylesheet" href="src/styles/main.css">
     <link rel="stylesheet" href="src/styles/theme.css">
     
-    <!-- Пайваст кардани файлҳои JavaScript -->
+    <!-- JavaScript -->
     <script src="src/js/config.js" defer></script>
     <script src="src/js/i18n.js" defer></script>
     <script src="src/js/theme.js" defer></script>
     <script src="src/js/utils.js" defer></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2" defer></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
     
     <style>
         /* ===== RESET & BASE ===== */
@@ -37,92 +44,67 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: #0F172A;
+            background: #0a0a0a;
             color: #fff;
             line-height: 1.5;
             overflow-x: hidden;
-            min-height: 100vh;
         }
 
-        /* ===== SPLASH SCREEN ===== */
-        #splash {
-            position: fixed;
-            inset: 0;
-            background: #0F172A;
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.8s ease;
+        /* ===== UTILITY CLASSES ===== */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
         }
 
-        .splash-content {
-            width: 200px;
-            height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .section {
+            padding: 80px 0;
         }
 
-        /* ===== MAIN APP (дар аввал пинҳон) ===== */
-        #app {
-            opacity: 0;
-            display: none;
-            transform: translateY(20px);
-            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        #app.visible {
-            opacity: 1;
-            transform: translateY(0);
-            display: block !important;
-        }
-
-        /* ===== LANDING PAGE ===== */
-        .landing-page {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-        }
-
-        .welcome-card {
-            max-width: 1200px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border-radius: 48px;
-            padding: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        .gradient-text {
+            background: linear-gradient(135deg, #ff9500, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         /* ===== HEADER ===== */
-        .welcome-header {
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 20px 24px;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .header-content {
+            max-width: 1280px;
+            margin: 0 auto;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 60px;
         }
 
-        .logo-area {
+        .logo {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .logo-area img {
-            width: 48px;
-            height: 48px;
-            filter: drop-shadow(0 10px 20px rgba(255, 159, 67, 0.3));
+        .logo img {
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 10px 20px rgba(255, 149, 0, 0.3));
         }
 
-        .logo-area span {
-            font-size: 28px;
+        .logo span {
+            font-size: 24px;
             font-weight: 800;
-            background: linear-gradient(135deg, #FF9F43, #FF6B6B);
+            background: linear-gradient(135deg, #ff9500, #ff6b6b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -133,155 +115,102 @@
             align-items: center;
         }
 
-        /* Тугмаи забон */
         .lang-btn {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
             transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .lang-btn:hover {
-            background: #FF9F43;
-            border-color: #FF9F43;
-            transform: scale(1.05);
-        }
-
-        /* Менюи забон */
-        .lang-selector {
-            position: relative;
-        }
-
-        .lang-dropdown {
-            position: absolute;
-            top: 55px;
-            right: 0;
-            background: #1E293B;
-            border-radius: 16px;
-            padding: 8px;
-            min-width: 150px;
-            display: none;
-            border: 1px solid #334155;
-            z-index: 100;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-        }
-
-        .lang-dropdown.show {
-            display: block;
-            animation: fadeIn 0.2s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .lang-dropdown-item {
-            padding: 12px 16px;
-            color: #94A3B8;
-            cursor: pointer;
-            border-radius: 12px;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .lang-dropdown-item:hover {
-            background: #FF9F43;
-            color: white;
-        }
-
-        /* Тугмаи мавзӯъ (фақат барои санҷиш, баъд нест мешавад) */
-        .theme-btn {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .theme-btn:hover {
-            background: #FF9F43;
-            border-color: #FF9F43;
+            background: #ff9500;
+            border-color: #ff9500;
             transform: scale(1.05);
         }
 
         /* ===== HERO SECTION ===== */
         .hero {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
+            min-height: 100vh;
+            display: flex;
             align-items: center;
-            margin-bottom: 60px;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 24px 80px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .hero-content {
-            color: white;
+        .hero-orb {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,149,0,0.2) 0%, rgba(255,149,0,0) 70%);
+            border-radius: 50%;
+            animation: pulse 4s ease-in-out infinite;
+            pointer-events: none;
         }
 
-        .hero-content h1 {
-            font-size: 56px;
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+        }
+
+        .hero h1 {
+            font-size: 48px;
             font-weight: 800;
             line-height: 1.2;
             margin-bottom: 24px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .hero-content h1 span {
-            background: linear-gradient(135deg, #FF9F43, #FF6B6B);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-content p {
+        .hero p {
             font-size: 18px;
-            color: #94A3B8;
-            line-height: 1.6;
+            color: #94a3b8;
             margin-bottom: 40px;
-            max-width: 500px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .hero-buttons {
             display: flex;
             gap: 16px;
+            justify-content: center;
             flex-wrap: wrap;
         }
 
         .btn {
             padding: 16px 32px;
             border-radius: 30px;
-            font-weight: 700;
+            font-weight: 600;
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s;
             border: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #FF9F43, #FF6B6B);
+            background: #ff9500;
             color: white;
-            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2);
+            box-shadow: 0 10px 20px rgba(255, 149, 0, 0.3);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 15px 30px rgba(255, 149, 0, 0.4);
         }
 
         .btn-outline {
@@ -291,529 +220,577 @@
         }
 
         .btn-outline:hover {
-            border-color: #FF9F43;
-            color: #FF9F43;
+            border-color: #ff9500;
+            color: #ff9500;
         }
 
-        .hero-image img {
-            width: 100%;
-            border-radius: 20px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* ===== FEATURES SECTION ===== */
-        .section-title {
-            font-size: 36px;
-            font-weight: 800;
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .section-title span {
-            color: #FF9F43;
-        }
-
-        .features-grid {
+        /* ===== STATS GRID ===== */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 30px;
-            margin-bottom: 80px;
+            margin: 80px 0;
         }
 
-        .feature-card {
+        .stat-card {
             background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 30px;
-            padding: 30px 20px;
+            border-radius: 24px;
+            padding: 32px;
             text-align: center;
             transition: all 0.3s;
         }
 
-        .feature-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 159, 67, 0.2);
+        .stat-card:hover {
+            border-color: #ff9500;
+            transform: translateY(-5px);
         }
 
-        .feature-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: #FF9F43;
-        }
-
-        .feature-card h3 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-
-        .feature-card p {
-            color: #94A3B8;
-            font-size: 14px;
-        }
-
-        /* ===== STATS SECTION ===== */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 30px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 40px;
-            padding: 40px;
-            margin-bottom: 80px;
-            text-align: center;
+        .stat-icon {
+            font-size: 40px;
+            color: #ff9500;
+            margin-bottom: 16px;
         }
 
         .stat-number {
             font-size: 48px;
             font-weight: 800;
-            color: #FF9F43;
+            color: #ff9500;
             margin-bottom: 8px;
         }
 
         .stat-label {
-            color: #94A3B8;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: #94a3b8;
+            font-size: 16px;
         }
 
-        /* ===== PRICING SECTION ===== */
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 25px;
-            margin-bottom: 80px;
-        }
-
-        .pricing-card {
-            background: rgba(255, 255, 255, 0.03);
+        /* ===== ANALYTICS CARD ===== */
+        .analytics-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 30px;
-            padding: 30px 20px;
-            text-align: center;
-            transition: all 0.3s;
+            border-radius: 32px;
+            padding: 48px;
+            margin: 80px 0;
         }
 
-        .pricing-card:hover {
-            transform: scale(1.02);
-            border-color: #FF9F43;
-        }
-
-        .pricing-card .plan-name {
-            font-size: 24px;
+        .analytics-title {
+            font-size: 36px;
             font-weight: 800;
             margin-bottom: 16px;
         }
 
-        .pricing-card .price {
-            font-size: 36px;
-            font-weight: 800;
-            color: #FF9F43;
-            margin-bottom: 20px;
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
         }
 
-        .pricing-card .price small {
+        .analytics-text {
+            color: #94a3b8;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 24px;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            color: #94a3b8;
+        }
+
+        .feature-list i {
+            color: #ff9500;
+            font-size: 20px;
+        }
+
+        .mock-chart {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 24px;
+            height: 300px;
+            display: flex;
+            align-items: flex-end;
+            gap: 16px;
+            position: relative;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: #ff9500;
+            border-radius: 8px 8px 0 0;
+            transition: height 0.3s;
+        }
+
+        .chart-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(255,149,0,0.1), transparent);
+            pointer-events: none;
+        }
+
+        /* ===== PRICING GRID ===== */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 80px 0;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 32px 24px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: #ff9500;
+        }
+
+        .pricing-card.popular {
+            border-color: #ff9500;
+            box-shadow: 0 0 30px rgba(255, 149, 0, 0.2);
+        }
+
+        .pricing-card.ultra {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px #ff9500; }
+            50% { box-shadow: 0 0 30px #ff9500; }
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff9500;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 30px;
+        }
+
+        .plan-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .plan-price {
+            font-size: 36px;
+            font-weight: 800;
+            color: #ff9500;
+            margin-bottom: 8px;
+        }
+
+        .plan-price small {
             font-size: 14px;
-            color: #94A3B8;
+            color: #94a3b8;
             font-weight: 400;
         }
 
-        .pricing-card .features-list {
+        .plan-features {
             list-style: none;
-            margin-bottom: 30px;
-            color: #94A3B8;
+            margin: 24px 0;
+        }
+
+        .plan-features li {
+            color: #94a3b8;
             font-size: 14px;
+            margin-bottom: 8px;
         }
 
-        .pricing-card .features-list li {
-            margin-bottom: 10px;
-        }
-
-        .pricing-card .btn {
+        .plan-btn {
             width: 100%;
             padding: 12px;
             background: transparent;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            color: white;
+            border: 2px solid #ff9500;
+            color: #ff9500;
             border-radius: 30px;
             font-weight: 600;
+            cursor: pointer;
             transition: all 0.3s;
         }
 
-        .pricing-card .btn:hover {
-            background: #FF9F43;
-            border-color: #FF9F43;
+        .plan-btn:hover {
+            background: #ff9500;
+            color: white;
+        }
+
+        /* ===== LOGISTICS SECTION ===== */
+        .logistics {
+            background: linear-gradient(145deg, rgba(255,149,0,0.1), transparent);
+            border: 1px solid rgba(255, 149, 0, 0.2);
+            border-radius: 32px;
+            padding: 80px 48px;
+            text-align: center;
+            margin: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .drone-icon {
+            font-size: 80px;
+            color: #ff9500;
+            margin-bottom: 24px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        .logistics h2 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .logistics p {
+            color: #94a3b8;
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255,149,0,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,149,0,0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        /* ===== CTA SECTION ===== */
+        .cta-section {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 32px;
+            padding: 64px;
+            text-align: center;
+            margin: 80px 0;
+        }
+
+        .cta-section h2 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .cta-section p {
+            color: #94a3b8;
+            font-size: 18px;
+            margin-bottom: 32px;
+        }
+
+        .ripple-btn {
+            position: relative;
+            overflow: hidden;
+            background: #ff9500;
+            color: white;
+            border: none;
+            padding: 18px 48px;
+            border-radius: 40px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .ripple-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(255, 149, 0, 0.4);
+        }
+
+        .ripple-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .ripple-btn:hover::after {
+            width: 300px;
+            height: 300px;
         }
 
         /* ===== FOOTER ===== */
         .footer {
-            text-align: center;
-            color: #64748B;
-            font-size: 14px;
-            padding-top: 40px;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 32px 0;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
         }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) {
-            .hero h1 { font-size: 48px; }
-            .features-grid, .pricing-grid { grid-template-columns: repeat(2, 1fr); }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .pricing-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
         @media (max-width: 768px) {
-            .welcome-header { flex-direction: column; gap: 20px; }
-            .hero { grid-template-columns: 1fr; text-align: center; }
-            .hero-content p { margin-left: auto; margin-right: auto; }
-            .hero-buttons { justify-content: center; }
-            .features-grid, .pricing-grid, .stats-grid { grid-template-columns: 1fr; }
-            .footer { text-align: center; }
+            .hero h1 { font-size: 36px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .analytics-grid { grid-template-columns: 1fr; }
+            .pricing-grid { grid-template-columns: 1fr; }
+            .logistics { padding: 48px 24px; }
+            .cta-section { padding: 40px 24px; }
         }
     </style>
 </head>
-<body data-theme="light">
-    <!-- SPLASH SCREEN бо аниматсияи intro-anim -->
-    <div id="splash">
-        <div class="splash-content">
-            <div include-html="src/components/intro-anim.html"></div>
-        </div>
-    </div>
-
-    <!-- MAIN APP (аввал пинҳон) -->
-    <div id="app">
-        <div class="landing-page">
-            <div class="welcome-card">
-                <!-- HEADER -->
-                <header class="welcome-header">
-                    <div class="logo-area">
-                        <img src="assets/logo.svg" alt="Bozorcha">
-                        <span>Bozorcha</span>
-                    </div>
-                    <div class="header-actions">
-                        <div class="lang-selector">
-                            <button class="lang-btn" id="langBtn">🇹🇯</button>
-                            <div class="lang-dropdown" id="langMenu">
-                                <div class="lang-dropdown-item" onclick="setLang('tj')">🇹🇯 Тоҷикӣ</div>
-                                <div class="lang-dropdown-item" onclick="setLang('ru')">🇷🇺 Русский</div>
-                                <div class="lang-dropdown-item" onclick="setLang('en')">🇬🇧 English</div>
-                                <div class="lang-dropdown-item" onclick="setLang('uz')">🇺🇿 O'zbek</div>
-                            </div>
-                        </div>
-                        <button class="theme-btn" id="themeBtn">☀️</button>
-                    </div>
-                </header>
-
-                <!-- HERO SECTION -->
-                <div class="hero">
-                    <div class="hero-content">
-                        <h1 id="heroTitle">Фурӯши осон дар<br><span>Bozorcha</span></h1>
-                        <p id="heroDesc">Ба миллионҳо харидор дастрасӣ пайдо кунед ва фурӯши худро бо воситаҳои муосири тиҷорати электронӣ афзоиш диҳед.</p>
-                        <div class="hero-buttons">
-                            <button class="btn btn-primary" id="registerBtn">Оғози кор</button>
-                            <button class="btn btn-outline" id="loginBtn">Ворид шудан</button>
-                        </div>
-                    </div>
-                    <div class="hero-image">
-                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1000&q=80" alt="Dashboard preview" loading="lazy">
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <img src="assets/logo.svg" alt="Bozorcha">
+                <span>Bozorcha</span>
+            </div>
+            <div class="header-actions">
+                <div class="lang-selector">
+                    <button class="lang-btn" id="langBtn">🇹🇯</button>
+                    <div class="lang-dropdown" id="langMenu">
+                        <div class="lang-dropdown-item" onclick="setLang('tj')">🇹🇯 Тоҷикӣ</div>
+                        <div class="lang-dropdown-item" onclick="setLang('ru')">🇷🇺 Русский</div>
+                        <div class="lang-dropdown-item" onclick="setLang('en')">🇬🇧 English</div>
+                        <div class="lang-dropdown-item" onclick="setLang('uz')">🇺🇿 O'zbek</div>
                     </div>
                 </div>
-
-                <!-- FEATURES SECTION -->
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">📦</div>
-                        <h3 id="feat1Title">Идоракунии осон</h3>
-                        <p id="feat1Desc">Маҳсулотҳои худро зуд илова ва идора кунед</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📊</div>
-                        <h3 id="feat2Title">Таҳлили пешрафта</h3>
-                        <p id="feat2Desc">Омор ва таҳлили фурӯшро дар вақти воқеӣ бинед</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">💬</div>
-                        <h3 id="feat3Title">Чат бо харидорон</h3>
-                        <p id="feat3Desc">Бо мизоҷон мустақиман тамос гиред</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">⚡️</div>
-                        <h3 id="feat4Title">Пардохти зуд</h3>
-                        <p id="feat4Desc">Пардохтҳоро бо суръати баланд қабул кунед</p>
-                    </div>
-                </div>
-
-                <!-- STATS SECTION -->
-                <div class="stats-grid">
-                    <div>
-                        <div class="stat-number">50k+</div>
-                        <div class="stat-label" id="stat1">Фурӯшандагон</div>
-                    </div>
-                    <div>
-                        <div class="stat-number">1M+</div>
-                        <div class="stat-label" id="stat2">Маҳсулот</div>
-                    </div>
-                    <div>
-                        <div class="stat-number">24/7</div>
-                        <div class="stat-label" id="stat3">Дастгирӣ</div>
-                    </div>
-                    <div>
-                        <div class="stat-number">100%</div>
-                        <div class="stat-label" id="stat4">Бехатарӣ</div>
-                    </div>
-                </div>
-
-                <!-- PRICING SECTION -->
-                <div class="pricing-grid">
-                    <div class="pricing-card">
-                        <div class="plan-name">Free</div>
-                        <div class="price">0 <small>сом/моҳ</small></div>
-                        <ul class="features-list">
-                            <li>То 50 маҳсулот</li>
-                            <li>Дастгирии оддӣ</li>
-                            <li>Омори асосӣ</li>
-                        </ul>
-                        <button class="btn">Интихоб кардан</button>
-                    </div>
-                    <div class="pricing-card">
-                        <div class="plan-name">Basic</div>
-                        <div class="price">19 <small>сом/моҳ</small></div>
-                        <ul class="features-list">
-                            <li>То 200 маҳсулот</li>
-                            <li>Дастгирии афзалиятнок</li>
-                            <li>Таҳлили пешрафта</li>
-                        </ul>
-                        <button class="btn">Интихоб кардан</button>
-                    </div>
-                    <div class="pricing-card">
-                        <div class="plan-name">Pro</div>
-                        <div class="price">99 <small>сом/моҳ</small></div>
-                        <ul class="features-list">
-                            <li>То 1000 маҳсулот</li>
-                            <li>Чат бо харидорон</li>
-                            <li>API дастрасӣ</li>
-                        </ul>
-                        <button class="btn">Интихоб кардан</button>
-                    </div>
-                    <div class="pricing-card">
-                        <div class="plan-name">Ultra</div>
-                        <div class="price">299 <small>сом/моҳ</small></div>
-                        <ul class="features-list">
-                            <li>Маҳсулоти номаҳдуд</li>
-                            <li>Менеҷери шахсӣ</li>
-                            <li>Интегратсияи махсус</li>
-                        </ul>
-                        <button class="btn">Интихоб кардан</button>
-                    </div>
-                </div>
-
-                <!-- FOOTER -->
-                <footer class="footer">
-                    <p>© 2026 Bozorcha. <span id="rights">Ҳамаи ҳуқуқҳо ҳифз шудаанд.</span></p>
-                </footer>
             </div>
         </div>
-    </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-orb" id="heroOrb"></div>
+            <div class="container" data-aos="fade-up" data-aos-duration="1000">
+                <h1>Тиҷорати худро ба сатҳи <span class="gradient-text">нав</span> бардоред</h1>
+                <p>Платформаи муосири фурӯшандагон бо дастрасӣ ба миллионҳо харидор ва воситаҳои пешрафтаи таҳлил.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" id="registerBtn">
+                        Фурӯшро оғоз кунед <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn btn-outline" id="loginBtn">
+                        Ворид шудан
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card" data-aos="fade-up" data-aos-delay="0">
+                    <i class="fas fa-users stat-icon"></i>
+                    <div class="stat-number">120+</div>
+                    <div class="stat-label">Фурӯшандагони фаъол</div>
+                </div>
+                <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
+                    <i class="fas fa-shield-alt stat-icon"></i>
+                    <div class="stat-number">3 рӯз</div>
+                    <div class="stat-label">Кафолати бехатарӣ</div>
+                </div>
+                <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
+                    <i class="fas fa-headset stat-icon"></i>
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Дастгирӣ</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Section -->
+        <div class="container">
+            <div class="analytics-card" data-aos="fade-up">
+                <h2 class="analytics-title">Таҳлили <span class="gradient-text">пешрафта</span></h2>
+                <div class="analytics-grid">
+                    <div>
+                        <p class="analytics-text">Дашборди шахсӣ бо графикҳои интерактивӣ, таҳлили фурӯш, ва пешгӯии даромад. Ҳама маълумот дар вақти воқеӣ.</p>
+                        <ul class="feature-list">
+                            <li><i class="fas fa-chart-line"></i> Графикҳои шаффофи фурӯш</li>
+                            <li><i class="fas fa-box"></i> Назорати маҳсулот ва сатҳи захира</li>
+                        </ul>
+                    </div>
+                    <div class="mock-chart">
+                        <div class="chart-bar" style="height: 60%;"></div>
+                        <div class="chart-bar" style="height: 80%;"></div>
+                        <div class="chart-bar" style="height: 45%;"></div>
+                        <div class="chart-bar" style="height: 90%;"></div>
+                        <div class="chart-bar" style="height: 70%;"></div>
+                        <div class="chart-overlay"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing Section -->
+        <div class="container">
+            <h2 class="analytics-title" style="text-align: center; margin-bottom: 48px;" data-aos="fade-up">
+                Планҳои <span class="gradient-text">тарифӣ</span>
+            </h2>
+            <div class="pricing-grid">
+                <!-- Free Plan -->
+                <div class="pricing-card" data-aos="fade-up" data-aos-delay="0">
+                    <div class="plan-name">Free</div>
+                    <div class="plan-price">0 <small>сом/моҳ</small></div>
+                    <ul class="plan-features">
+                        <li>✓ То 50 маҳсулот</li>
+                        <li>✓ Омори асосӣ</li>
+                        <li>✓ Дастгирии почта</li>
+                    </ul>
+                    <button class="plan-btn">Интихоб кардан</button>
+                </div>
+
+                <!-- Basic Plan -->
+                <div class="pricing-card popular" data-aos="fade-up" data-aos-delay="100">
+                    <div class="popular-badge">Бестселлер</div>
+                    <div class="plan-name">Basic</div>
+                    <div class="plan-price">19 <small>сом/моҳ</small></div>
+                    <ul class="plan-features">
+                        <li>✓ То 200 маҳсулот</li>
+                        <li>✓ Таҳлили пешрафта</li>
+                        <li>✓ Дастгирии афзалиятнок</li>
+                    </ul>
+                    <button class="plan-btn">Интихоб кардан</button>
+                </div>
+
+                <!-- Pro Plan -->
+                <div class="pricing-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="plan-name">Pro</div>
+                    <div class="plan-price">99 <small>сом/моҳ</small></div>
+                    <ul class="plan-features">
+                        <li>✓ То 1000 маҳсулот</li>
+                        <li>✓ Чат бо харидорон</li>
+                        <li>✓ API дастрасӣ</li>
+                    </ul>
+                    <button class="plan-btn">Интихоб кардан</button>
+                </div>
+
+                <!-- Ultra Plan -->
+                <div class="pricing-card ultra" data-aos="fade-up" data-aos-delay="300">
+                    <div class="plan-name">Ultra</div>
+                    <div class="plan-price">299 <small>сом/моҳ</small></div>
+                    <ul class="plan-features">
+                        <li>✓ Маҳсулоти номаҳдуд</li>
+                        <li>✓ Менеҷери шахсӣ</li>
+                        <li>✓ Логистикаи дрон</li>
+                    </ul>
+                    <button class="plan-btn">Интихоб кардан</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logistics Section -->
+        <div class="container">
+            <div class="logistics" data-aos="fade-up">
+                <div class="grid-overlay"></div>
+                <i class="fas fa-rocket drone-icon"></i>
+                <h2>Логистикаи <span class="gradient-text">оянда</span></h2>
+                <p>Интиқоли маҳсулот тавассути дронҳо. Бозорча осмонро барои тиҷорати шумо мекушояд.</p>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="container">
+            <div class="cta-section" data-aos="fade-up" data-aos-duration="800">
+                <h2>Ба ҷомеаи фурӯшандагон ҳамроҳ шавед</h2>
+                <p>Бепул сабти ном кунед ва фурӯши худро аз имрӯз оғоз намоед.</p>
+                <button class="ripple-btn" id="ctaBtn">
+                    Фурӯшро оғоз кунед
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            © 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.
+        </div>
+    </footer>
 
     <script>
-        // ========== ТАРҶУМАҲО ==========
-        const translations = {
-            tj: {
-                heroTitle: 'Фурӯши осон дар<br><span>Bozorcha</span>',
-                heroDesc: 'Ба миллионҳо харидор дастрасӣ пайдо кунед ва фурӯши худро бо воситаҳои муосири тиҷорати электронӣ афзоиш диҳед.',
-                register: 'Оғози кор',
-                login: 'Ворид шудан',
-                feat1Title: 'Идоракунии осон',
-                feat1Desc: 'Маҳсулотҳои худро зуд илова ва идора кунед.',
-                feat2Title: 'Таҳлили пешрафта',
-                feat2Desc: 'Омор ва таҳлили фурӯшро дар вақти воқеӣ бинед.',
-                feat3Title: 'Чат бо харидорон',
-                feat3Desc: 'Бо мизоҷон мустақиман тамос гиред.',
-                feat4Title: 'Пардохти зуд',
-                feat4Desc: 'Пардохтҳоро бо суръати баланд қабул кунед.',
-                stat1: 'Фурӯшандагон',
-                stat2: 'Маҳсулот',
-                stat3: 'Дастгирӣ',
-                stat4: 'Бехатарӣ',
-                rights: 'Ҳамаи ҳуқуқҳо ҳифз шудаанд.'
-            },
-            ru: {
-                heroTitle: 'Легкая продажа на<br><span>Bozorcha</span>',
-                heroDesc: 'Получите доступ к миллионам покупателей и увеличьте продажи с помощью современных инструментов электронной коммерции.',
-                register: 'Начать',
-                login: 'Войти',
-                feat1Title: 'Легкое управление',
-                feat1Desc: 'Быстро добавляйте и управляйте товарами.',
-                feat2Title: 'Продвинутая аналитика',
-                feat2Desc: 'Смотрите статистику продаж в реальном времени.',
-                feat3Title: 'Чат с покупателями',
-                feat3Desc: 'Общайтесь с клиентами напрямую.',
-                feat4Title: 'Быстрые платежи',
-                feat4Desc: 'Принимайте платежи мгновенно.',
-                stat1: 'Продавцов',
-                stat2: 'Товаров',
-                stat3: 'Поддержка',
-                stat4: 'Безопасность',
-                rights: 'Все права защищены.'
-            },
-            en: {
-                heroTitle: 'Easy selling on<br><span>Bozorcha</span>',
-                heroDesc: 'Reach millions of customers and boost your sales with modern e-commerce tools.',
-                register: 'Get started',
-                login: 'Login',
-                feat1Title: 'Easy management',
-                feat1Desc: 'Quickly add and manage products.',
-                feat2Title: 'Advanced analytics',
-                feat2Desc: 'View sales stats in real time.',
-                feat3Title: 'Chat with buyers',
-                feat3Desc: 'Communicate directly with customers.',
-                feat4Title: 'Fast payments',
-                feat4Desc: 'Accept payments instantly.',
-                stat1: 'Sellers',
-                stat2: 'Products',
-                stat3: 'Support',
-                stat4: 'Security',
-                rights: 'All rights reserved.'
-            },
-            uz: {
-                heroTitle: 'Oson sotish<br><span>Bozorcha</span>da',
-                heroDesc: 'Millionlab xaridorlarga erishing va zamonaviy elektron tijorat vositalari bilan savdoni oshiring.',
-                register: 'Boshlash',
-                login: 'Kirish',
-                feat1Title: 'Oson boshqaruv',
-                feat1Desc: 'Mahsulotlarni tez qo\'shing va boshqaring.',
-                feat2Title: 'Rivojlangan tahlil',
-                feat2Desc: 'Real vaqtda savdo statistikasini ko\'ring.',
-                feat3Title: 'Xaridorlar bilan chat',
-                feat3Desc: 'Mijozlar bilan bevosita muloqot qiling.',
-                feat4Title: 'Tez to\'lovlar',
-                feat4Desc: 'To\'lovlarni bir zumda qabul qiling.',
-                stat1: 'Sotuvchilar',
-                stat2: 'Mahsulotlar',
-                stat3: 'Qo\'llab-quvvatlash',
-                stat4: 'Xavfsizlik',
-                rights: 'Barcha huquqlar himoyalangan.'
-            }
-        };
-
-        // ========== ТАНЗИМОТ ==========
-        let currentLang = localStorage.getItem('lang') || 'tj';
-        let currentTheme = localStorage.getItem('theme') || 'light';
-
-        // ========== ТАНЗИМИ МАВЗӮЪ ==========
-        function applyTheme(theme) {
-            document.body.setAttribute('data-theme', theme);
-            document.getElementById('themeBtn').innerText = theme === 'light' ? '☀️' : '🌙';
-        }
-
-        function toggleTheme() {
-            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-            localStorage.setItem('theme', currentTheme);
-            applyTheme(currentTheme);
-        }
-
         // ========== ТАНЗИМИ ЗАБОН ==========
-        function applyLanguage(lang) {
-            const t = translations[lang];
-            document.getElementById('heroTitle').innerHTML = t.heroTitle;
-            document.getElementById('heroDesc').innerText = t.heroDesc;
-            document.getElementById('registerBtn').innerText = t.register;
-            document.getElementById('loginBtn').innerText = t.login;
-            document.getElementById('feat1Title').innerText = t.feat1Title;
-            document.getElementById('feat1Desc').innerText = t.feat1Desc;
-            document.getElementById('feat2Title').innerText = t.feat2Title;
-            document.getElementById('feat2Desc').innerText = t.feat2Desc;
-            document.getElementById('feat3Title').innerText = t.feat3Title;
-            document.getElementById('feat3Desc').innerText = t.feat3Desc;
-            document.getElementById('feat4Title').innerText = t.feat4Title;
-            document.getElementById('feat4Desc').innerText = t.feat4Desc;
-            document.getElementById('stat1').innerText = t.stat1;
-            document.getElementById('stat2').innerText = t.stat2;
-            document.getElementById('stat3').innerText = t.stat3;
-            document.getElementById('stat4').innerText = t.stat4;
-            document.getElementById('rights').innerText = t.rights;
-            document.getElementById('langBtn').innerText = lang === 'tj' ? '🇹🇯' : (lang === 'ru' ? '🇷🇺' : (lang === 'en' ? '🇬🇧' : '🇺🇿'));
-        }
-
-        function setLanguage(lang) {
+        let currentLang = localStorage.getItem('lang') || 'tj';
+        
+        window.setLang = function(lang) {
             currentLang = lang;
             localStorage.setItem('lang', lang);
-            applyLanguage(lang);
+            document.getElementById('langBtn').innerText = 
+                lang === 'tj' ? '🇹🇯' : (lang === 'ru' ? '🇷🇺' : (lang === 'en' ? '🇬🇧' : '🇺🇿'));
             document.getElementById('langMenu').classList.remove('show');
         }
 
-        // ========== БОРГИРИИ КОМПОНЕНТҲО (include HTML) ==========
-        async function includeHTML() {
-            const elements = document.querySelectorAll('[include-html]');
-            for (const el of elements) {
-                const file = el.getAttribute('include-html');
-                try {
-                    const response = await fetch(file);
-                    const data = await response.text();
-                    el.innerHTML = data;
-                    el.removeAttribute('include-html');
-                    
-                    if (file.includes('intro-anim.html')) {
-                        setTimeout(() => {
-                            document.getElementById('splash').style.opacity = '0';
-                            setTimeout(() => {
-                                document.getElementById('splash').style.display = 'none';
-                                document.getElementById('app').style.display = 'block';
-                                setTimeout(() => {
-                                    document.getElementById('app').classList.add('visible');
-                                }, 100);
-                            }, 800);
-                        }, 3500);
-                    }
-                } catch (err) {
-                    console.error('Error loading ' + file, err);
-                    // Агар файл ёфт нашавад, splash-ро пинҳон кун
-                    setTimeout(() => {
-                        document.getElementById('splash').style.opacity = '0';
-                        setTimeout(() => {
-                            document.getElementById('splash').style.display = 'none';
-                            document.getElementById('app').style.display = 'block';
-                            setTimeout(() => {
-                                document.getElementById('app').classList.add('visible');
-                            }, 100);
-                        }, 800);
-                    }, 2000);
-                }
+        // Тугмаи забон
+        document.getElementById('langBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('langMenu').classList.toggle('show');
+        });
+
+        // Пӯшидани меню бо пахши берун
+        window.addEventListener('click', function() {
+            document.getElementById('langMenu').classList.remove('show');
+        });
+
+        // Тугмаҳои асосӣ
+        document.getElementById('registerBtn')?.addEventListener('click', function() {
+            window.location.href = 'choose-method.html';
+        });
+        
+        document.getElementById('loginBtn')?.addEventListener('click', function() {
+            window.location.href = 'login.html';
+        });
+        
+        document.getElementById('ctaBtn')?.addEventListener('click', function() {
+            window.location.href = 'choose-method.html';
+        });
+
+        // Parallax эффект барои orb
+        window.addEventListener('scroll', function() {
+            const orb = document.getElementById('heroOrb');
+            if (orb) {
+                const scrolled = window.scrollY;
+                orb.style.transform = `translate(-50%, calc(-50% + ${scrolled * 0.3}px)) scale(${1 + scrolled * 0.0005})`;
             }
-        }
+        });
 
-        // ========== EVENT LISTENERS ==========
+        // AOS инициализатсия
         document.addEventListener('DOMContentLoaded', function() {
-            // Танзимоти ибтидоӣ
-            applyTheme(currentTheme);
-            applyLanguage(currentLang);
-
-            // Тугмаи забон
-            document.getElementById('langBtn').addEventListener('click', (e) => {
-                e.stopPropagation();
-                document.getElementById('langMenu').classList.toggle('show');
-            });
-
-            // Тугмаи мавзӯъ
-            document.getElementById('themeBtn').addEventListener('click', toggleTheme);
-
-            // Тугмаҳои асосӣ
-            document.getElementById('registerBtn').addEventListener('click', () => {
-                window.location.href = 'choose-method.html';
-            });
-            
-            document.getElementById('loginBtn').addEventListener('click', () => {
-                window.location.href = 'login.html';
-            });
-
-            // Пӯшидани меню бо пахши берун
-            window.addEventListener('click', () => {
-                document.getElementById('langMenu').classList.remove('show');
-            });
-
-            // Боргирии компонентҳо
-            includeHTML();
+            if (typeof AOS !== 'undefined') {
+                AOS.init({
+                    duration: 1000,
+                    once: true,
+                    offset: 100
+                });
+            }
         });
     </script>
 </body>
