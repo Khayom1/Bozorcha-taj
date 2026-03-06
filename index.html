@@ -5,18 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bozorcha - Платформаи фурӯшандагон</title>
     
+    <!-- Meta tags барои SEO -->
     <meta name="description" content="Bozorcha — платформаи муосири фурӯшандагон барои фурӯши онлайн ва идоракунии маҳсулот.">
     <meta property="og:title" content="Bozorcha Marketplace">
     <meta property="og:description" content="Платформаи муосири фурӯшандагон">
     <meta property="og:type" content="website">
     
+    <!-- Пайваст кардани шрифтҳо -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- Пайваст кардани файлҳои CSS -->
     <link rel="stylesheet" href="src/styles/main.css">
     <link rel="stylesheet" href="src/styles/theme.css">
     
+    <!-- Пайваст кардани файлҳои JavaScript -->
     <script src="src/js/config.js" defer></script>
     <script src="src/js/i18n.js" defer></script>
     <script src="src/js/theme.js" defer></script>
@@ -24,21 +28,23 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2" defer></script>
     
     <style>
-        /* ИН ҶО ТАМОМИ CSS-И АСЛИИ ШУМО БЕ ИХТИСОР */
+        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body {
+            font-family: 'Inter', sans-serif;
             background: #0F172A;
-            min-height: 100vh;
+            color: #fff;
+            line-height: 1.5;
             overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        /* Splash Screen */
+        /* ===== SPLASH SCREEN ===== */
         #splash {
             position: fixed;
             inset: 0;
@@ -58,10 +64,10 @@
             justify-content: center;
         }
 
-        /* Main App */
+        /* ===== MAIN APP (дар аввал пинҳон) ===== */
         #app {
             opacity: 0;
-            display: none; /* Илова шуд барои пешгирии лағжиши экран */
+            display: none;
             transform: translateY(20px);
             transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
@@ -72,14 +78,14 @@
             display: block !important;
         }
 
-        /* Landing Page */
+        /* ===== LANDING PAGE ===== */
         .landing-page {
-            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
         }
 
         .welcome-card {
@@ -93,7 +99,7 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        /* Header */
+        /* ===== HEADER ===== */
         .welcome-header {
             display: flex;
             align-items: center;
@@ -107,7 +113,7 @@
             gap: 12px;
         }
 
-        .logo-area svg {
+        .logo-area img {
             width: 48px;
             height: 48px;
             filter: drop-shadow(0 10px 20px rgba(255, 159, 67, 0.3));
@@ -138,7 +144,9 @@
             font-size: 20px;
             cursor: pointer;
             transition: all 0.3s;
-            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .lang-btn:hover {
@@ -192,7 +200,7 @@
             color: white;
         }
 
-        /* Тугмаи мавзӯъ */
+        /* Тугмаи мавзӯъ (фақат барои санҷиш, баъд нест мешавад) */
         .theme-btn {
             width: 48px;
             height: 48px;
@@ -203,8 +211,9 @@
             font-size: 20px;
             cursor: pointer;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .theme-btn:hover {
@@ -213,34 +222,7 @@
             transform: scale(1.05);
         }
 
-        .theme-icon {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .theme-icon.sun {
-            opacity: 1;
-            transform: translate(-50%, -50%);
-        }
-
-        .theme-icon.moon {
-            opacity: 0;
-            transform: translate(-50%, 30px);
-        }
-
-        [data-theme="dark"] .theme-icon.sun {
-            opacity: 0;
-            transform: translate(-50%, -30px);
-        }
-
-        [data-theme="dark"] .theme-icon.moon {
-            opacity: 1;
-            transform: translate(-50%, -50%);
-        }
-
-        /* Hero Section */
+        /* ===== HERO SECTION ===== */
         .hero {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -258,7 +240,6 @@
             font-weight: 800;
             line-height: 1.2;
             margin-bottom: 24px;
-            color: white;
         }
 
         .hero-content h1 span {
@@ -272,22 +253,24 @@
             color: #94A3B8;
             line-height: 1.6;
             margin-bottom: 40px;
+            max-width: 500px;
         }
 
-        /* Тугмаҳо */
         .hero-buttons {
             display: flex;
             gap: 16px;
+            flex-wrap: wrap;
         }
 
         .btn {
             padding: 16px 32px;
-            border-radius: 16px;
+            border-radius: 30px;
+            font-weight: 700;
             font-size: 16px;
-            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             border: none;
+            display: inline-block;
         }
 
         .btn-primary {
@@ -310,76 +293,80 @@
         .btn-outline:hover {
             border-color: #FF9F43;
             color: #FF9F43;
-            transform: translateY(-2px);
         }
 
         .hero-image img {
             width: 100%;
-            border-radius: 32px;
+            border-radius: 20px;
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s;
         }
 
-        .hero-image img:hover {
-            transform: scale(1.02);
+        /* ===== FEATURES SECTION ===== */
+        .section-title {
+            font-size: 36px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 60px;
         }
 
-        /* Features */
-        .features {
+        .section-title span {
+            color: #FF9F43;
+        }
+
+        .features-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-            margin-bottom: 60px;
+            gap: 30px;
+            margin-bottom: 80px;
         }
 
         .feature-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            padding: 24px;
+            border-radius: 30px;
+            padding: 30px 20px;
+            text-align: center;
             transition: all 0.3s;
         }
 
         .feature-card:hover {
+            transform: translateY(-10px);
             background: rgba(255, 255, 255, 0.05);
-            transform: translateY(-5px);
             border-color: rgba(255, 159, 67, 0.2);
         }
 
         .feature-icon {
-            font-size: 32px;
-            margin-bottom: 16px;
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #FF9F43;
         }
 
         .feature-card h3 {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
-            color: white;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
         .feature-card p {
             color: #94A3B8;
             font-size: 14px;
-            line-height: 1.6;
         }
 
-        /* Stats */
-        .stats {
+        /* ===== STATS SECTION ===== */
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 30px;
-            text-align: center;
-            padding: 40px;
             background: rgba(255, 255, 255, 0.02);
-            border-radius: 32px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            margin-bottom: 40px;
+            border-radius: 40px;
+            padding: 40px;
+            margin-bottom: 80px;
+            text-align: center;
         }
 
         .stat-number {
-            font-size: 40px;
+            font-size: 48px;
             font-weight: 800;
             color: #FF9F43;
             margin-bottom: 8px;
@@ -392,7 +379,75 @@
             letter-spacing: 1px;
         }
 
-        /* Footer */
+        /* ===== PRICING SECTION ===== */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 80px;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 30px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: scale(1.02);
+            border-color: #FF9F43;
+        }
+
+        .pricing-card .plan-name {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .pricing-card .price {
+            font-size: 36px;
+            font-weight: 800;
+            color: #FF9F43;
+            margin-bottom: 20px;
+        }
+
+        .pricing-card .price small {
+            font-size: 14px;
+            color: #94A3B8;
+            font-weight: 400;
+        }
+
+        .pricing-card .features-list {
+            list-style: none;
+            margin-bottom: 30px;
+            color: #94A3B8;
+            font-size: 14px;
+        }
+
+        .pricing-card .features-list li {
+            margin-bottom: 10px;
+        }
+
+        .pricing-card .btn {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .pricing-card .btn:hover {
+            background: #FF9F43;
+            border-color: #FF9F43;
+        }
+
+        /* ===== FOOTER ===== */
         .footer {
             text-align: center;
             color: #64748B;
@@ -401,45 +456,39 @@
             border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* Responsive */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) {
-            .hero-content h1 { font-size: 48px; }
-            .features { grid-template-columns: repeat(2, 1fr); }
-            .stats { grid-template-columns: repeat(2, 1fr); }
+            .hero h1 { font-size: 48px; }
+            .features-grid, .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
         @media (max-width: 768px) {
-            .hero { grid-template-columns: 1fr; gap: 40px; }
-            .hero-content h1 { font-size: 36px; }
-            .hero-content { text-align: center; }
+            .welcome-header { flex-direction: column; gap: 20px; }
+            .hero { grid-template-columns: 1fr; text-align: center; }
+            .hero-content p { margin-left: auto; margin-right: auto; }
             .hero-buttons { justify-content: center; }
-            .features { grid-template-columns: 1fr; }
-            .stats { grid-template-columns: 1fr; }
-            .welcome-card { padding: 30px 20px; }
+            .features-grid, .pricing-grid, .stats-grid { grid-template-columns: 1fr; }
+            .footer { text-align: center; }
         }
     </style>
 </head>
 <body data-theme="light">
+    <!-- SPLASH SCREEN бо аниматсияи intro-anim -->
     <div id="splash">
         <div class="splash-content">
-            <div include-html="src/components/brand-loader.html"></div>
+            <div include-html="src/components/intro-anim.html"></div>
         </div>
     </div>
 
+    <!-- MAIN APP (аввал пинҳон) -->
     <div id="app">
         <div class="landing-page">
             <div class="welcome-card">
+                <!-- HEADER -->
                 <header class="welcome-header">
                     <div class="logo-area">
-                        <svg width="45" height="45" viewBox="0 0 200 200">
-                            <defs>
-                                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#FF9F43"/>
-                                    <stop offset="100%" stop-color="#FF6B6B"/>
-                                </linearGradient>
-                            </defs>
-                            <path d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="url(#logoGradient)"/>
-                        </svg>
+                        <img src="assets/logo.svg" alt="Bozorcha">
                         <span>Bozorcha</span>
                     </div>
                     <div class="header-actions">
@@ -449,178 +498,323 @@
                                 <div class="lang-dropdown-item" onclick="setLang('tj')">🇹🇯 Тоҷикӣ</div>
                                 <div class="lang-dropdown-item" onclick="setLang('ru')">🇷🇺 Русский</div>
                                 <div class="lang-dropdown-item" onclick="setLang('en')">🇬🇧 English</div>
+                                <div class="lang-dropdown-item" onclick="setLang('uz')">🇺🇿 O'zbek</div>
                             </div>
                         </div>
-                        <button class="theme-btn" id="themeBtn">
-                            <span class="theme-icon sun">☀️</span>
-                            <span class="theme-icon moon">🌙</span>
-                        </button>
+                        <button class="theme-btn" id="themeBtn">☀️</button>
                     </div>
                 </header>
 
+                <!-- HERO SECTION -->
                 <div class="hero">
                     <div class="hero-content">
-                        <h1>
-                            Фурӯши осон дар<br>
-                            <span>Bozorcha</span>
-                        </h1>
-                        <p>
-                            Ба миллионҳо харидор дастрасӣ пайдо кунед ва фурӯши худро бо воситаҳои муосири тиҷорати электронӣ афзоиш диҳед.
-                        </p>
+                        <h1 id="heroTitle">Фурӯши осон дар<br><span>Bozorcha</span></h1>
+                        <p id="heroDesc">Ба миллионҳо харидор дастрасӣ пайдо кунед ва фурӯши худро бо воситаҳои муосири тиҷорати электронӣ афзоиш диҳед.</p>
                         <div class="hero-buttons">
                             <button class="btn btn-primary" id="registerBtn">Оғози кор</button>
                             <button class="btn btn-outline" id="loginBtn">Ворид шудан</button>
                         </div>
                     </div>
                     <div class="hero-image">
-                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1000&q=80"
-                             alt="Bozorcha seller dashboard interface preview">
+                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1000&q=80" alt="Dashboard preview" loading="lazy">
                     </div>
                 </div>
 
-                <div class="features">
+                <!-- FEATURES SECTION -->
+                <div class="features-grid">
                     <div class="feature-card">
                         <div class="feature-icon">📦</div>
-                        <h3>Идоракунии осон</h3>
-                        <p>Маҳсулотҳои худро зуд илова ва идора кунед</p>
+                        <h3 id="feat1Title">Идоракунии осон</h3>
+                        <p id="feat1Desc">Маҳсулотҳои худро зуд илова ва идора кунед</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">📊</div>
-                        <h3>Таҳлили пешрафта</h3>
-                        <p>Омор ва таҳлили фурӯшро дар вақти воқеӣ бинед</p>
+                        <h3 id="feat2Title">Таҳлили пешрафта</h3>
+                        <p id="feat2Desc">Омор ва таҳлили фурӯшро дар вақти воқеӣ бинед</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">💬</div>
-                        <h3>Чат бо харидорон</h3>
-                        <p>Бо мизоҷон мустақиман тамос гиред</p>
+                        <h3 id="feat3Title">Чат бо харидорон</h3>
+                        <p id="feat3Desc">Бо мизоҷон мустақиман тамос гиред</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">⚡️</div>
-                        <h3>Пардохти зуд</h3>
-                        <p>Пардохтҳоро бо суръати баланд қабул кунед</p>
+                        <h3 id="feat4Title">Пардохти зуд</h3>
+                        <p id="feat4Desc">Пардохтҳоро бо суръати баланд қабул кунед</p>
                     </div>
                 </div>
 
-                <div class="stats">
+                <!-- STATS SECTION -->
+                <div class="stats-grid">
                     <div>
                         <div class="stat-number">50k+</div>
-                        <div class="stat-label">Фурӯшандагон</div>
+                        <div class="stat-label" id="stat1">Фурӯшандагон</div>
                     </div>
                     <div>
                         <div class="stat-number">1M+</div>
-                        <div class="stat-label">Маҳсулот</div>
+                        <div class="stat-label" id="stat2">Маҳсулот</div>
                     </div>
                     <div>
                         <div class="stat-number">24/7</div>
-                        <div class="stat-label">Дастгирӣ</div>
+                        <div class="stat-label" id="stat3">Дастгирӣ</div>
                     </div>
                     <div>
                         <div class="stat-number">100%</div>
-                        <div class="stat-label">Бехатарӣ</div>
+                        <div class="stat-label" id="stat4">Бехатарӣ</div>
                     </div>
                 </div>
 
+                <!-- PRICING SECTION -->
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <div class="plan-name">Free</div>
+                        <div class="price">0 <small>сом/моҳ</small></div>
+                        <ul class="features-list">
+                            <li>То 50 маҳсулот</li>
+                            <li>Дастгирии оддӣ</li>
+                            <li>Омори асосӣ</li>
+                        </ul>
+                        <button class="btn">Интихоб кардан</button>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="plan-name">Basic</div>
+                        <div class="price">19 <small>сом/моҳ</small></div>
+                        <ul class="features-list">
+                            <li>То 200 маҳсулот</li>
+                            <li>Дастгирии афзалиятнок</li>
+                            <li>Таҳлили пешрафта</li>
+                        </ul>
+                        <button class="btn">Интихоб кардан</button>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="plan-name">Pro</div>
+                        <div class="price">99 <small>сом/моҳ</small></div>
+                        <ul class="features-list">
+                            <li>То 1000 маҳсулот</li>
+                            <li>Чат бо харидорон</li>
+                            <li>API дастрасӣ</li>
+                        </ul>
+                        <button class="btn">Интихоб кардан</button>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="plan-name">Ultra</div>
+                        <div class="price">299 <small>сом/моҳ</small></div>
+                        <ul class="features-list">
+                            <li>Маҳсулоти номаҳдуд</li>
+                            <li>Менеҷери шахсӣ</li>
+                            <li>Интегратсияи махсус</li>
+                        </ul>
+                        <button class="btn">Интихоб кардан</button>
+                    </div>
+                </div>
+
+                <!-- FOOTER -->
                 <footer class="footer">
-                    <p>© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</p>
+                    <p>© 2026 Bozorcha. <span id="rights">Ҳамаи ҳуқуқҳо ҳифз шудаанд.</span></p>
                 </footer>
             </div>
         </div>
     </div>
 
     <script>
-        // ========== ФУНКСИЯҲОИ ИСЛОҲШУДАИ ШУМО (БЕ ИХТИСОР) ==========
-        async function includeHTML() {
-            const elements = document.querySelectorAll('[include-html]');
-            
-            // Механизми бехатарӣ (Fail-safe)
-            const safetyTimer = setTimeout(hideSplash, 5000);
-
-            for (const el of elements) {
-                let file = el.getAttribute('include-html');
-                file = file.replace('../', ''); // Ислоҳи роҳ барои GitHub Pages
-                
-                try {
-                    const response = await fetch(file);
-                    if (response.ok) {
-                        const data = await response.text();
-                        el.innerHTML = data;
-                        
-                        if (file.includes('brand-loader.html')) {
-                            clearTimeout(safetyTimer);
-                            setTimeout(hideSplash, 3500);
-                        }
-                    }
-                } catch (err) {
-                    console.error('Error loading file:', file);
-                }
-            }
-        }
-
-        function hideSplash() {
-            const splash = document.getElementById('splash');
-            const app = document.getElementById('app');
-            if (splash && splash.style.display !== 'none') {
-                splash.style.opacity = '0';
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                    app.style.display = 'block';
-                    setTimeout(() => app.classList.add('visible'), 50);
-                }, 800);
-            }
-        }
-
-        // ========== ТАНЗИМОТИ АВВАЛИЯ ==========
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.body.setAttribute('data-theme', savedTheme);
-        }
-        
-        function toggleTheme() {
-            const current = document.body.getAttribute('data-theme');
-            const newTheme = current === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        }
-
-        function updateLangButton(lang) {
-            const flag = lang === 'tj' ? '🇹🇯' : (lang === 'ru' ? '🇷🇺' : '🇬🇧');
-            document.getElementById('langBtn').innerText = flag;
-        }
-
-        window.setLang = function(lang) {
-            localStorage.setItem('lang', lang);
-            location.reload();
-        }
-
-        window.onload = async function() {
-            initTheme();
-            const currentLang = localStorage.getItem('lang') || 'tj';
-            updateLangButton(currentLang);
-            
-            // Иҷрои includeHTML ва санҷиши авторизатсия
-            await includeHTML();
-
-            if (typeof CONFIG !== 'undefined' && typeof window.supabase !== 'undefined') {
-                const supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
-                const { data: { session } } = await supabase.auth.getSession();
-                if (session?.user) {
-                    window.location.href = 'dashboard.html';
-                }
+        // ========== ТАРҶУМАҲО ==========
+        const translations = {
+            tj: {
+                heroTitle: 'Фурӯши осон дар<br><span>Bozorcha</span>',
+                heroDesc: 'Ба миллионҳо харидор дастрасӣ пайдо кунед ва фурӯши худро бо воситаҳои муосири тиҷорати электронӣ афзоиш диҳед.',
+                register: 'Оғози кор',
+                login: 'Ворид шудан',
+                feat1Title: 'Идоракунии осон',
+                feat1Desc: 'Маҳсулотҳои худро зуд илова ва идора кунед.',
+                feat2Title: 'Таҳлили пешрафта',
+                feat2Desc: 'Омор ва таҳлили фурӯшро дар вақти воқеӣ бинед.',
+                feat3Title: 'Чат бо харидорон',
+                feat3Desc: 'Бо мизоҷон мустақиман тамос гиред.',
+                feat4Title: 'Пардохти зуд',
+                feat4Desc: 'Пардохтҳоро бо суръати баланд қабул кунед.',
+                stat1: 'Фурӯшандагон',
+                stat2: 'Маҳсулот',
+                stat3: 'Дастгирӣ',
+                stat4: 'Бехатарӣ',
+                rights: 'Ҳамаи ҳуқуқҳо ҳифз шудаанд.'
+            },
+            ru: {
+                heroTitle: 'Легкая продажа на<br><span>Bozorcha</span>',
+                heroDesc: 'Получите доступ к миллионам покупателей и увеличьте продажи с помощью современных инструментов электронной коммерции.',
+                register: 'Начать',
+                login: 'Войти',
+                feat1Title: 'Легкое управление',
+                feat1Desc: 'Быстро добавляйте и управляйте товарами.',
+                feat2Title: 'Продвинутая аналитика',
+                feat2Desc: 'Смотрите статистику продаж в реальном времени.',
+                feat3Title: 'Чат с покупателями',
+                feat3Desc: 'Общайтесь с клиентами напрямую.',
+                feat4Title: 'Быстрые платежи',
+                feat4Desc: 'Принимайте платежи мгновенно.',
+                stat1: 'Продавцов',
+                stat2: 'Товаров',
+                stat3: 'Поддержка',
+                stat4: 'Безопасность',
+                rights: 'Все права защищены.'
+            },
+            en: {
+                heroTitle: 'Easy selling on<br><span>Bozorcha</span>',
+                heroDesc: 'Reach millions of customers and boost your sales with modern e-commerce tools.',
+                register: 'Get started',
+                login: 'Login',
+                feat1Title: 'Easy management',
+                feat1Desc: 'Quickly add and manage products.',
+                feat2Title: 'Advanced analytics',
+                feat2Desc: 'View sales stats in real time.',
+                feat3Title: 'Chat with buyers',
+                feat3Desc: 'Communicate directly with customers.',
+                feat4Title: 'Fast payments',
+                feat4Desc: 'Accept payments instantly.',
+                stat1: 'Sellers',
+                stat2: 'Products',
+                stat3: 'Support',
+                stat4: 'Security',
+                rights: 'All rights reserved.'
+            },
+            uz: {
+                heroTitle: 'Oson sotish<br><span>Bozorcha</span>da',
+                heroDesc: 'Millionlab xaridorlarga erishing va zamonaviy elektron tijorat vositalari bilan savdoni oshiring.',
+                register: 'Boshlash',
+                login: 'Kirish',
+                feat1Title: 'Oson boshqaruv',
+                feat1Desc: 'Mahsulotlarni tez qo\'shing va boshqaring.',
+                feat2Title: 'Rivojlangan tahlil',
+                feat2Desc: 'Real vaqtda savdo statistikasini ko\'ring.',
+                feat3Title: 'Xaridorlar bilan chat',
+                feat3Desc: 'Mijozlar bilan bevosita muloqot qiling.',
+                feat4Title: 'Tez to\'lovlar',
+                feat4Desc: 'To\'lovlarni bir zumda qabul qiling.',
+                stat1: 'Sotuvchilar',
+                stat2: 'Mahsulotlar',
+                stat3: 'Qo\'llab-quvvatlash',
+                stat4: 'Xavfsizlik',
+                rights: 'Barcha huquqlar himoyalangan.'
             }
         };
 
-        // Event Listeners
-        document.getElementById('langBtn').addEventListener('click', function(e) {
-            e.stopPropagation();
-            document.getElementById('langMenu').classList.toggle('show');
+        // ========== ТАНЗИМОТ ==========
+        let currentLang = localStorage.getItem('lang') || 'tj';
+        let currentTheme = localStorage.getItem('theme') || 'light';
+
+        // ========== ТАНЗИМИ МАВЗӮЪ ==========
+        function applyTheme(theme) {
+            document.body.setAttribute('data-theme', theme);
+            document.getElementById('themeBtn').innerText = theme === 'light' ? '☀️' : '🌙';
+        }
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            localStorage.setItem('theme', currentTheme);
+            applyTheme(currentTheme);
+        }
+
+        // ========== ТАНЗИМИ ЗАБОН ==========
+        function applyLanguage(lang) {
+            const t = translations[lang];
+            document.getElementById('heroTitle').innerHTML = t.heroTitle;
+            document.getElementById('heroDesc').innerText = t.heroDesc;
+            document.getElementById('registerBtn').innerText = t.register;
+            document.getElementById('loginBtn').innerText = t.login;
+            document.getElementById('feat1Title').innerText = t.feat1Title;
+            document.getElementById('feat1Desc').innerText = t.feat1Desc;
+            document.getElementById('feat2Title').innerText = t.feat2Title;
+            document.getElementById('feat2Desc').innerText = t.feat2Desc;
+            document.getElementById('feat3Title').innerText = t.feat3Title;
+            document.getElementById('feat3Desc').innerText = t.feat3Desc;
+            document.getElementById('feat4Title').innerText = t.feat4Title;
+            document.getElementById('feat4Desc').innerText = t.feat4Desc;
+            document.getElementById('stat1').innerText = t.stat1;
+            document.getElementById('stat2').innerText = t.stat2;
+            document.getElementById('stat3').innerText = t.stat3;
+            document.getElementById('stat4').innerText = t.stat4;
+            document.getElementById('rights').innerText = t.rights;
+            document.getElementById('langBtn').innerText = lang === 'tj' ? '🇹🇯' : (lang === 'ru' ? '🇷🇺' : (lang === 'en' ? '🇬🇧' : '🇺🇿'));
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            applyLanguage(lang);
+            document.getElementById('langMenu').classList.remove('show');
+        }
+
+        // ========== БОРГИРИИ КОМПОНЕНТҲО (include HTML) ==========
+        async function includeHTML() {
+            const elements = document.querySelectorAll('[include-html]');
+            for (const el of elements) {
+                const file = el.getAttribute('include-html');
+                try {
+                    const response = await fetch(file);
+                    const data = await response.text();
+                    el.innerHTML = data;
+                    el.removeAttribute('include-html');
+                    
+                    if (file.includes('intro-anim.html')) {
+                        setTimeout(() => {
+                            document.getElementById('splash').style.opacity = '0';
+                            setTimeout(() => {
+                                document.getElementById('splash').style.display = 'none';
+                                document.getElementById('app').style.display = 'block';
+                                setTimeout(() => {
+                                    document.getElementById('app').classList.add('visible');
+                                }, 100);
+                            }, 800);
+                        }, 3500);
+                    }
+                } catch (err) {
+                    console.error('Error loading ' + file, err);
+                    // Агар файл ёфт нашавад, splash-ро пинҳон кун
+                    setTimeout(() => {
+                        document.getElementById('splash').style.opacity = '0';
+                        setTimeout(() => {
+                            document.getElementById('splash').style.display = 'none';
+                            document.getElementById('app').style.display = 'block';
+                            setTimeout(() => {
+                                document.getElementById('app').classList.add('visible');
+                            }, 100);
+                        }, 800);
+                    }, 2000);
+                }
+            }
+        }
+
+        // ========== EVENT LISTENERS ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // Танзимоти ибтидоӣ
+            applyTheme(currentTheme);
+            applyLanguage(currentLang);
+
+            // Тугмаи забон
+            document.getElementById('langBtn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.getElementById('langMenu').classList.toggle('show');
+            });
+
+            // Тугмаи мавзӯъ
+            document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+
+            // Тугмаҳои асосӣ
+            document.getElementById('registerBtn').addEventListener('click', () => {
+                window.location.href = 'choose-method.html';
+            });
+            
+            document.getElementById('loginBtn').addEventListener('click', () => {
+                window.location.href = 'login.html';
+            });
+
+            // Пӯшидани меню бо пахши берун
+            window.addEventListener('click', () => {
+                document.getElementById('langMenu').classList.remove('show');
+            });
+
+            // Боргирии компонентҳо
+            includeHTML();
         });
-        
-        document.getElementById('themeBtn').addEventListener('click', toggleTheme);
-        
-        document.getElementById('registerBtn').addEventListener('click', () => window.location.href = 'choose-method.html');
-        document.getElementById('loginBtn').addEventListener('click', () => window.location.href = 'login.html');
-        
-        window.addEventListener('click', () => document.getElementById('langMenu').classList.remove('show'));
     </script>
 </body>
 </html>
