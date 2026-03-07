@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вуруд бо Email — Bozorcha</title>
+</head>
+<body>
+    <div class="auth-card">
+        <h2>📧 Вуруд бо почта</h2>
+        
+        <div id="step-1">
+            <p>Email-и худро ворид кунед:</p>
+            <input type="email" id="email" placeholder="example@mail.com" required>
+            <button id="send-otp-btn" style="width: 100%; padding: 15px; margin-top: 20px; background: #2196F3; color: white; border: none; cursor: pointer;">
+                Фиристодани код ба почта
+            </button>
+        </div>
+
+        <div id="step-2" style="display: none;">
+            <p>Коди 6-рақамаро аз почтаи худ инҷо нависед:</p>
+            <input type="text" id="otp-code" placeholder="6 рақам" maxlength="6" required>
+            <button id="verify-otp-btn" style="width: 100%; padding: 15px; margin-top: 20px; background: #28a745; color: white; border: none; cursor: pointer;">
+                Тасдиқ ва воридшавӣ
+            </button>
+        </div>
+
+        <p id="message" style="color: #ff4d4d; display: none; margin-top: 15px;"></p>
+    </div>
+
+    <script type="module">
+        import { supabase } from '../../../../../src/js/config.js';
+
+        const emailInput = document.getElementById('email');
+        const otpInput = document.getElementById('otp-code');
+        const msgElement = document.getElementById('message');
+
+        // 1. ФИРИСТОДАНИ КОД БА ПОЧТА
+        document.getElementById('send-otp-btn').addEventListener('click', async () => {
+            const email = emailInput.value.trim();
+            
+            // Дархост ба Supabase барои фиристодани OTP
+            const { error } = await supabase.auth.signInWithOtp({
+                email: email,
+            });
+
+            if (error) {
+                msgElement.innerText = "Хатогӣ: " + error.message;
+                msgElement.style.display = 'block';
+            } else {
+                document.getElementById('step-1').style.display = 'none';
+                document.getElementById('step-2').style.display = 'block';
+                msgElement.style.display = 'none';
+            }
+        });
+
+        // 2. ТАСДИҚИ КОД ВА САНҶИШИ НАҚШ (ROLE)
+        document.getElementById('verify-otp-btn').addEventListener('click', async () => {
+            const email = emailInput.value.trim();
+            const token = otpInput.value.trim();
+
+            const { data, error } = await supabase.auth.verifyOtp({
+                email: email,
+                token: token,
+                type: 'email'
+            });
+
+            if (error) {
+                msgElement.innerText = "Код хато аст ё вақташ гузашт.";
+                msgElement.style.display = 'block';
+            } else {
+                // АМНИЯТ: Танҳо фурӯшандаҳоро иҷозат медиҳем
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('role')
+                    .eq('id', data.user.id)
+                    .single();
+
+                if (profile && profile.role === 'seller') {
+                    window.location.href = "../../dashboard/dashboard.html";
+                } else {
+                    // Агар харидор бошад, ӯро берун мекунем
+                    await supabase.auth.signOut();
+                    msgElement.innerText = "Ин почта ҳамчун фурӯшанда сабт нашудааст.";
+                    msgElement.style.display = 'block';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
