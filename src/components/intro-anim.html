@@ -2,13 +2,14 @@
 <html lang="tg">
 <head>
     <meta charset="UTF-8">
-    <title>Bozorcha Final Intro</title>
+    <title>Bozorcha Motion Concept</title>
     <style>
         :root {
             --orange: #ff8a3d;
             --gold: #ffca80;
             --white: #ffffff;
-            --ease-ae: cubic-bezier(0.16, 1, 0.3, 1); 
+            --ae-curve: cubic-bezier(0.4, 0, 0.2, 1);
+            --back-out: cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         body {
@@ -26,8 +27,8 @@
             width: 500px;
             height: 500px;
             transform-style: preserve-3d;
-            animation: final3DSpin 5s var(--ease-ae) forwards;
-            animation-delay: 2.8s;
+            /* Гардиши 3D-и ниҳоӣ */
+            animation: finalSpin 2s cubic-bezier(0.19, 1, 0.22, 1) forwards 3.2s;
         }
 
         svg {
@@ -37,54 +38,68 @@
         }
 
         path {
-            fill: transparent !important; /* Ранги авваларо нест мекунем */
-            stroke-width: 1.5;
+            fill: transparent !important;
+            stroke-width: 2.5;
             stroke-linecap: round;
-            stroke-dasharray: 800;
-            stroke-dashoffset: 800;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
             opacity: 0;
+            transform-origin: center;
         }
 
-        @keyframes assemblePart {
+        /* 1 & 2: Пайдоиш, Бозӣ ва Пайвастшавӣ */
+        @keyframes lineFlow {
             0% {
                 opacity: 0;
-                transform: translate(var(--moveX), var(--moveY)) scale(0.3) rotate(15deg);
-                stroke-dashoffset: 800;
+                stroke-dashoffset: 1000;
+                transform: translate(var(--x), var(--y)) rotate(var(--r)) scale(0.5);
+            }
+            30% {
+                opacity: 1;
+                stroke-dashoffset: 700;
+            }
+            60% {
+                stroke-dashoffset: 400;
+                transform: translate(calc(var(--x) / 3), calc(var(--y) / 3)) rotate(calc(var(--r) / 2));
             }
             100% {
                 opacity: 1;
-                transform: translate(0, 0) scale(1) rotate(0deg);
                 stroke-dashoffset: 0;
+                transform: translate(0, 0) rotate(0deg) scale(1);
             }
         }
 
-        @keyframes fillIn {
-            to {
-                fill: currentColor !important;
+        /* 3: Ранг гирифтани лого */
+        @keyframes fillLogo {
+            0% { fill: transparent; stroke-width: 2.5; }
+            100% { 
+                fill: currentColor !important; 
                 stroke-width: 0;
             }
         }
 
-        @keyframes final3DSpin {
+        /* 4: Гардиши 3D */
+        @keyframes finalSpin {
             0% { transform: rotateY(0deg); }
-            40% { transform: rotateY(1080deg) scale(1.2); } 
+            50% { transform: rotateY(1120deg) scale(1.1); }
             100% { transform: rotateY(1080deg) scale(1); }
         }
 
-        .part-1 { color: var(--orange); --moveX: -300px; --moveY: -200px; }
-        .part-2 { color: var(--gold);   --moveX: 300px;  --moveY: 100px;  }
-        .part-3 { color: var(--white);  --moveX: 0px;    --moveY: 300px;  }
+        /* Танзимоти гурӯҳҳо барои бозии хатҳо */
+        .part-1 { color: var(--orange); --x: -400px; --y: -250px; --r: 150deg; }
+        .part-2 { color: var(--gold);   --x: 400px;  --y: 50px;   --r: -120deg; }
+        .part-3 { color: var(--white);  --x: 0px;    --y: 400px;  --r: 200deg; }
 
-        /* Аниматсия барои ҳар як гурӯҳ бо навбат */
-        .part-1 path { animation: assemblePart 1.5s var(--ease-ae) forwards 0.1s, fillIn 0.8s ease forwards 2.0s; }
-        .part-2 path { animation: assemblePart 1.5s var(--ease-ae) forwards 0.4s, fillIn 0.8s ease forwards 2.3s; }
-        .part-3 path { animation: assemblePart 1.5s var(--ease-ae) forwards 0.7s, fillIn 0.8s ease forwards 2.6s; }
+        .part-1 path { animation: lineFlow 2.2s var(--ae-curve) forwards 0.2s, fillLogo 0.8s ease forwards 2.5s; }
+        .part-2 path { animation: lineFlow 2.2s var(--ae-curve) forwards 0.5s, fillLogo 0.8s ease forwards 2.7s; }
+        .part-3 path { animation: lineFlow 2.2s var(--ae-curve) forwards 0.8s, fillLogo 0.8s ease forwards 2.9s; }
+
     </style>
 </head>
 <body>
 
 <div class="logo-wrapper">
-    <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 512 512">
         <g class="part-1">
             <path d="M244.979 370.543 C 244.757 377.300,246.333 372.332,245.588 372.159 C 245.374 371.478,245.244 370.820,245.244 370.820 C 245.023 369.694,245.007 369.677,244.979 370.543"/>
         </g>
@@ -96,16 +111,6 @@
             <path d="M245.071 356.838 C 245.071 361.601,245.108 363.550,245.154 361.168 C 245.200 358.787,245.200 354.890,245.154 352.509 C 245.108 350.127,245.071 352.076,245.071 356.838"/>
             <path d="M307.354 353.079 C 307.127 353.269,306.509 353.915,305.981 354.513 C 305.216 355.380,305.314 355.324,306.462 354.237 C 307.766 353.004,308.044 352.697,307.835 352.724 C 307.797 352.728,307.581 352.888,307.354 353.079"/>
         </g>
-    </svg>
-</div>
-
-</body>
-</html>
-</div>
-
-</body>
-</html>
-
     </svg>
 </div>
 
