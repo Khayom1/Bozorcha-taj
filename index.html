@@ -26,14 +26,14 @@
         document.getElementById('go-buyer').addEventListener('click', () => {
             localStorage.setItem('user_role', 'buyer');
             localStorage.setItem('is_guest', 'true'); // Нишонаи меҳмон
-            window.location.href = 'b-dashboard.html'; // Рост ба маркази харид
+            window.location.href = 'src/pages/b-dashboard.html'; // Рост ба маркази харид
         });
 
         // ЛОГИКАИ ФУРӮШАНДА
         document.getElementById('go-seller').addEventListener('click', () => {
             localStorage.setItem('user_role', 'seller');
             localStorage.setItem('is_guest', 'false');
-            window.location.href = '../src/pages/auth/method-login-seller.html'; // Ба интихоби усули вуруд
+            window.location.href = '../src/pages/auth/method.html'; // Ба интихоби усули вуруд
         });
     </script>
 </body>
