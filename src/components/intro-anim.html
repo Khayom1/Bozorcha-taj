@@ -1,118 +1,160 @@
 <!DOCTYPE html>
 <html lang="tg">
 <head>
-    <meta charset="UTF-8">
-    <title>Bozorcha Motion Concept</title>
-    <style>
-        :root {
-            --orange: #ff8a3d;
-            --gold: #ffca80;
-            --white: #ffffff;
-            --ae-curve: cubic-bezier(0.4, 0, 0.2, 1);
-            --back-out: cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
 
-        body {
-            margin: 0;
-            background: #020407;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            perspective: 2000px;
-            overflow: hidden;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-        .logo-wrapper {
-            width: 500px;
-            height: 500px;
-            transform-style: preserve-3d;
-            /* Гардиши 3D-и ниҳоӣ */
-            animation: finalSpin 2s cubic-bezier(0.19, 1, 0.22, 1) forwards 3.2s;
-        }
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 
-        svg {
-            width: 100%;
-            height: 100%;
-            overflow: visible;
-        }
+<style>
 
-        path {
-            fill: transparent !important;
-            stroke-width: 2.5;
-            stroke-linecap: round;
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            opacity: 0;
-            transform-origin: center;
-        }
+body{
+margin:0;
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
 
-        /* 1 & 2: Пайдоиш, Бозӣ ва Пайвастшавӣ */
-        @keyframes lineFlow {
-            0% {
-                opacity: 0;
-                stroke-dashoffset: 1000;
-                transform: translate(var(--x), var(--y)) rotate(var(--r)) scale(0.5);
-            }
-            30% {
-                opacity: 1;
-                stroke-dashoffset: 700;
-            }
-            60% {
-                stroke-dashoffset: 400;
-                transform: translate(calc(var(--x) / 3), calc(var(--y) / 3)) rotate(calc(var(--r) / 2));
-            }
-            100% {
-                opacity: 1;
-                stroke-dashoffset: 0;
-                transform: translate(0, 0) rotate(0deg) scale(1);
-            }
-        }
+background:
+radial-gradient(circle at 50% 40%,#1a1a1a,#000);
 
-        /* 3: Ранг гирифтани лого */
-        @keyframes fillLogo {
-            0% { fill: transparent; stroke-width: 2.5; }
-            100% { 
-                fill: currentColor !important; 
-                stroke-width: 0;
-            }
-        }
+overflow:hidden;
+}
 
-        /* 4: Гардиши 3D */
-        @keyframes finalSpin {
-            0% { transform: rotateY(0deg); }
-            50% { transform: rotateY(1120deg) scale(1.1); }
-            100% { transform: rotateY(1080deg) scale(1); }
-        }
+.scene{
+perspective:1200px;
+position:relative;
+}
 
-        /* Танзимоти гурӯҳҳо барои бозии хатҳо */
-        .part-1 { color: var(--orange); --x: -400px; --y: -250px; --r: 150deg; }
-        .part-2 { color: var(--gold);   --x: 400px;  --y: 50px;   --r: -120deg; }
-        .part-3 { color: var(--white);  --x: 0px;    --y: 400px;  --r: 200deg; }
+.logo{
+width:420px;
+transform-style:preserve-3d;
+}
 
-        .part-1 path { animation: lineFlow 2.2s var(--ae-curve) forwards 0.2s, fillLogo 0.8s ease forwards 2.5s; }
-        .part-2 path { animation: lineFlow 2.2s var(--ae-curve) forwards 0.5s, fillLogo 0.8s ease forwards 2.7s; }
-        .part-3 path { animation: lineFlow 2.2s var(--ae-curve) forwards 0.8s, fillLogo 0.8s ease forwards 2.9s; }
+.energy path{
+fill:none;
+stroke:#ffffff;
+stroke-width:3;
+stroke-linecap:round;
+stroke-dasharray:2000;
+stroke-dashoffset:2000;
+}
 
-    </style>
+#cap,
+#symbol,
+#wave{
+opacity:0;
+}
+
+#wave{
+fill:url(#waveGrad);
+}
+
+.light{
+position:absolute;
+top:0;
+left:-120%;
+width:60%;
+height:100%;
+
+background:
+linear-gradient(
+120deg,
+transparent,
+rgba(255,255,255,.25),
+transparent
+);
+
+transform:skewX(-20deg);
+}
+
+</style>
 </head>
+
 <body>
 
-<div class="logo-wrapper">
-    <svg viewBox="0 0 512 512">
-        <g class="part-1">
-            <path d="M244.979 370.543 C 244.757 377.300,246.333 372.332,245.588 372.159 C 245.374 371.478,245.244 370.820,245.244 370.820 C 245.023 369.694,245.007 369.677,244.979 370.543"/>
-        </g>
-        <g class="part-2">
-            <path d="M268.251 373.803 C 268.593 373.868,269.087 373.866,269.350 373.797 C 269.613 373.728,269.333 373.675,268.729 373.678 C 268.124 373.681,267.909 373.737,268.251 373.803"/>
-            <path d="M262.887 374.348 C 263.151 374.417,263.584 374.417,263.849 374.348 C 264.113 374.278,263.897 374.222,263.368 374.221 C 262.839 374.220,262.622 374.279,262.887 374.348"/>
-        </g>
-        <g class="part-3">
-            <path d="M245.071 356.838 C 245.071 361.601,245.108 363.550,245.154 361.168 C 245.200 358.787,245.200 354.890,245.154 352.509 C 245.108 350.127,245.071 352.076,245.071 356.838"/>
-            <path d="M307.354 353.079 C 307.127 353.269,306.509 353.915,305.981 354.513 C 305.216 355.380,305.314 355.324,306.462 354.237 C 307.766 353.004,308.044 352.697,307.835 352.724 C 307.797 352.728,307.581 352.888,307.354 353.079"/>
-        </g>
-    </svg>
+<div class="scene">
+
+<div class="light"></div>
+
+<svg class="logo" viewBox="0 0 533 600">
+
+<defs>
+
+<linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#ff6a00"/>
+<stop offset="100%" stop-color="#ff2d00"/>
+</linearGradient>
+
+</defs>
+
+<!-- energy lines -->
+
+<g class="energy">
+
+<path id="line1" d="M60 100 L260 100 L300 140 L220 140 Z"/>
+<path id="line2" d="M240 200 L300 300 L180 300 Z"/>
+<path id="line3" d="M300 340 C380 360 420 420 460 480"/>
+
+</g>
+
+<!-- shapes -->
+
+<g id="cap">
+<path d="M60 100 L260 100 L300 140 L220 140 Z"/>
+</g>
+
+<g id="symbol">
+<path d="M240 200 L300 300 L180 300 Z"/>
+</g>
+
+<g id="wave">
+<path d="M300 340 C380 360 420 420 460 480"/>
+</g>
+
+</svg>
+
 </div>
+
+<script>
+
+const tl = gsap.timeline()
+
+// snake draw
+
+tl.to("#line1",{strokeDashoffset:0,duration:1.2,ease:"power3.out"})
+.to("#line2",{strokeDashoffset:0,duration:1,ease:"power3.out"},"-=0.8")
+.to("#line3",{strokeDashoffset:0,duration:1,ease:"power3.out"},"-=0.8")
+
+// fill
+
+.to("#cap",{opacity:1,duration:.6})
+.to("#symbol",{opacity:1,duration:.6})
+.to("#wave",{opacity:1,duration:.6})
+
+// 3D finish
+
+.to(".logo",{
+
+rotateX:12,
+rotateY:-10,
+scale:1.05,
+duration:1,
+ease:"power2.out"
+
+})
+
+// light sweep
+
+.to(".light",{
+
+left:"120%",
+duration:1
+
+},"-=0.6")
+
+</script>
 
 </body>
 </html>
