@@ -3,39 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Интихоби усул - Bozorcha</title>
+    <title>Интихоби усул - Bozorcha (фурӯшанда)</title>
+    
+    <!-- JavaScript files -->
+    <script src="/src/js/config.js"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="/src/js/supabase.js"></script>
+    <script src="/src/js/theme.js"></script>
+    <script src="/src/js/i18n.js"></script>
+    <script src="/src/js/utils.js"></script>
+    <script src="/src/js/guard.js"></script>
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* Танҳо стилҳои оддӣ барои намоёнии тугмаҳо */
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: Arial, sans-serif;
             background: #0a0a0a;
-            color: #fff;
+            color: white;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             min-height: 100vh;
+            margin: 0;
+            padding: 20px;
         }
-        .card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 40px;
+        .container {
             max-width: 400px;
             width: 100%;
             text-align: center;
         }
-        h1 { margin-bottom: 30px; color: #ff9500; }
+        h1 {
+            color: #ff9500;
+            margin-bottom: 30px;
+        }
         .btn {
+            display: block;
             width: 100%;
             padding: 15px;
             margin: 10px 0;
-            border-radius: 10px;
-            border: none;
             background: #ff9500;
             color: white;
-            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
             cursor: pointer;
+            text-decoration: none;
         }
         .btn-outline {
             background: transparent;
@@ -43,32 +55,24 @@
             color: #ff9500;
         }
         .back-btn {
-            margin-top: 20px;
             display: inline-block;
+            margin-top: 20px;
             color: #94a3b8;
             text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>Хуш омадед ба Bozorcha</h1>
-        <p style="margin-bottom: 20px; color: #94a3b8;">Барои фурӯшандагон</p>
+    <div class="container">
+        <h1>Bozorcha - Фурӯшанда</h1>
+        <p style="margin-bottom: 30px; color: #94a3b8;">Усули воридшавиро интихоб кунед</p>
         
-        <button class="btn" onclick="goTo('login')">Ворид шудан</button>
-        <button class="btn btn-outline" onclick="goTo('register')">Сабти ном</button>
+        <button class="btn" onclick="window.location.href='login/phone.html'">Ворид шудан бо телефон</button>
+        <button class="btn" onclick="window.location.href='login/email.html'">Ворид шудан бо почта</button>
+        <button class="btn btn-outline" onclick="window.location.href='register/phone.html'">Сабти ном бо телефон</button>
+        <button class="btn btn-outline" onclick="window.location.href='register/email.html'">Сабти ном бо почта</button>
         
-        <a href="/index.html" class="back-btn">← Бозгашт</a>
+        <a href="/index.html" class="back-btn">← Бозгашт ба саҳифаи асосӣ</a>
     </div>
-
-    <script>
-        function goTo(type) {
-            if (type === 'login') {
-                window.location.href = 'login/phone.html'
-            } else {
-                window.location.href = 'register/phone.html'
-            }
-        }
-    </script>
 </body>
 </html>
