@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Асосӣ - Bozorcha</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: white;
+            padding: 20px 16px 30px;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 8px 16px;
+        }
+
+        .search-box i {
+            color: #ff9500;
+            margin-right: 10px;
+        }
+
+        .search-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-box input::placeholder {
+            color: #94a3b8;
+        }
+
+        .categories {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .category-btn {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 30px;
+            color: white;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-btn:hover {
+            background: #ff9500;
+        }
+
+        .category-btn.active {
+            background: #ff9500;
+            border-color: #ff9500;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .product-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-2px);
+            border-color: #ff9500;
+        }
+
+        .product-image {
+            width: 100%;
+            aspect-ratio: 1;
+            background: rgba(255,149,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff9500;
+            font-size: 40px;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 12px;
+        }
+
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-price {
+            color: #ff9500;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .product-seller {
+            color: #94a3b8;
+            font-size: 11px;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .add-to-cart {
+            flex: 1;
+            padding: 8px;
+            background: #ff9500;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-to-cart:hover {
+            background: #e08600;
+        }
+
+        .add-to-cart:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,149,0,0.3);
+            border-top-color: #ff9500;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .no-products {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+            grid-column: 1 / -1;
+        }
+
+        @media (min-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Ҷустуҷӯи маҳсулот...">
+        </div>
+    </div>
+
+    <div class="categories" id="categories">
+        <button class="category-btn active" onclick="filterByCategory('all')">Ҳама</button>
+    </div>
+
+    <div class="products-grid" id="productsGrid">
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <p>Боркунии маҳсулот...</p>
+        </div>
+    </div>
+
+    <script>
+        const supabase = supabase.createClient(
+            'https://seagtlaujnnhoyitgsdd.supabase.co',
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+        );
+
+        let currentUser = null;
+        let products = [];
+        let categories = [];
+        let currentCategory = 'all';
+
+        async function checkAuth() {
+            const { data: { user }, error } = await supabase.auth.getUser();
+            currentUser = user;
+        }
+
+        async function loadCategories() {
+            const { data, error } = await supabase
+                .from('categories')
+                .select('*')
+                .order('name_tg');
+
+            if (!error && data) {
+                categories = data;
+                renderCategories();
+            }
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categories');
+            container.innerHTML = '<button class="category-btn active" onclick="filterByCategory(\'all\')">Ҳама</button>';
+            
+            categories.forEach(cat => {
+                container.innerHTML += `
+                    <button class="category-btn" onclick="filterByCategory('${cat.id}')">${cat.name_tg || cat.name_ru || 'Category'}</button>
+                `;
+            });
+        }
+
+        async function loadProducts(categoryId = null) {
+            const productsGrid = document.getElementById('productsGrid');
+            productsGrid.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Боркунии маҳсулот...</p></div>';
+
+            let query = supabase
+                .from('products')
+                .select(`
+                    *,
+                    shops!inner (
+                        id,
+                        shop_name
+                    )
+                `)
+                .order('created_at', { ascending: false });
+
+            if (categoryId && categoryId !== 'all') {
+                query = query.eq('category_id', categoryId);
+            }
+
+            const { data, error } = await query;
+
+            if (error) {
+                productsGrid.innerHTML = '<div class="no-products">Хатогӣ дар боркунии маҳсулот</div>';
+                return;
+            }
+
+            products = data || [];
+            renderProducts(products);
+        }
+
+        function renderProducts(productsToRender) {
+            const productsGrid = document.getElementById('productsGrid');
+            
+            if (productsToRender.length === 0) {
+                productsGrid.innerHTML = '<div class="no-products">Ҳеҷ маҳсулоте ёфт нашуд</div>';
+                return;
+            }
+
+            productsGrid.innerHTML = '';
+            
+            productsToRender.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                
+                const imageUrl = product.images && product.images[0] ? product.images[0] : null;
+                
+                card.innerHTML = `
+                    <div class="product-image">
+                        ${imageUrl ? `<img src="${imageUrl}" alt="${product.name}">` : '<i class="fas fa-box"></i>'}
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">${product.price} с</div>
+                        <div class="product-seller">${product.shops?.shop_name || 'Мағоза'}</div>
+                        <div class="product-actions">
+                            <button class="add-to-cart" onclick="addToCart('${product.id}')" ${!currentUser ? 'disabled' : ''}>
+                                <i class="fas fa-cart-plus"></i> Ба сабад
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                productsGrid.appendChild(card);
+            });
+        }
+
+        window.filterByCategory = function(categoryId) {
+            currentCategory = categoryId;
+            
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            loadProducts(categoryId);
+        };
+
+        window.addToCart = async function(productId) {
+            if (!currentUser) {
+                window.parent.postMessage({ type: 'requireAuth' }, '*');
+                alert('Лутфан аввал ворид шавед');
+                return;
+            }
+
+            const { error } = await supabase
+                .from('carts')
+                .upsert({
+                    user_id: currentUser.id,
+                    product_id: productId,
+                    quantity: 1,
+                    selected: true
+                }, {
+                    onConflict: 'user_id, product_id',
+                    ignoreDuplicates: false
+                });
+
+            if (error) {
+                alert('Хатогӣ: ' + error.message);
+            } else {
+                alert('Маҳсулот ба сабад илова шуд');
+            }
+        };
+
+        window.searchProducts = async function() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                loadProducts(currentCategory);
+                return;
+            }
+
+            const filtered = products.filter(p => 
+                p.name.toLowerCase().includes(searchTerm) || 
+                (p.description && p.description.toLowerCase().includes(searchTerm))
+            );
+            
+            renderProducts(filtered);
+        };
+
+        document.getElementById('searchInput').addEventListener('input', searchProducts);
+
+        // Initialize
+        checkAuth().then(() => {
+            loadCategories();
+            loadProducts();
+        });
+    </script>
+</body>
+</html>
