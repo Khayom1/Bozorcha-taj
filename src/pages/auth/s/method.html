@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Фурӯшанда - метод</title>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <title>Фурӯшанда - Метод</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background: #0a0a0a;
             color: white;
             display: flex;
@@ -22,41 +21,48 @@
             width: 100%;
             text-align: center;
         }
-        h1 { color: #ff9500; margin-bottom: 30px; }
+        h1 { color: #ff9500; margin-bottom: 30px; font-size: 2rem; }
         .btn {
             display: block;
             width: 100%;
             padding: 15px;
-            margin: 10px 0;
+            margin: 12px 0;
             background: #ff9500;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
+            transition: 0.2s;
         }
+        .btn:active { transform: scale(0.98); }
         .btn-outline {
             background: transparent;
-            border: 1px solid #ff9500;
+            border: 2px solid #ff9500;
             color: #ff9500;
         }
         .back-btn {
             display: inline-block;
-            margin-top: 20px;
+            margin-top: 25px;
             color: #94a3b8;
             text-decoration: none;
+            font-size: 14px;
         }
+        .back-btn:hover { color: #ff9500; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Фурӯшанда</h1>
         
-        <button class="btn" onclick="window.location.href='login/phone.html'">Воридшавӣ бо телефон</button>
-        <button class="btn" onclick="window.location.href='login/email.html'">Воридшавӣ бо почта</button>
-        <button class="btn btn-outline" onclick="window.location.href='register/phone.html'">Сабти ном бо телефон</button>
-        <button class="btn btn-outline" onclick="window.location.href='register/email.html'">Сабти ном бо почта</button>
+        <button class="btn" onclick="location.href='login/phone.html'">Воридшавӣ бо телефон</button>
+        <button class="btn" onclick="location.href='login/email.html'">Воридшавӣ бо почта</button>
         
-        <a href="/index.html" class="back-btn">← Бозгашт</a>
+        <button class="btn btn-outline" onclick="location.href='register/phone.html'">Сабти ном бо телефон</button>
+        <button class="btn btn-outline" onclick="location.href='register/email.html'">Сабти ном бо почта</button>
+        
+        <a href="../../../../index.html" class="back-btn">← Бозгашт ба асосӣ</a>
     </div>
 </body>
 </html>
