@@ -1,25 +1,30 @@
-// Пайвастшавӣ ба Supabase - як маротиба
-const SUPABASE_URL = 'https://seagtlaujnnhoyitgsdd.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP';
+// src/js/supabase.js
+import { createClient } from 'https://unpkg.com/@supabase/supabase-js@2'
 
-export const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseUrl = 'https://seagtlaujnnhoyitgsdd.supabase.co'
+const supabaseAnonKey = 'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
 
-// Функсияи гирифтани корбари воқеӣ
-export async function getCurrentUser() {
-    const { data: { user }, error } = await supabase.auth.getUser();
-    if (error || !user) {
-        window.location.href = '/public/index.html';
-        return null;
-    }
-    return user;
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+// Функсия барои гирифтани сессия
+export async function getSession() {
+    const { data: { session }, error } = await supabase.auth.getSession()
+    if (error) console.error('Session error:', error)
+    return session
 }
 
-// Функсияи назорати сессия
-export function onAuthStateChange(callback) {
-    supabase.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_OUT') {
-            window.location.href = '/public/index.html';
-        }
-        callback(event, session);
-    });
+// Функсия барои гирифтани корбари ҷорӣ
+export async function getCurrentUser() {
+    const { data: { user }, error } = await supabase.auth.getUser()
+    if (error) console.error('User error:', error)
+    return user
+}
+
+// Функсия барои ворид шудан (OTP)
+export async function signInWithOTP(phone, email) {
+    if (phone) {
+        return await supabase.auth.signInWithOtp({ phone })
+    } else if (email) {
+        return await supabase.auth.signInWithOtp({ email })
+    }
 }
