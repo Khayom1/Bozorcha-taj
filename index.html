@@ -2,39 +2,536 @@
 <html lang="tg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bozorcha — Хуш омадед</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Bozorcha - Платформаи фурӯшандагон ва харидорон</title>
+    
+    <!-- Meta tags -->
+    <meta name="description" content="Bozorcha — платформаи муосири фурӯшандагон ва харидорон барои фурӯши онлайн ва идоракунии маҳсулот.">
+    <meta property="og:title" content="Bozorcha Marketplace">
+    <meta property="og:description" content="Платформаи муосири тиҷорати электронӣ">
+    <meta property="og:type" content="website">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- JavaScript files (барои ҳама саҳифаҳо) -->
+    <script src="/src/js/config.js"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="/src/js/supabase.js"></script>
+    <script src="/src/js/theme.js"></script>
+    <script src="/src/js/i18n.js"></script>
+    <script src="/src/js/utils.js"></script>
+    <script src="/src/js/guard.js"></script>
+    
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 16px 24px;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 10px 20px rgba(255, 149, 0, 0.3));
+        }
+
+        .logo span {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff9500, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        /* Language Button */
+        .lang-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lang-btn:hover {
+            background: #ff9500;
+            border-color: #ff9500;
+        }
+
+        /* Theme Button */
+        .theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-btn:hover {
+            background: #ff9500;
+            border-color: #ff9500;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 24px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-orb {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,149,0,0.2) 0%, rgba(255,149,0,0) 70%);
+            border-radius: 50%;
+            animation: pulse 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.6; }
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #ff9500, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #94a3b8;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #ff9500;
+            color: white;
+            box-shadow: 0 10px 20px rgba(255, 149, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(255, 149, 0, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .btn-outline:hover {
+            border-color: #ff9500;
+            color: #ff9500;
+        }
+
+        /* ===== ROLE CARDS ===== */
+        .role-section {
+            padding: 80px 24px;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .role-title {
+            font-size: 32px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .role-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .role-card:hover {
+            transform: translateY(-10px);
+            border-color: #ff9500;
+            box-shadow: 0 20px 40px rgba(255, 149, 0, 0.15);
+        }
+
+        .role-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 149, 0, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            color: #ff9500;
+        }
+
+        .role-card h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .role-card p {
+            color: #94a3b8;
+            margin-bottom: 25px;
+        }
+
+        .role-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .role-features li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #94a3b8;
+        }
+
+        .role-features i {
+            color: #10b981;
+        }
+
+        .role-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 30px;
+            border: 2px solid #ff9500;
+            background: transparent;
+            color: #ff9500;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .role-btn:hover {
+            background: #ff9500;
+            color: white;
+        }
+
+        /* ===== FEATURES ===== */
+        .features {
+            padding: 80px 24px;
+            background: rgba(255, 149, 0, 0.02);
+        }
+
+        .features-grid {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .feature-item {
+            text-align: center;
+        }
+
+        .feature-item i {
+            font-size: 48px;
+            color: #ff9500;
+            margin-bottom: 20px;
+        }
+
+        .feature-item h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .feature-item p {
+            color: #94a3b8;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 40px 24px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #ff9500;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .role-grid { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr; }
+            .header { padding: 12px 16px; }
+            .logo span { font-size: 20px; }
+        }
+    </style>
 </head>
 <body>
-    <div class="main-gate">
-        <h1>Bozorcha</h1>
-        <p>Шумо кистед?</p>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <img src="/public/assets/logo.svg" alt="Bozorcha">
+                <span>Bozorcha</span>
+            </div>
+            <div class="header-actions">
+                <button class="lang-btn" id="langBtn">🇹🇯</button>
+                <button class="theme-btn" id="themeBtn">🌙</button>
+            </div>
+        </div>
+    </header>
 
-        <button id="go-buyer" style="padding: 20px; background: #2196F3; color: white;">
-            🛍️ Ман Харидор (Мехоҳам харид кунам)
-        </button>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-orb"></div>
+        <div class="hero-content">
+            <h1>
+                Тиҷорати худро ба сатҳи <span>нав</span> бардоред
+            </h1>
+            <p>
+                Платформаи муосири тиҷорати электронӣ барои фурӯшандагон ва харидорон
+            </p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="scrollToRoles()">
+                    Оғози кор <i class="fas fa-arrow-down"></i>
+                </button>
+            </div>
+        </div>
+    </section>
 
-        <br><br>
+    <!-- Role Cards -->
+    <section class="role-section" id="roles">
+        <h2 class="role-title">Шумо ки ҳастед?</h2>
+        <div class="role-grid">
+            <!-- Seller Card -->
+            <div class="role-card" onclick="window.location.href='/src/pages/auth/s/method.html'">
+                <div class="role-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <h2>Фурӯшанда</h2>
+                <p>Агар шумо маҳсулот доред ва мехоҳед фурӯшед</p>
+                <ul class="role-features">
+                    <li><i class="fas fa-check-circle"></i> Иловаи маҳсулот</li>
+                    <li><i class="fas fa-check-circle"></i> Статистикаи фурӯш</li>
+                    <li><i class="fas fa-check-circle"></i> Чат бо харидорон</li>
+                </ul>
+                <button class="role-btn">Сабти ном ҳамчун фурӯшанда</button>
+            </div>
 
-        <button id="go-seller" style="padding: 20px; background: #FF9800; color: white;">
-            🏪 Ман Фурӯшанда (Мехоҳам мағоза кушоям)
-        </button>
-    </div>
+            <!-- Buyer Card -->
+            <div class="role-card" onclick="window.location.href='/src/pages/auth/b/method.html'">
+                <div class="role-icon">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <h2>Харидор</h2>
+                <p>Агар шумо мехоҳед маҳсулот харед</p>
+                <ul class="role-features">
+                    <li><i class="fas fa-check-circle"></i> Хариди бехатар</li>
+                    <li><i class="fas fa-check-circle"></i> Пайгирии фармоиш</li>
+                    <li><i class="fas fa-check-circle"></i> Бозгашти пул</li>
+                </ul>
+                <button class="role-btn">Сабти ном ҳамчун харидор</button>
+            </div>
+        </div>
+    </section>
 
-    <script>
-        // ЛОГИКАИ ХАРИДОР
-        document.getElementById('go-buyer').addEventListener('click', () => {
-            localStorage.setItem('user_role', 'buyer');
-            localStorage.setItem('is_guest', 'true'); // Нишонаи меҳмон
-            window.location.href = 'src/pages/b-dashboard.html'; // Рост ба маркази харид
-        });
+    <!-- Features -->
+    <section class="features">
+        <div class="features-grid">
+            <div class="feature-item">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Амнияти баланд</h3>
+                <p>Ҳама амалиётҳо бо кафолати Escrow муҳофизат карда мешаванд</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-bolt"></i>
+                <h3>Суръати баланд</h3>
+                <p>Коркарди зуд ва бефосилаи фармоишҳо</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-headset"></i>
+                <h3>Дастгирии 24/7</h3>
+                <p>Дастгирии доимӣ барои ҳама корбарон</p>
+            </div>
+        </div>
+    </section>
 
-        // ЛОГИКАИ ФУРӮШАНДА
-        document.getElementById('go-seller').addEventListener('click', () => {
-            localStorage.setItem('user_role', 'seller');
-            localStorage.setItem('is_guest', 'false');
-            window.location.href = '../src/pages/auth/method.html'; // Ба интихоби усули вуруд
-        });
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/src/pages/admin/rules.html">Қоидаҳо</a>
+            <a href="#">About me</a>
+            <a href="#">Contact us</a>
+            <a href="#">Tech support</a>
+        </div>
+        <p>© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</p>
+    </footer>
+
+    <script type="module">
+        import { initTheme, toggleTheme } from '/src/js/theme.js'
+        import { setLanguage, getCurrentLang } from '/src/js/i18n.js'
+        import { supabase } from '/src/js/supabase.js'
+        import { redirectToDashboard } from '/src/js/guard.js'
+
+        // Initialize theme
+        initTheme()
+
+        // Theme button
+        document.getElementById('themeBtn').addEventListener('click', toggleTheme)
+
+        // Language button (оддӣ барои ҳозира)
+        let currentLang = 'tj'
+        document.getElementById('langBtn').addEventListener('click', () => {
+            currentLang = currentLang === 'tj' ? 'ru' : currentLang === 'ru' ? 'en' : 'tj'
+            setLanguage(currentLang)
+        })
+
+        // Scroll to roles
+        window.scrollToRoles = () => {
+            document.getElementById('roles').scrollIntoView({ behavior: 'smooth' })
+        }
+
+        // Check if user is already logged in
+        async function checkLoggedIn() {
+            const { data: { session } } = await supabase.auth.getSession()
+            if (session?.user) {
+                await redirectToDashboard()
+            }
+        }
+
+        checkLoggedIn()
     </script>
 </body>
 </html>
