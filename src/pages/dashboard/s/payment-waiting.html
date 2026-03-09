@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интизори пардохт - Bozorcha</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .waiting-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .waiting-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,149,0,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .icon-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        .pulse-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(255,149,0,0.2);
+            animation: pulse 2s ease-out infinite;
+        }
+
+        .clock-icon {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff9500, #ff6b6b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: white;
+            box-shadow: 0 0 50px rgba(255,149,0,0.5);
+            z-index: 2;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ff9500, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .transaction-id {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,149,0,0.3);
+            border-radius: 50px;
+            padding: 12px 20px;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #94a3b8;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .transaction-id span {
+            color: #ff9500;
+            font-weight: 600;
+            font-family: monospace;
+            background: rgba(255,149,0,0.1);
+            padding: 5px 10px;
+            border-radius: 30px;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid #ff9500;
+            color: #ff9500;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #ff9500;
+            color: white;
+        }
+
+        .amount-box {
+            background: rgba(255,149,0,0.1);
+            border: 1px solid #ff9500;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .amount-label {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .amount-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #ff9500;
+        }
+
+        .amount-currency {
+            font-size: 18px;
+            color: #94a3b8;
+        }
+
+        .payment-details {
+            background: rgba(255,255,255,0.02);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .detail-value {
+            color: white;
+            font-weight: 600;
+        }
+
+        .detail-value.pending {
+            color: #f59e0b;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 15px 0;
+        }
+
+        .status-pending {
+            background: rgba(245,158,11,0.2);
+            border: 1px solid #f59e0b;
+            color: #f59e0b;
+        }
+
+        .status-pending i {
+            animation: spin 2s linear infinite;
+            margin-right: 8px;
+        }
+
+        .instructions {
+            background: rgba(255,255,255,0.02);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .instructions h3 {
+            color: #ff9500;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .instructions ol {
+            padding-left: 20px;
+            color: #94a3b8;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .instructions li i {
+            color: #ff9500;
+            margin-right: 8px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #ff9500;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #e08600;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #ff9500;
+            color: #ff9500;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,149,0,0.1);
+        }
+
+        .auto-check {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(16,185,129,0.1);
+            border: 1px solid #10b981;
+            border-radius: 30px;
+            color: #10b981;
+            font-size: 14px;
+        }
+
+        .auto-check i {
+            margin-right: 8px;
+        }
+
+        .timer {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ff9500;
+            margin: 15px 0;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .waiting-card {
+                padding: 25px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .transaction-id {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="waiting-card">
+        <div class="icon-container">
+            <div class="pulse-ring"></div>
+            <div class="clock-icon">
+                <i class="fas fa-hourglass-half"></i>
+            </div>
+        </div>
+
+        <h1>Дар интизори тасдиқи пардохт</h1>
+        
+        <p style="color: #94a3b8; margin-bottom: 20px;">
+            Пас аз ворид шудани пул, обунаи шумо худкор фаъол мешавад.
+        </p>
+
+        <!-- ID транзаксия -->
+        <div class="transaction-id" id="transactionContainer">
+            <i class="fas fa-hashtag" style="color: #ff9500;"></i>
+            <span id="transactionId">TX-20240309-XXXX</span>
+            <button class="copy-btn" onclick="copyTransactionId()">
+                <i class="fas fa-copy"></i> Нусха
+            </button>
+        </div>
+
+        <!-- Маблағ -->
+        <div class="amount-box">
+            <div class="amount-label">Маблағи пардохт</div>
+            <div class="amount-value">
+                <span id="planAmount">0</span> 
+                <span class="amount-currency" id="planCurrency">c</span>
+            </div>
+        </div>
+
+        <!-- Маълумоти пардохт -->
+        <div class="payment-details">
+            <div class="detail-row">
+                <span class="detail-label">Усули пардохт</span>
+                <span class="detail-value" id="paymentMethod">Корти банкӣ</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">План</span>
+                <span class="detail-value" id="planName">Start</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Вақти дархост</span>
+                <span class="detail-value" id="requestTime">--:--</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Статус</span>
+                <span class="detail-value pending" id="paymentStatus">Дар интизорӣ</span>
+            </div>
+        </div>
+
+        <!-- Статус бейҷ -->
+        <div class="status-badge status-pending" id="statusBadge">
+            <i class="fas fa-spinner"></i> Интизори тасдиқ
+        </div>
+
+        <!-- Таймер -->
+        <div class="timer" id="timer">30:00</div>
+
+        <!-- Дастурамал -->
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> Дастурамал:</h3>
+            <ol>
+                <li><i class="fas fa-1"></i> Маблағи <span id="instructionAmount">0</span>-ро ба ҳисоби зер интиқол диҳед</li>
+                <li><i class="fas fa-2"></i> ID транзаксияро дар шарҳ (comment) нависед</li>
+                <li><i class="fas fa-3"></i> Пас аз интиқол, тугмаи "Санҷидани статус"-ро пахш кунед</li>
+            </ol>
+        </div>
+
+        <!-- Автоматикӣ санҷидан -->
+        <div class="auto-check">
+            <i class="fas fa-sync-alt fa-spin"></i>
+            Система ҳар 10 сония статусро автоматикӣ санҷида истодааст
+        </div>
+
+        <!-- Тугмаҳо -->
+        <div class="button-group">
+            <button class="btn btn-primary" onclick="checkStatus()">
+                <i class="fas fa-sync-alt"></i> Санҷидани статус
+            </button>
+            <a href="plans.html" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Бозгашт
+            </a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { supabase } from '../../../js/supabase.js'
+        import planManager from '../../../js/plans.js'
+
+        // Гирифтани параметрҳо аз URL
+        const urlParams = new URLSearchParams(window.location.search)
+        const txId = urlParams.get('tx') || 'TX-' + Date.now()
+        const planId = urlParams.get('plan')
+        const amount = urlParams.get('amount')
+        const method = urlParams.get('method')
+
+        // Элементҳои DOM
+        const transactionIdEl = document.getElementById('transactionId')
+        const planAmountEl = document.getElementById('planAmount')
+        const planCurrencyEl = document.getElementById('planCurrency')
+        const paymentMethodEl = document.getElementById('paymentMethod')
+        const planNameEl = document.getElementById('planName')
+        const requestTimeEl = document.getElementById('requestTime')
+        const timerEl = document.getElementById('timer')
+        const instructionAmountEl = document.getElementById('instructionAmount')
+
+        // Таймер
+        let timeLeft = 30 * 60 // 30 дақиқа
+        let timerInterval
+
+        // Функсия барои нусхабардорӣ
+        window.copyTransactionId = () => {
+            navigator.clipboard.writeText(transactionIdEl.textContent)
+            const copyBtn = document.querySelector('.copy-btn')
+            const originalText = copyBtn.innerHTML
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Нусха шуд'
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText
+            }, 2000)
+        }
+
+        // Функсия барои санҷидани статус
+        window.checkStatus = async () => {
+            const checkBtn = document.querySelector('.btn-primary')
+            const originalText = checkBtn.innerHTML
+            checkBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Санҷида истода...'
+            checkBtn.disabled = true
+
+            try {
+                const status = await planManager.checkSubscriptionStatus()
+                
+                if (status.status === 'active') {
+                    // Обуна фаъол шуд
+                    const statusBadge = document.getElementById('statusBadge')
+                    statusBadge.className = 'status-badge'
+                    statusBadge.classList.add('status-active')
+                    statusBadge.innerHTML = '<i class="fas fa-check-circle"></i> Обуна фаъол шуд'
+                    
+                    // Таймерро қатъ кун
+                    clearInterval(timerInterval)
+                    
+                    // Пас аз 2 сония ба саҳифаи планҳо мегузарем
+                    setTimeout(() => {
+                        window.location.href = 'plans.html?success=1'
+                    }, 2000)
+                    
+                } else if (status.status === 'pending_payment') {
+                    alert('Ҳанӯз пардохт тасдиқ нашудааст. Лутфан интизор шавед.')
+                } else if (status.status === 'no_subscription') {
+                    alert('Обуна ёфт нашуд. Аз нав кӯшиш кунед.')
+                    window.location.href = 'plans.html'
+                }
+            } catch (error) {
+                alert('Хатогӣ дар санҷидани статус: ' + error.message)
+            } finally {
+                checkBtn.innerHTML = originalText
+                checkBtn.disabled = false
+            }
+        }
+
+        // Таймер
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval)
+                    timerEl.textContent = 'Вақт ба охир расид'
+                    timerEl.style.color = '#ef4444'
+                    
+                    // Агар вақт ба охир расид, пешниҳоди такрор
+                    const autoCheck = document.querySelector('.auto-check')
+                    autoCheck.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Вақт ба охир расид. Лутфан дубора кӯшиш кунед.'
+                } else {
+                    const minutes = Math.floor(timeLeft / 60)
+                    const seconds = timeLeft % 60
+                    timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+                }
+            }, 1000)
+        }
+
+        // Боркунии маълумот
+        async function loadPaymentData() {
+            // Нишон додани ID транзаксия
+            transactionIdEl.textContent = txId
+
+            // Агар planId дар URL бошад, планро бор кун
+            if (planId) {
+                await planManager.init()
+                const plan = planManager.getPlanById(parseInt(planId))
+                
+                if (plan) {
+                    planAmountEl.textContent = plan.price
+                    instructionAmountEl.textContent = plan.price
+                    planNameEl.textContent = plan.name === 'start' ? 'Start' : 
+                                            plan.name === 'plus' ? 'Plus' : 
+                                            plan.name === 'pro' ? 'Pro' : 'Premium'
+                }
+            } else {
+                // Агар planId набошад, аз localStorage гир
+                const savedPlan = localStorage.getItem('pending_payment')
+                if (savedPlan) {
+                    const data = JSON.parse(savedPlan)
+                    planAmountEl.textContent = data.amount
+                    instructionAmountEl.textContent = data.amount
+                    planNameEl.textContent = data.plan_name
+                }
+            }
+
+            // Усули пардохт
+            if (method) {
+                const methodNames = {
+                    'card': 'Корти банкӣ',
+                    'balance': 'Аз ҳисоби дохилӣ',
+                    'crypto': 'Крипто'
+                }
+                paymentMethodEl.textContent = methodNames[method] || method
+            }
+
+            // Вақти дархост
+            const now = new Date()
+            requestTimeEl.textContent = now.toLocaleString('tg-TJ', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            })
+        }
+
+        // Санҷиши автоматикӣ
+        function startAutoCheck() {
+            setInterval(async () => {
+                try {
+                    const status = await planManager.checkSubscriptionStatus()
+                    if (status.status === 'active') {
+                        window.location.href = 'plans.html?success=1'
+                    }
+                } catch (error) {
+                    console.log('Auto check failed:', error)
+                }
+            }, 10000) // ҳар 10 сония
+        }
+
+        // Инициализатсия
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadPaymentData()
+            startTimer()
+            startAutoCheck()
+        })
+    </script>
+</body>
+</html>
