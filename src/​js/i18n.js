@@ -1,152 +1,99 @@
-// Тарҷумаҳо барои се забон
-const TRANSLATIONS = {
+// src/js/i18n.js
+const translations = {
     tj: {
-        common: {
-            welcome: "Хуш омадед!",
-            login: "Дохилшавӣ",
-            register: "Сабти ном",
-            save: "Сабт кардан",
-            cancel: "Бекор кардан",
-            delete: "Пок кардан",
-            edit: "Таҳрир",
-            back: "Бозгашт"
-        },
-        auth: {
-            phone: "Рақами телефон",
-            email: "Почтаи электронӣ",
-            password: "Рамз",
-            confirmPassword: "Такрори рамз",
-            forgotPassword: "Рамзро фаромӯш кардед?",
-            loginButton: "Дохил шавед",
-            registerButton: "Сабти ном кунед"
-        },
-        profile: {
-            pending: "Дар ҳоли интизор",
-            verified: "Тасдиқшуда",
-            unverified: "Тасдиқнашуда",
-            shopName: "Номи мағоза",
-            fullName: "Номи пурра",
-            phone: "Рақами телефон",
-            email: "Почта",
-            address: "Суроға"
-        },
-        product: {
-            add: "Иловаи маҳсулот",
-            edit: "Таҳрири маҳсулот",
-            delete: "Пок кардани маҳсулот",
-            name: "Номи маҳсулот",
-            price: "Нарх",
-            description: "Тавсиф",
-            category: "Категория",
-            image: "Акс"
-        },
-        chat: {
-            newMessage: "Паёми нав",
-            typeHere: "Дар ин ҷо нависед...",
-            send: "Фиристодан",
-            attach: "Пайваст кардан"
-        },
-        status: {
-            pending: "Дар ҳоли интизор",
-            approved: "Тасдиқ шуд",
-            rejected: "Рад шуд"
-        }
+        // Умумӣ
+        'common.save': 'Сабт кардан',
+        'common.cancel': 'Бекор кардан',
+        'common.delete': 'Пок кардан',
+        'common.edit': 'Таҳрир',
+        'common.back': 'Бозгашт',
+        
+        // Auth
+        'auth.login': 'Ворид шудан',
+        'auth.register': 'Сабти ном',
+        'auth.phone': 'Рақами телефон',
+        'auth.email': 'Почта',
+        
+        // Dashboard
+        'dashboard.home': 'Асосӣ',
+        'dashboard.stats': 'Статистика',
+        'dashboard.plans': 'Планҳо',
+        'dashboard.profile': 'Профил',
+        'dashboard.chat': 'Чат',
+        
+        // Plans
+        'plans.start': 'Start',
+        'plans.plus': 'Plus',
+        'plans.pro': 'Pro',
+        'plans.premium': 'Premium'
     },
     ru: {
-        common: {
-            welcome: "Добро пожаловать!",
-            login: "Вход",
-            register: "Регистрация",
-            save: "Сохранить",
-            cancel: "Отмена",
-            delete: "Удалить",
-            edit: "Редактировать",
-            back: "Назад"
-        },
-        auth: {
-            phone: "Номер телефона",
-            email: "Электронная почта",
-            password: "Пароль",
-            confirmPassword: "Подтверждение пароля",
-            forgotPassword: "Забыли пароль?",
-            loginButton: "Войти",
-            registerButton: "Зарегистрироваться"
-        },
-        profile: {
-            pending: "На проверке",
-            verified: "Подтвержден",
-            unverified: "Не подтвержден",
-            shopName: "Название магазина",
-            fullName: "Полное имя",
-            phone: "Телефон",
-            email: "Почта",
-            address: "Адрес"
-        },
-        product: {
-            add: "Добавить товар",
-            edit: "Редактировать товар",
-            delete: "Удалить товар",
-            name: "Название товара",
-            price: "Цена",
-            description: "Описание",
-            category: "Категория",
-            image: "Изображение"
-        },
-        chat: {
-            newMessage: "Новое сообщение",
-            typeHere: "Пишите здесь...",
-            send: "Отправить",
-            attach: "Прикрепить"
-        },
-        status: {
-            pending: "На проверке",
-            approved: "Одобрено",
-            rejected: "Отклонено"
-        }
+        'common.save': 'Сохранить',
+        'common.cancel': 'Отмена',
+        'common.delete': 'Удалить',
+        'common.edit': 'Редактировать',
+        'common.back': 'Назад',
+        'auth.login': 'Войти',
+        'auth.register': 'Регистрация',
+        'auth.phone': 'Номер телефона',
+        'auth.email': 'Почта',
+        'dashboard.home': 'Главная',
+        'dashboard.stats': 'Статистика',
+        'dashboard.plans': 'Планы',
+        'dashboard.profile': 'Профиль',
+        'dashboard.chat': 'Чат',
+        'plans.start': 'Старт',
+        'plans.plus': 'Плюс',
+        'plans.pro': 'Про',
+        'plans.premium': 'Премиум'
     },
     en: {
-        common: {
-            welcome: "Welcome!",
-            login: "Login",
-            register: "Register",
-            save: "Save",
-            cancel: "Cancel",
-            delete: "Delete",
-            edit: "Edit",
-            back: "Back"
-        },
-        auth: {
-            phone: "Phone number",
-            email: "Email",
-            password: "Password",
-            confirmPassword: "Confirm password",
-            forgotPassword: "Forgot password?",
-            loginButton: "Login",
-            registerButton: "Register"
-        },
-        profile: {
-            pending: "Pending",
-            verified: "Verified",
-            unverified: "Unverified",
-            shopName: "Shop name",
-            fullName: "Full name",
-            phone: "Phone",
-            email: "Email",
-            address: "Address"
-        },
-        product: {
-            add: "Add product",
-            edit: "Edit product",
-            delete: "Delete product",
-            name: "Product name",
-            price: "Price",
-            description: "Description",
-            category: "Category",
-            image: "Image"
-        },
-        chat: {
-            newMessage: "New message",
-            typeHere: "Type here...",
+        'common.save': 'Save',
+        'common.cancel': 'Cancel',
+        'common.delete': 'Delete',
+        'common.edit': 'Edit',
+        'common.back': 'Back',
+        'auth.login': 'Login',
+        'auth.register': 'Register',
+        'auth.phone': 'Phone number',
+        'auth.email': 'Email',
+        'dashboard.home': 'Home',
+        'dashboard.stats': 'Statistics',
+        'dashboard.plans': 'Plans',
+        'dashboard.profile': 'Profile',
+        'dashboard.chat': 'Chat',
+        'plans.start': 'Start',
+        'plans.plus': 'Plus',
+        'plans.pro': 'Pro',
+        'plans.premium': 'Premium'
+    }
+}
+
+let currentLang = localStorage.getItem('lang') || 'tj'
+
+export function t(key) {
+    return translations[currentLang]?.[key] || key
+}
+
+export function setLanguage(lang) {
+    if (translations[lang]) {
+        currentLang = lang
+        localStorage.setItem('lang', lang)
+        document.documentElement.lang = lang
+        updateLanguageButton(lang)
+    }
+}
+
+function updateLanguageButton(lang) {
+    const btn = document.getElementById('langBtn')
+    if (btn) {
+        btn.innerHTML = lang === 'tj' ? '🇹🇯' : lang === 'ru' ? '🇷🇺' : '🇬🇧'
+    }
+}
+
+export function getCurrentLang() {
+    return currentLang
+}            typeHere: "Type here...",
             send: "Send",
             attach: "Attach"
         },
@@ -154,7 +101,103 @@ const TRANSLATIONS = {
             pending: "Pending",
             approved: "Approved",
             rejected: "Rejected"
-        }
+        },
+        // src/js/i18n.js
+const translations = {
+    tj: {
+        // Умумӣ
+        'common.save': 'Сабт кардан',
+        'common.cancel': 'Бекор кардан',
+        'common.delete': 'Пок кардан',
+        'common.edit': 'Таҳрир',
+        'common.back': 'Бозгашт',
+        
+        // Auth
+        'auth.login': 'Ворид шудан',
+        'auth.register': 'Сабти ном',
+        'auth.phone': 'Рақами телефон',
+        'auth.email': 'Почта',
+        
+        // Dashboard
+        'dashboard.home': 'Асосӣ',
+        'dashboard.stats': 'Статистика',
+        'dashboard.plans': 'Планҳо',
+        'dashboard.profile': 'Профил',
+        'dashboard.chat': 'Чат',
+        
+        // Plans
+        'plans.start': 'Start',
+        'plans.plus': 'Plus',
+        'plans.pro': 'Pro',
+        'plans.premium': 'Premium'
+    },
+    ru: {
+        'common.save': 'Сохранить',
+        'common.cancel': 'Отмена',
+        'common.delete': 'Удалить',
+        'common.edit': 'Редактировать',
+        'common.back': 'Назад',
+        'auth.login': 'Войти',
+        'auth.register': 'Регистрация',
+        'auth.phone': 'Номер телефона',
+        'auth.email': 'Почта',
+        'dashboard.home': 'Главная',
+        'dashboard.stats': 'Статистика',
+        'dashboard.plans': 'Планы',
+        'dashboard.profile': 'Профиль',
+        'dashboard.chat': 'Чат',
+        'plans.start': 'Старт',
+        'plans.plus': 'Плюс',
+        'plans.pro': 'Про',
+        'plans.premium': 'Премиум'
+    },
+    en: {
+        'common.save': 'Save',
+        'common.cancel': 'Cancel',
+        'common.delete': 'Delete',
+        'common.edit': 'Edit',
+        'common.back': 'Back',
+        'auth.login': 'Login',
+        'auth.register': 'Register',
+        'auth.phone': 'Phone number',
+        'auth.email': 'Email',
+        'dashboard.home': 'Home',
+        'dashboard.stats': 'Statistics',
+        'dashboard.plans': 'Plans',
+        'dashboard.profile': 'Profile',
+        'dashboard.chat': 'Chat',
+        'plans.start': 'Start',
+        'plans.plus': 'Plus',
+        'plans.pro': 'Pro',
+        'plans.premium': 'Premium'
+    }
+}
+
+let currentLang = localStorage.getItem('lang') || 'tj'
+
+export function t(key) {
+    return translations[currentLang]?.[key] || key
+}
+
+export function setLanguage(lang) {
+    if (translations[lang]) {
+        currentLang = lang
+        localStorage.setItem('lang', lang)
+        document.documentElement.lang = lang
+        updateLanguageButton(lang)
+    }
+}
+
+function updateLanguageButton(lang) {
+    const btn = document.getElementById('langBtn')
+    if (btn) {
+        btn.innerHTML = lang === 'tj' ? '🇹🇯' : lang === 'ru' ? '🇷🇺' : '🇬🇧'
+    }
+}
+
+export function getCurrentLang() {
+    return currentLang
+}
     }
 };
 
