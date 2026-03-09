@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Сабти ном бо телефон</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,7 +22,8 @@
             width: 100%;
             text-align: center;
         }
-        h1 { color: #ff9500; margin-bottom: 30px; }
+        h1 { color: #ff9500; margin-bottom: 10px; }
+        .subtitle { color: #94a3b8; margin-bottom: 30px; }
         input {
             width: 100%;
             padding: 12px;
@@ -40,6 +42,16 @@
             border-radius: 8px;
             cursor: pointer;
         }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .error {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
         .back-btn {
             display: inline-block;
             margin-top: 20px;
@@ -50,12 +62,69 @@
 </head>
 <body>
     <div class="container">
-        <h1>Сабти ном бо телефон</h1>
+        <h1>Сабти ном</h1>
+        <p class="subtitle">Рақами телефони худро ворид кунед</p>
         
-        <input type="tel" placeholder="+992 00 000 00 00">
-        <button class="btn" onclick="window.location.href='verify.html'">Фиристодани код</button>
+        <input type="tel" id="phone" placeholder="+992 00 000 00 00">
+        <div class="error" id="error"></div>
+
+        <button class="btn" id="sendBtn">Фиристодани код</button>
         
         <a href="../method.html" class="back-btn">← Бозгашт</a>
     </div>
+
+    <script>
+        const supabase = supabase.createClient(
+            'https://seagtlaujnnhoyitgsdd.supabase.co',
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+        )
+
+        document.getElementById('sendBtn').addEventListener('click', async () => {
+            const phone = document.getElementById('phone').value.trim()
+            const btn = document.getElementById('sendBtn')
+            const error = document.getElementById('error')
+
+            if (!phone) {
+                error.style.display = 'block'
+                error.textContent = 'Рақами телефонро ворид кунед'
+                return
+            }
+
+            btn.disabled = true
+            btn.textContent = 'Сабр кунед...'
+
+            // Санҷиши мавҷудияти корбар
+            const { data: existing } = await supabase
+                .from('profiles')
+                .select('id')
+                .eq('phone', phone)
+                .maybeSingle()
+
+            if (existing) {
+                error.style.display = 'block'
+                error.textContent = 'Ин рақам аллакай сабти ном шудааст'
+                btn.disabled = false
+                btn.textContent = 'Фиристодани код'
+                return
+            }
+
+            // Фиристодани OTP барои сабти ном
+            const { error: otpError } = await supabase.auth.signInWithOtp({
+                phone: phone,
+                options: { shouldCreateUser: true }
+            })
+
+            if (otpError) {
+                error.style.display = 'block'
+                error.textContent = otpError.message
+                btn.disabled = false
+                btn.textContent = 'Фиристодани код'
+            } else {
+                localStorage.setItem('temp_phone', phone)
+                localStorage.setItem('temp_action', 'register')
+                window.location.href = 'verify.html'
+            }
+        })
+    </script>
 </body>
 </html>
