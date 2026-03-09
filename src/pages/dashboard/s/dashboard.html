@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панели фурӯшанда - Bozorcha</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background: rgba(255,255,255,0.05);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            padding: 20px;
+        }
+        .sidebar-logo {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: #ff9500;
+        }
+        .sidebar-menu {
+            list-style: none;
+        }
+        .sidebar-item {
+            margin-bottom: 10px;
+        }
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        .sidebar-link:hover {
+            background: rgba(255,149,0,0.1);
+            color: #ff9500;
+        }
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            height: 60px;
+            background: rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logout-btn {
+            background: transparent;
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">Bozorcha</div>
+        <ul class="sidebar-menu">
+            <li class="sidebar-item"><a href="home/home.html" class="sidebar-link" target="content"><i class="fas fa-home"></i> Асосӣ</a></li>
+            <li class="sidebar-item"><a href="stats/stats.html" class="sidebar-link" target="content"><i class="fas fa-chart-line"></i> Статистика</a></li>
+            <li class="sidebar-item"><a href="plans.html" class="sidebar-link" target="content"><i class="fas fa-crown"></i> Планҳо</a></li>
+            <li class="sidebar-item"><a href="coin.html" class="sidebar-link" target="content"><i class="fas fa-coins"></i> Coin</a></li>
+            <li class="sidebar-item"><a href="chat/chat.html" class="sidebar-link" target="content"><i class="fas fa-comment"></i> Чат</a></li>
+            <li class="sidebar-item"><a href="add-product.html" class="sidebar-link" target="content"><i class="fas fa-plus-circle"></i> Иловаи маҳсулот</a></li>
+            <li class="sidebar-item"><a href="profile/profile.html" class="sidebar-link" target="content"><i class="fas fa-user"></i> Профил</a></li>
+        </ul>
+    </div>
+    <div class="main">
+        <div class="header">
+            <div></div>
+            <div class="user-info">
+                <span id="userEmail"></span>
+                <button class="logout-btn" onclick="logout()">Баромад</button>
+            </div>
+        </div>
+        <div class="content">
+            <iframe name="content" src="home/home.html"></iframe>
+        </div>
+    </div>
+    <script type="module">
+        import { supabase } from '../../../js/supabase.js'
+        import { protectPage, USER_TYPES } from '../../../js/guard.js'
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const allowed = await protectPage([USER_TYPES.SELLER])
+            if (!allowed) return
+
+            const { data: { user } } = await supabase.auth.getUser()
+            document.getElementById('userEmail').textContent = user?.email || ''
+        })
+
+        window.logout = async () => {
+            await supabase.auth.signOut()
+            window.location.href = '/index.html'
+        }
+    </script>
+</body>
+</html>
