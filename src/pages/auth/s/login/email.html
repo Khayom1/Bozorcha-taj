@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Воридшавӣ - почта (фурӯшанда)</title>
+    <title>Воридшавӣ бо почта</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,7 +22,8 @@
             width: 100%;
             text-align: center;
         }
-        h1 { color: #ff9500; margin-bottom: 30px; }
+        h1 { color: #ff9500; margin-bottom: 10px; }
+        .subtitle { color: #94a3b8; margin-bottom: 30px; }
         input {
             width: 100%;
             padding: 12px;
@@ -40,6 +42,16 @@
             border-radius: 8px;
             cursor: pointer;
         }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .error {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
         .back-btn {
             display: inline-block;
             margin-top: 20px;
@@ -50,10 +62,67 @@
 </head>
 <body>
     <div class="container">
-        <h1>Воридшавӣ (фурӯшанда)</h1>
-        <input type="email" placeholder="example@mail.com">
-        <button class="btn" onclick="window.location.href='verify.html'">Фиристодани код</button>
+        <h1>Воридшавӣ</h1>
+        <p class="subtitle">Почтаи электронии худро ворид кунед</p>
+        
+        <input type="email" id="email" placeholder="example@mail.com">
+        <div class="error" id="error"></div>
+
+        <button class="btn" id="sendBtn">Фиристодани код</button>
+        
         <a href="../method.html" class="back-btn">← Бозгашт</a>
     </div>
+
+    <script>
+        const supabase = supabase.createClient(
+            'https://seagtlaujnnhoyitgsdd.supabase.co',
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+        )
+
+        document.getElementById('sendBtn').addEventListener('click', async () => {
+            const email = document.getElementById('email').value.trim()
+            const btn = document.getElementById('sendBtn')
+            const error = document.getElementById('error')
+
+            if (!email) {
+                error.style.display = 'block'
+                error.textContent = 'Почтаи электрониро ворид кунед'
+                return
+            }
+
+            btn.disabled = true
+            btn.textContent = 'Сабр кунед...'
+
+            // Санҷиши мавҷудияти корбар
+            const { data: existing } = await supabase
+                .from('profiles')
+                .select('id')
+                .eq('email', email)
+                .maybeSingle()
+
+            if (!existing) {
+                error.style.display = 'block'
+                error.textContent = 'Чунин корбар ёфт нашуд. Лутфан аввал сабти ном кунед.'
+                btn.disabled = false
+                btn.textContent = 'Фиристодани код'
+                return
+            }
+
+            // Фиристодани OTP
+            const { error: otpError } = await supabase.auth.signInWithOtp({
+                email: email
+            })
+
+            if (otpError) {
+                error.style.display = 'block'
+                error.textContent = otpError.message
+                btn.disabled = false
+                btn.textContent = 'Фиристодани код'
+            } else {
+                localStorage.setItem('temp_email', email)
+                window.location.href = 'verify.html'
+            }
+        })
+    </script>
 </body>
 </html>
