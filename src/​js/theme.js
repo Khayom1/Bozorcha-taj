@@ -1,21 +1,34 @@
 // src/js/theme.js
-export function initTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'dark'
-    document.body.setAttribute('data-theme', savedTheme)
-    updateThemeButton(savedTheme)
+const THEME_KEY = 'bozorcha_theme'
+
+// Гирифтани мавзӯи ҷорӣ
+export const getCurrentTheme = () => {
+    return localStorage.getItem(THEME_KEY) || 'light'
 }
 
-export function toggleTheme() {
-    const current = document.body.getAttribute('data-theme')
-    const newTheme = current === 'dark' ? 'light' : 'dark'
-    document.body.setAttribute('data-theme', newTheme)
-    localStorage.setItem('theme', newTheme)
-    updateThemeButton(newTheme)
+// Тағйир додани мавзӯъ
+export const toggleTheme = () => {
+    const current = getCurrentTheme()
+    const newTheme = current === 'light' ? 'dark' : 'light'
+    
+    localStorage.setItem(THEME_KEY, newTheme)
+    applyTheme(newTheme)
+    
+    return newTheme
 }
 
-function updateThemeButton(theme) {
-    const btn = document.getElementById('themeBtn')
-    if (btn) {
-        btn.innerHTML = theme === 'dark' ? '☀️' : '🌙'
-    }
+// Татбиқ кардани мавзӯъ ба саҳифа
+export const applyTheme = (theme) => {
+    document.body.classList.remove('theme-light', 'theme-dark')
+    document.body.classList.add(`theme-${theme}`)
+    
+    // Агар лозим бошад, метавонад дигар унсурҳоро тағйир диҳад
+    const event = new CustomEvent('themeChanged', { detail: { theme } })
+    window.dispatchEvent(event)
+}
+
+// Оғоз кардани мавзӯъ (ҳангоми боршавии саҳифа)
+export const initTheme = () => {
+    const theme = getCurrentTheme()
+    applyTheme(theme)
 }
