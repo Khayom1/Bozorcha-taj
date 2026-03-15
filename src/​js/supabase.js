@@ -3,7 +3,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 // Ин қиматҳоро аз Supabase Dashboard гиред
 const SUPABASE_URL = 'https://guaymxogvbzbjkflgatj.supabase.co'
-const SUPABASE_ANON_KEY = 'ваши_anon_Key'  // Инро бо калиди воқеӣ иваз кунед
+const SUPABASE_ANON_KEY = 'sb_publishable_y6E0_2pkc6gUtAp92nIMTg_ulDx_52q'  // Инро бо калиди воқеӣ иваз кунед
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
