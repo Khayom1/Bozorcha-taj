@@ -3,126 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Воридшавӣ бо почта</title>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <title>Воридшавӣ - Фурӯшанда - Bozorcha</title>
+    <link rel="stylesheet" href="/src/styles/main.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #0a0a0a;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .auth-container {
             min-height: 100vh;
-            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        .container {
+        
+        .auth-card {
             max-width: 400px;
             width: 100%;
-            text-align: center;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease;
         }
-        h1 { color: #ff9500; margin-bottom: 10px; }
-        .subtitle { color: #94a3b8; margin-bottom: 30px; }
-        input {
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .auth-header h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .auth-header p {
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .form-group input {
             width: 100%;
             padding: 12px;
-            margin: 10px 0;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 6px;
-            color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
         }
-        .btn {
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .auth-btn {
             width: 100%;
-            padding: 15px;
-            background: #ff9500;
+            padding: 14px;
+            background: #667eea;
             color: white;
             border: none;
             border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
+            transition: background 0.3s;
         }
-        .btn:disabled {
-            opacity: 0.5;
+        
+        .auth-btn:hover {
+            background: #5a67d8;
+        }
+        
+        .auth-btn:disabled {
+            opacity: 0.6;
             cursor: not-allowed;
         }
-        .error {
-            color: #ef4444;
-            font-size: 14px;
-            margin-top: 5px;
+        
+        .auth-links {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .auth-links a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
             display: none;
         }
+        
+        .success-message {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
         .back-btn {
-            display: inline-block;
-            margin-top: 20px;
-            color: #94a3b8;
-            text-decoration: none;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .back-btn:hover {
+            color: #333;
+        }
+        
+        /* Тёмная тема */
+        .theme-dark .auth-card {
+            background: #2d2d2d;
+        }
+        
+        .theme-dark .auth-header h2 {
+            color: #fff;
+        }
+        
+        .theme-dark .auth-header p {
+            color: #bbb;
+        }
+        
+        .theme-dark .form-group label {
+            color: #ddd;
+        }
+        
+        .theme-dark .form-group input {
+            background: #3d3d3d;
+            border-color: #4d4d4d;
+            color: #fff;
+        }
+        
+        .theme-dark .back-btn {
+            color: #bbb;
+        }
+        
+        .theme-dark .back-btn:hover {
+            color: #fff;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Воридшавӣ</h1>
-        <p class="subtitle">Почтаи электронии худро ворид кунед</p>
-        
-        <input type="email" id="email" placeholder="example@mail.com">
-        <div class="error" id="error"></div>
-
-        <button class="btn" id="sendBtn">Фиристодани код</button>
-        
-        <a href="../method.html" class="back-btn">← Бозгашт</a>
+    <div class="auth-container">
+        <div class="auth-card">
+            <button class="back-btn" onclick="history.back()">← Бозгашт</button>
+            
+            <div class="auth-header">
+                <h2>Воридшавӣ ба ҳайси фурӯшанда</h2>
+                <p>Барои идома почта ва пароли худро ворид кунед</p>
+            </div>
+            
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Почтаи электронӣ</label>
+                    <input type="email" id="email" placeholder="example@mail.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Парол</label>
+                    <input type="password" id="password" placeholder="********" required>
+                </div>
+                
+                <button type="submit" class="auth-btn" id="submitBtn">Воридшавӣ</button>
+            </form>
+            
+            <div class="auth-links">
+                <a href="#" onclick="goToRegister()">Ҳисоб надоред? Сабти ном кунед</a>
+                <br>
+                <a href="#" onclick="goToPhone()">Бо телефон ворид шавед</a>
+            </div>
+        </div>
     </div>
 
-    <script>
-        const supabase = supabase.createClient(
-            'https://seagtlaujnnhoyitgsdd.supabase.co',
-            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
-        )
-
-        document.getElementById('sendBtn').addEventListener('click', async () => {
-            const email = document.getElementById('email').value.trim()
-            const btn = document.getElementById('sendBtn')
-            const error = document.getElementById('error')
-
-            if (!email) {
-                error.style.display = 'block'
-                error.textContent = 'Почтаи электрониро ворид кунед'
-                return
-            }
-
-            btn.disabled = true
-            btn.textContent = 'Сабр кунед...'
-
-            // Санҷиши мавҷудияти корбар
-            const { data: existing } = await supabase
-                .from('profiles')
-                .select('id')
-                .eq('email', email)
-                .maybeSingle()
-
-            if (!existing) {
-                error.style.display = 'block'
-                error.textContent = 'Чунин корбар ёфт нашуд. Лутфан аввал сабти ном кунед.'
-                btn.disabled = false
-                btn.textContent = 'Фиристодани код'
-                return
-            }
-
-            // Фиристодани OTP
-            const { error: otpError } = await supabase.auth.signInWithOtp({
-                email: email
-            })
-
-            if (otpError) {
-                error.style.display = 'block'
-                error.textContent = otpError.message
-                btn.disabled = false
-                btn.textContent = 'Фиристодани код'
-            } else {
-                localStorage.setItem('temp_email', email)
-                window.location.href = 'verify.html'
+    <script type="module">
+        import { signInWithEmail } from '/src/js/supabase.js'
+        import { handlePostAuth, getReturnUrl } from '/src/js/guard.js'
+        
+        const urlParams = new URLSearchParams(window.location.search)
+        const role = urlParams.get('role') || 'seller'
+        
+        window.goToRegister = () => {
+            window.location.href = `/src/pages/auth/${role}/register/email.html?role=${role}`
+        }
+        
+        window.goToPhone = () => {
+            window.location.href = `/src/pages/auth/${role}/login/phone.html?role=${role}`
+        }
+        
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault()
+            
+            const email = document.getElementById('email').value
+            const password = document.getElementById('password').value
+            const submitBtn = document.getElementById('submitBtn')
+            const errorDiv = document.getElementById('errorMessage')
+            
+            errorDiv.style.display = 'none'
+            submitBtn.disabled = true
+            submitBtn.textContent = 'Интизор шавед...'
+            
+            try {
+                const { data, error } = await signInWithEmail(email, password)
+                
+                if (error) {
+                    throw error
+                }
+                
+                // Пас аз воридшавии муваффақ
+                document.getElementById('successMessage').textContent = 'Воридшавӣ муваффақ шуд! Интизор шавед...'
+                document.getElementById('successMessage').style.display = 'block'
+                
+                // Ба дашборди мувофиқ равон кун
+                setTimeout(() => {
+                    handlePostAuth(role)
+                }, 1000)
+                
+            } catch (error) {
+                errorDiv.textContent = error.message || 'Хатогӣ рух дод'
+                errorDiv.style.display = 'block'
+                submitBtn.disabled = false
+                submitBtn.textContent = 'Воридшавӣ'
             }
         })
+        
+        // Агар returnUrl бошад, нишон диҳем
+        const returnUrl = getReturnUrl()
+        if (returnUrl && returnUrl !== '/') {
+            document.querySelector('.auth-header p').textContent = 
+                'Барои идомаи амал, лутфан ворид шавед'
+        }
     </script>
 </body>
 </html>
