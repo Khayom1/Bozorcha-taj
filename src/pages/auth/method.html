@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интихоби нақш - Bozorcha</title>
+    <link rel="stylesheet" href="/src/styles/main.css">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .auth-card {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .auth-header h1 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .auth-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .role-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .role-btn {
+            flex: 1;
+            padding: 40px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .role-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+        
+        .role-btn.seller:hover {
+            border-color: #28a745;
+        }
+        
+        .role-btn.buyer:hover {
+            border-color: #007bff;
+        }
+        
+        .role-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .role-btn h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .role-btn p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Тёмная тема */
+        .theme-dark .auth-card {
+            background: #2d2d2d;
+            color: #fff;
+        }
+        
+        .theme-dark .auth-header h1 {
+            color: #fff;
+        }
+        
+        .theme-dark .auth-header p {
+            color: #bbb;
+        }
+        
+        .theme-dark .role-btn {
+            background: #3d3d3d;
+            border-color: #4d4d4d;
+            color: #fff;
+        }
+        
+        .theme-dark .role-btn p {
+            color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <img src="/public/assets/logo.svg" alt="Bozorcha" height="50">
+                <h1>Хуш омадед!</h1>
+                <p>Лутфан нақши худро интихоб кунед</p>
+            </div>
+            
+            <div class="role-buttons">
+                <button class="role-btn seller" onclick="selectRole('seller')">
+                    <div class="role-icon">🛍️</div>
+                    <h3>Фурӯшанда</h3>
+                    <p>Маҳсулотҳои худро фурӯшед ва тиҷорататонро васеъ кунед</p>
+                </button>
+                
+                <button class="role-btn buyer" onclick="selectRole('buyer')">
+                    <div class="role-icon">🛒</div>
+                    <h3>Харидор</h3>
+                    <p>Аз беҳтарин маҳсулотҳо бо нархҳои муносиб харед</p>
+                </button>
+            </div>
+            
+            <div class="login-link">
+                Аллакай ҳисоб доред? <a href="#" onclick="goToLogin()">Ворид шавед</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { saveReturnUrl } from '/src/js/guard.js'
+        
+        window.selectRole = (role) => {
+            // Нигоҳ доштани нақши интихобшуда
+            sessionStorage.setItem('selectedRole', role)
+            
+            // Ба саҳифаи воридшавӣ бо параметри нақш
+            window.location.href = `/src/pages/auth/${role}/login/email.html?role=${role}`
+        }
+        
+        window.goToLogin = () => {
+            // Ба саҳифаи интихоби нақш бо параметри login
+            window.location.href = '/src/pages/auth/method.html?mode=login'
+        }
+        
+        // Агар параметри returnUrl бошад, нигоҳ дорем
+        const urlParams = new URLSearchParams(window.location.search)
+        const returnUrl = urlParams.get('returnUrl')
+        if (returnUrl) {
+            saveReturnUrl(returnUrl)
+        }
+    </script>
+</body>
+</html>
