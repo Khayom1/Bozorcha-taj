@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Воридшавӣ - Фурӯшанда - Bozorcha</title>
+    <title>Воридшавӣ барои фурӯшандагон - Bozorcha</title>
     <link rel="stylesheet" href="/src/styles/main.css">
     <style>
         .auth-container {
@@ -12,7 +12,7 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
         }
         
         .auth-card {
@@ -39,6 +39,16 @@
         .auth-header {
             text-align: center;
             margin-bottom: 30px;
+        }
+        
+        .auth-header .role-badge {
+            background: #28a745;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 15px;
         }
         
         .auth-header h2 {
@@ -72,13 +82,13 @@
         
         .form-group input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #28a745;
         }
         
         .auth-btn {
             width: 100%;
             padding: 14px;
-            background: #667eea;
+            background: #28a745;
             color: white;
             border: none;
             border-radius: 8px;
@@ -89,7 +99,7 @@
         }
         
         .auth-btn:hover {
-            background: #5a67d8;
+            background: #218838;
         }
         
         .auth-btn:disabled {
@@ -103,12 +113,32 @@
         }
         
         .auth-links a {
-            color: #667eea;
+            color: #28a745;
             text-decoration: none;
         }
         
         .auth-links a:hover {
             text-decoration: underline;
+        }
+        
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .auth-divider span {
+            padding: 0 10px;
+            color: #999;
+            font-size: 14px;
         }
         
         .error-message {
@@ -177,11 +207,12 @@
 <body>
     <div class="auth-container">
         <div class="auth-card">
-            <button class="back-btn" onclick="history.back()">← Бозгашт</button>
+            <button class="back-btn" onclick="window.location.href='/src/pages/dashboard/s/dashboard.html'">← Ба дашборд</button>
             
             <div class="auth-header">
-                <h2>Воридшавӣ ба ҳайси фурӯшанда</h2>
-                <p>Барои идома почта ва пароли худро ворид кунед</p>
+                <span class="role-badge">Фурӯшанда</span>
+                <h2>Ба ҳисоби фурӯшанда ворид шавед</h2>
+                <p>Барои идоракунии маҳсулот ва фармоишҳо</p>
             </div>
             
             <div id="errorMessage" class="error-message"></div>
@@ -190,7 +221,7 @@
             <form id="loginForm">
                 <div class="form-group">
                     <label for="email">Почтаи электронӣ</label>
-                    <input type="email" id="email" placeholder="example@mail.com" required>
+                    <input type="email" id="email" placeholder="seller@example.com" required>
                 </div>
                 
                 <div class="form-group">
@@ -201,27 +232,28 @@
                 <button type="submit" class="auth-btn" id="submitBtn">Воридшавӣ</button>
             </form>
             
+            <div class="auth-divider">
+                <span>ё</span>
+            </div>
+            
             <div class="auth-links">
-                <a href="#" onclick="goToRegister()">Ҳисоб надоред? Сабти ном кунед</a>
-                <br>
-                <a href="#" onclick="goToPhone()">Бо телефон ворид шавед</a>
+                <a href="#" onclick="goToPhone()">Бо рақами телефон ворид шавед</a>
+                <br><br>
+                <a href="#" onclick="goToRegister()">Ҳисоб надоред? Ҳамчун фурӯшанда сабти ном кунед</a>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { signInWithEmail } from '/src/js/supabase.js'
-        import { handlePostAuth, getReturnUrl } from '/src/js/guard.js'
-        
-        const urlParams = new URLSearchParams(window.location.search)
-        const role = urlParams.get('role') || 'seller'
-        
-        window.goToRegister = () => {
-            window.location.href = `/src/pages/auth/${role}/register/email.html?role=${role}`
-        }
+        import { handlePostAuth } from '/src/js/guard.js'
         
         window.goToPhone = () => {
-            window.location.href = `/src/pages/auth/${role}/login/phone.html?role=${role}`
+            window.location.href = '/src/pages/auth/s/login/phone.html'
+        }
+        
+        window.goToRegister = () => {
+            window.location.href = '/src/pages/auth/s/register/form.html'
         }
         
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -243,29 +275,21 @@
                     throw error
                 }
                 
-                // Пас аз воридшавии муваффақ
-                document.getElementById('successMessage').textContent = 'Воридшавӣ муваффақ шуд! Интизор шавед...'
+                document.getElementById('successMessage').textContent = 'Воридшавӣ муваффақ шуд!'
                 document.getElementById('successMessage').style.display = 'block'
                 
-                // Ба дашборди мувофиқ равон кун
+                // Ба дашборди фурӯшанда равон кун
                 setTimeout(() => {
-                    handlePostAuth(role)
+                    handlePostAuth()
                 }, 1000)
                 
             } catch (error) {
-                errorDiv.textContent = error.message || 'Хатогӣ рух дод'
+                errorDiv.textContent = error.message || 'Почта ё парол нодуруст аст'
                 errorDiv.style.display = 'block'
                 submitBtn.disabled = false
                 submitBtn.textContent = 'Воридшавӣ'
             }
         })
-        
-        // Агар returnUrl бошад, нишон диҳем
-        const returnUrl = getReturnUrl()
-        if (returnUrl && returnUrl !== '/') {
-            document.querySelector('.auth-header p').textContent = 
-                'Барои идомаи амал, лутфан ворид шавед'
-        }
     </script>
 </body>
 </html>
