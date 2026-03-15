@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Филтр - Bozorcha</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        
+        .filter-container {
+            max-width: 100%;
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .filter-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        
+        .filter-header h2 {
+            font-size: 20px;
+            color: #333;
+        }
+        
+        .close-btn {
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .filter-section {
+            margin-bottom: 24px;
+        }
+        
+        .filter-section h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .radio-item, .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .price-range {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .price-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .price-separator {
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .apply-btn {
+            width: 100%;
+            padding: 14px;
+            background: #E02E24;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .apply-btn:active {
+            opacity: 0.8;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="filter-container" id="filterContainer">
+        <div class="filter-header">
+            <h2 id="categoryTitle">Филтр</h2>
+            <span class="close-btn" onclick="window.history.back()">✕</span>
+        </div>
+        
+        <div class="filter-section">
+            <h3>Нишон додан</h3>
+            <div class="radio-group">
+                <label class="radio-item">
+                    <input type="radio" name="sort" value="newest" checked> Навтарин
+                </label>
+                <label class="radio-item">
+                    <input type="radio" name="sort" value="oldest"> Охирин
+                </label>
+                <label class="radio-item">
+                    <input type="radio" name="sort" value="price_high"> Нархи баланд
+                </label>
+                <label class="radio-item">
+                    <input type="radio" name="sort" value="price_low"> Нархи паст
+                </label>
+            </div>
+        </div>
+        
+        <div class="filter-section">
+            <h3>Нарх</h3>
+            <div class="price-range">
+                <input type="number" class="price-input" id="minPrice" placeholder="Аз" min="0">
+                <span class="price-separator">-</span>
+                <input type="number" class="price-input" id="maxPrice" placeholder="То" min="0">
+            </div>
+        </div>
+        
+        <div class="filter-section" id="typeSection" style="display: none;">
+            <h3 id="typeTitle">Навъи маҳсулот</h3>
+            <div class="checkbox-group" id="typeCheckboxes">
+                <!-- Вариантҳо бо JavaScript илова мешаванд -->
+            </div>
+        </div>
+        
+        <button class="apply-btn" id="applyBtn">Сабт</button>
+    </div>
+    
+    <script type="module">
+        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+        
+        const supabase = createClient(
+            'https://guaymxogvbzbjkflgatj.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd1YXlteG9ndmJ6YmprZmxnYXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE5NzM3NDYsImV4cCI6MjA1NzU0OTc0Nn0.75f52qNhAKNqF6eWq5cO6Wv7oNtD1YBBpUrXp8HlG_Y'
+        )
+        
+        // Гирифтани параметрҳо аз URL
+        const urlParams = new URLSearchParams(window.location.search)
+        const categoryId = urlParams.get('category')
+        const currentSort = urlParams.get('sort') || 'newest'
+        const currentMinPrice = urlParams.get('min_price') || ''
+        const currentMaxPrice = urlParams.get('max_price') || ''
+        const currentCategories = urlParams.get('categories')?.split(',') || []
+        
+        // Танзими қиматҳои ҷорӣ
+        document.querySelector(`input[name="sort"][value="${currentSort}"]`).checked = true
+        document.getElementById('minPrice').value = currentMinPrice
+        document.getElementById('maxPrice').value = currentMaxPrice
+        
+        // Бор кардани категорияи сатҳи 1 (барои ном)
+        async function loadCategoryName() {
+            if (!categoryId) return
+            
+            try {
+                const { data, error } = await supabase
+                    .from('categories')
+                    .select('name_tj')
+                    .eq('id', categoryId)
+                    .single()
+                
+                if (error) throw error
+                
+                if (data) {
+                    document.getElementById('categoryTitle').textContent = `Филтр - ${data.name_tj}`
+                    
+                    // Бор кардани категорияҳои сатҳи 2
+                    await loadLevel2Categories(categoryId)
+                }
+            } catch (error) {
+                console.error('Error loading category name:', error)
+            }
+        }
+        
+        // Бор кардани категорияҳои сатҳи 2
+        async function loadLevel2Categories(parentId) {
+            try {
+                const { data, error } = await supabase
+                    .from('categories')
+                    .select('id, name_tj')
+                    .eq('parent_id', parentId)
+                    .eq('level', 2)
+                    .eq('is_active', true)
+                    .order('sort_order')
+                
+                if (error) throw error
+                
+                if (data && data.length > 0) {
+                    document.getElementById('typeSection').style.display = 'block'
+                    
+                    const container = document.getElementById('typeCheckboxes')
+                    container.innerHTML = ''
+                    
+                    data.forEach(cat => {
+                        const checked = currentCategories.includes(cat.id) ? 'checked' : ''
+                        container.innerHTML += `
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="${cat.id}" ${checked}> ${cat.name_tj}
+                            </label>
+                        `
+                    })
+                } else {
+                    document.getElementById('typeSection').style.display = 'none'
+                }
+            } catch (error) {
+                console.error('Error loading level 2 categories:', error)
+            }
+        }
+        
+        // Тугмаи сабт
+        document.getElementById('applyBtn').addEventListener('click', () => {
+            // Ҷамъоварии параметрҳо
+            const sort = document.querySelector('input[name="sort"]:checked')?.value || 'newest'
+            const minPrice = document.getElementById('minPrice').value
+            const maxPrice = document.getElementById('maxPrice').value
+            
+            // Ҷамъоварии категорияҳои интихобшуда
+            const selectedCategories = []
+            document.querySelectorAll('#typeCheckboxes input:checked').forEach(cb => {
+                selectedCategories.push(cb.value)
+            })
+            
+            // Сохтани URL барои бозгашт
+            const params = new URLSearchParams()
+            params.set('sort', sort)
+            if (minPrice) params.set('min_price', minPrice)
+            if (maxPrice) params.set('max_price', maxPrice)
+            if (selectedCategories.length > 0) params.set('categories', selectedCategories.join(','))
+            if (categoryId) params.set('category', categoryId)
+            
+            // Бозгашт ба home.html
+            window.location.href = `/src/pages/b/home/home.html?${params.toString()}`
+        })
+        
+        // Оғоз
+        loadCategoryName()
+    </script>
+</body>
+</html>
