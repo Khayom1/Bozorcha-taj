@@ -2,7 +2,7 @@
 <html lang="tg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Филтр - Bozorcha</title>
     <style>
         * {
@@ -14,15 +14,18 @@
         
         body {
             background-color: #f4f4f4;
-            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         
         .filter-container {
-            max-width: 100%;
+            flex: 1;
             background: white;
-            border-radius: 16px;
+            border-radius: 20px 20px 0 0;
             padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-top: 20px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
         }
         
         .filter-header {
@@ -30,41 +33,55 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
         }
         
         .filter-header h2 {
             font-size: 20px;
             color: #333;
+            font-weight: 600;
         }
         
         .close-btn {
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
             color: #999;
+            line-height: 1;
         }
         
         .filter-section {
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
         
         .filter-section h3 {
             font-size: 16px;
             color: #333;
             margin-bottom: 12px;
+            font-weight: 500;
         }
         
         .radio-group, .checkbox-group {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
         
         .radio-item, .checkbox-item {
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 14px;
-            color: #666;
+            font-size: 15px;
+            color: #444;
+            cursor: pointer;
+        }
+        
+        .radio-item input[type="radio"], 
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #E02E24;
         }
         
         .price-range {
@@ -75,28 +92,37 @@
         
         .price-input {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 14px;
+            background: #f9f9f9;
+        }
+        
+        .price-input:focus {
+            outline: none;
+            border-color: #E02E24;
+            background: white;
         }
         
         .price-separator {
             color: #999;
-            font-size: 14px;
+            font-size: 16px;
+            font-weight: 500;
         }
         
         .apply-btn {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             background: #E02E24;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             margin-top: 20px;
+            transition: opacity 0.2s;
         }
         
         .apply-btn:active {
@@ -105,8 +131,17 @@
         
         .loading {
             text-align: center;
-            padding: 20px;
+            padding: 30px;
             color: #999;
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 20px;
+            color: #E02E24;
+            background: #ffe8e8;
+            border-radius: 10px;
+            margin: 20px 0;
         }
     </style>
 </head>
@@ -117,9 +152,10 @@
             <span class="close-btn" onclick="window.history.back()">✕</span>
         </div>
         
+        <!-- Sort Section -->
         <div class="filter-section">
             <h3>Нишон додан</h3>
-            <div class="radio-group">
+            <div class="radio-group" id="sortGroup">
                 <label class="radio-item">
                     <input type="radio" name="sort" value="newest" checked> Навтарин
                 </label>
@@ -135,15 +171,17 @@
             </div>
         </div>
         
+        <!-- Price Section -->
         <div class="filter-section">
-            <h3>Нарх</h3>
+            <h3>Нарх (сомонӣ)</h3>
             <div class="price-range">
-                <input type="number" class="price-input" id="minPrice" placeholder="Аз" min="0">
-                <span class="price-separator">-</span>
-                <input type="number" class="price-input" id="maxPrice" placeholder="То" min="0">
+                <input type="number" class="price-input" id="minPrice" placeholder="Аз" min="0" step="1">
+                <span class="price-separator">—</span>
+                <input type="number" class="price-input" id="maxPrice" placeholder="То" min="0" step="1">
             </div>
         </div>
         
+        <!-- Category Level 2 Section (динамикӣ) -->
         <div class="filter-section" id="typeSection" style="display: none;">
             <h3 id="typeTitle">Навъи маҳсулот</h3>
             <div class="checkbox-group" id="typeCheckboxes">
@@ -151,74 +189,83 @@
             </div>
         </div>
         
-        <button class="apply-btn" id="applyBtn">Сабт</button>
+        <!-- Apply Button -->
+        <button class="apply-btn" id="applyBtn">Сабти фильтр</button>
+        
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading" style="display: none;">Маълумот бор мешавад...</div>
     </div>
-    
+
     <script type="module">
         import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
         
+        // --- Конфигуратсияи Supabase ---
         const supabase = createClient(
             'https://guaymxogvbzbjkflgatj.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd1YXlteG9ndmJ6YmprZmxnYXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE5NzM3NDYsImV4cCI6MjA1NzU0OTc0Nn0.75f52qNhAKNqF6eWq5cO6Wv7oNtD1YBBpUrXp8HlG_Y'
         )
         
-        // Гирифтани параметрҳо аз URL
+        // --- Гирифтани параметрҳо аз URL (барои нишон додани ҳолати ҷорӣ) ---
         const urlParams = new URLSearchParams(window.location.search)
         const categoryId = urlParams.get('category')
         const currentSort = urlParams.get('sort') || 'newest'
         const currentMinPrice = urlParams.get('min_price') || ''
         const currentMaxPrice = urlParams.get('max_price') || ''
-        const currentCategories = urlParams.get('categories')?.split(',') || []
+        const currentCategories = urlParams.get('categories')?.split(',').filter(id => id) || []
         
-        // Танзими қиматҳои ҷорӣ
-        document.querySelector(`input[name="sort"][value="${currentSort}"]`).checked = true
+        // --- Танзими қиматҳои ҷорӣ дар форма ---
+        document.querySelectorAll('input[name="sort"]').forEach(radio => {
+            if (radio.value === currentSort) {
+                radio.checked = true
+            }
+        })
         document.getElementById('minPrice').value = currentMinPrice
         document.getElementById('maxPrice').value = currentMaxPrice
         
-        // Бор кардани категорияи сатҳи 1 (барои ном)
-        async function loadCategoryName() {
-            if (!categoryId) return
+        // --- Бор кардани номи категорияи асосӣ ва категорияҳои сатҳи 2 ---
+        async function loadCategoryData() {
+            if (!categoryId) {
+                // Агар категория интихоб нашуда бошад, қисми "Навъи маҳсулот" пинҳон аст
+                document.getElementById('typeSection').style.display = 'none'
+                document.getElementById('categoryTitle').textContent = 'Филтр'
+                return
+            }
             
             try {
-                const { data, error } = await supabase
+                // Нишон додани индикатори боркунӣ
+                document.getElementById('loadingIndicator').style.display = 'block'
+                
+                // 1. Гирифтани номи категорияи сатҳи 1
+                const { data: cat1, error: error1 } = await supabase
                     .from('categories')
                     .select('name_tj')
                     .eq('id', categoryId)
                     .single()
                 
-                if (error) throw error
+                if (error1) throw error1
                 
-                if (data) {
-                    document.getElementById('categoryTitle').textContent = `Филтр - ${data.name_tj}`
-                    
-                    // Бор кардани категорияҳои сатҳи 2
-                    await loadLevel2Categories(categoryId)
-                }
-            } catch (error) {
-                console.error('Error loading category name:', error)
-            }
-        }
-        
-        // Бор кардани категорияҳои сатҳи 2
-        async function loadLevel2Categories(parentId) {
-            try {
-                const { data, error } = await supabase
+                document.getElementById('categoryTitle').textContent = `Филтр - ${cat1.name_tj}`
+                
+                // 2. Гирифтани категорияҳои сатҳи 2 (parent_id = categoryId)
+                const { data: cat2, error: error2 } = await supabase
                     .from('categories')
                     .select('id, name_tj')
-                    .eq('parent_id', parentId)
+                    .eq('parent_id', categoryId)
                     .eq('level', 2)
                     .eq('is_active', true)
                     .order('sort_order')
                 
-                if (error) throw error
+                if (error2) throw error2
                 
-                if (data && data.length > 0) {
+                if (cat2 && cat2.length > 0) {
+                    // Нишон додани қисм
                     document.getElementById('typeSection').style.display = 'block'
                     
+                    // Сохтани чекбоксҳо
                     const container = document.getElementById('typeCheckboxes')
                     container.innerHTML = ''
                     
-                    data.forEach(cat => {
+                    cat2.forEach(cat => {
                         const checked = currentCategories.includes(cat.id) ? 'checked' : ''
                         container.innerHTML += `
                             <label class="checkbox-item">
@@ -229,25 +276,34 @@
                 } else {
                     document.getElementById('typeSection').style.display = 'none'
                 }
+                
             } catch (error) {
-                console.error('Error loading level 2 categories:', error)
+                console.error('Error loading category data:', error)
+                document.getElementById('typeSection').style.display = 'none'
+                // Нишон додани хатогӣ
+                const errorDiv = document.createElement('div')
+                errorDiv.className = 'error-message'
+                errorDiv.textContent = 'Хатогӣ дар боркунии категорияҳо'
+                document.getElementById('filterContainer').appendChild(errorDiv)
+            } finally {
+                document.getElementById('loadingIndicator').style.display = 'none'
             }
         }
         
-        // Тугмаи сабт
+        // --- Тугмаи "Сабт" ---
         document.getElementById('applyBtn').addEventListener('click', () => {
             // Ҷамъоварии параметрҳо
             const sort = document.querySelector('input[name="sort"]:checked')?.value || 'newest'
-            const minPrice = document.getElementById('minPrice').value
-            const maxPrice = document.getElementById('maxPrice').value
+            const minPrice = document.getElementById('minPrice').value.trim()
+            const maxPrice = document.getElementById('maxPrice').value.trim()
             
-            // Ҷамъоварии категорияҳои интихобшуда
+            // Ҷамъоварии категорияҳои сатҳи 2 интихобшуда
             const selectedCategories = []
             document.querySelectorAll('#typeCheckboxes input:checked').forEach(cb => {
                 selectedCategories.push(cb.value)
             })
             
-            // Сохтани URL барои бозгашт
+            // Сохтани URL барои бозгашт ба home.html
             const params = new URLSearchParams()
             params.set('sort', sort)
             if (minPrice) params.set('min_price', minPrice)
@@ -255,12 +311,13 @@
             if (selectedCategories.length > 0) params.set('categories', selectedCategories.join(','))
             if (categoryId) params.set('category', categoryId)
             
-            // Бозгашт ба home.html
-            window.location.href = `/src/pages/b/home/home.html?${params.toString()}`
+            // Бозгашт ба home.html (бо истифода аз history.back() барои нигоҳ доштани навигатсия)
+            // Мо метавонем мустақиман ба home.html равем
+            window.location.href = `/src/pages/dashboard/b/home/home.html?${params.toString()}`
         })
         
-        // Оғоз
-        loadCategoryName()
+        // --- Оғоз ---
+        loadCategoryData()
     </script>
 </body>
 </html>
