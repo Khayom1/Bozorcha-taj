@@ -3,144 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Маълумоти профил - фурӯшанда</title>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <title>Сабти ном - Фурӯшанда - Bozorcha</title>
+    <link rel="stylesheet" href="/src/styles/main.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #0a0a0a;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        /* Стилҳо ба монанди боло */
+        .auth-container {
             min-height: 100vh;
-            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        .container {
+        
+        .auth-card {
             max-width: 500px;
             width: 100%;
-            text-align: center;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-        h1 { color: #ff9500; margin-bottom: 10px; }
-        .subtitle { color: #94a3b8; margin-bottom: 30px; }
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 6px;
-            color: white;
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
-        textarea {
-            min-height: 80px;
-            resize: vertical;
+        
+        @media (max-width: 480px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
         }
-        .btn {
-            width: 100%;
-            padding: 15px;
-            background: #ff9500;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .error {
-            color: #ef4444;
-            margin: 10px 0;
-            display: none;
-        }
+        /* ... дигар стилҳо аз боло */
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Маълумоти профил</h1>
-        <p class="subtitle">Барои идома, маълумоти худро ворид кунед</p>
-        
-        <input type="text" id="shopName" placeholder="Номи мағоза">
-        <input type="text" id="fullName" placeholder="Номи пурра">
-        <textarea id="bio" placeholder="Тавсифи мағоза (ихтиёрӣ)"></textarea>
-        
-        <div class="error" id="error"></div>
-
-        <button class="btn" id="submitBtn">Сабт кардан</button>
+    <div class="auth-container">
+        <div class="auth-card">
+            <button class="back-btn" onclick="history.back()">← Бозгашт</button>
+            
+            <div class="auth-header">
+                <h2>Сабти ном ба ҳайси фурӯшанда</h2>
+                <p>Барои оғози тиҷорат, маълумоти худро пур кунед</p>
+            </div>
+            
+            <div id="errorMessage" class="error-message"></div>
+            
+            <form id="registerForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Ном</label>
+                        <input type="text" id="firstName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Насаб</label>
+                        <input type="text" id="lastName" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Номи мағоза</label>
+                    <input type="text" id="shopName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Почтаи электронӣ</label>
+                    <input type="email" id="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Рақами телефон</label>
+                    <input type="tel" id="phone" placeholder="+992 00 000 0000" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Парол</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Такрори парол</label>
+                        <input type="password" id="confirmPassword" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="terms" required>
+                        Қоидаҳои истифодаро қабул мекунам
+                    </label>
+                </div>
+                
+                <button type="submit" class="auth-btn" id="submitBtn">Сабти ном</button>
+            </form>
+            
+            <div class="auth-links">
+                Аллакай ҳисоб доред? <a href="#" onclick="goToLogin()">Ворид шавед</a>
+            </div>
+        </div>
     </div>
 
-    <script>
-        const supabase = supabase.createClient(
-            'https://seagtlaujnnhoyitgsdd.supabase.co',
-            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
-        )
-
-        document.getElementById('submitBtn').addEventListener('click', async () => {
-            const shopName = document.getElementById('shopName').value.trim()
-            const fullName = document.getElementById('fullName').value.trim()
-            const bio = document.getElementById('bio').value.trim()
-            const btn = document.getElementById('submitBtn')
-            const error = document.getElementById('error')
-
-            if (!shopName || !fullName) {
-                error.style.display = 'block'
-                error.textContent = 'Номи мағоза ва номи пурраро пур кунед'
+    <script type="module">
+        import { supabase } from '/src/js/supabase.js'
+        import { isValidEmail, isValidPhone, isValidPassword } from '/src/js/utils.js'
+        
+        const urlParams = new URLSearchParams(window.location.search)
+        const role = urlParams.get('role') || 'seller'
+        
+        window.goToLogin = () => {
+            window.location.href = `/src/pages/auth/${role}/login/email.html?role=${role}`
+        }
+        
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault()
+            
+            const email = document.getElementById('email').value
+            const password = document.getElementById('password').value
+            const confirmPassword = document.getElementById('confirmPassword').value
+            const firstName = document.getElementById('firstName').value
+            const lastName = document.getElementById('lastName').value
+            const shopName = document.getElementById('shopName').value
+            const phone = document.getElementById('phone').value
+            const terms = document.getElementById('terms').checked
+            
+            const errorDiv = document.getElementById('errorMessage')
+            errorDiv.style.display = 'none'
+            
+            // Валидация
+            if (!isValidEmail(email)) {
+                errorDiv.textContent = 'Почтаи электронӣ нодуруст аст'
+                errorDiv.style.display = 'block'
                 return
             }
-
-            btn.disabled = true
-            btn.textContent = 'Сабт шуда истодааст...'
-
-            const userId = localStorage.getItem('userId')
-            const phone = localStorage.getItem('temp_phone') || null
-            const email = localStorage.getItem('temp_email') || null
-
-            // Сабти профил
-            const { error: profileError } = await supabase
-                .from('profiles')
-                .insert({
-                    id: userId,
-                    full_name: fullName,
-                    phone: phone,
-                    email: email,
-                    role: 'seller',
-                    bio: bio || null,
-                    created_at: new Date()
+            
+            if (!isValidPhone(phone)) {
+                errorDiv.textContent = 'Рақами телефон нодуруст аст'
+                errorDiv.style.display = 'block'
+                return
+            }
+            
+            if (!isValidPassword(password)) {
+                errorDiv.textContent = 'Парол бояд ҳадди ақал 8 символ бошад'
+                errorDiv.style.display = 'block'
+                return
+            }
+            
+            if (password !== confirmPassword) {
+                errorDiv.textContent = 'Паролҳо мувофиқат намекунанд'
+                errorDiv.style.display = 'block'
+                return
+            }
+            
+            if (!terms) {
+                errorDiv.textContent = 'Шумо бояд қоидаҳоро қабул кунед'
+                errorDiv.style.display = 'block'
+                return
+            }
+            
+            const submitBtn = document.getElementById('submitBtn')
+            submitBtn.disabled = true
+            submitBtn.textContent = 'Сабти ном...'
+            
+            try {
+                // 1. Сабти ном дар Supabase Auth
+                const { data: authData, error: authError } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            first_name: firstName,
+                            last_name: lastName,
+                            role: role
+                        }
+                    }
                 })
-
-            if (profileError) {
-                error.style.display = 'block'
-                error.textContent = profileError.message
-                btn.disabled = false
-                btn.textContent = 'Сабт кардан'
-                return
+                
+                if (authError) throw authError
+                
+                // 2. Эҷоди профил
+                const { error: profileError } = await supabase
+                    .from('profiles')
+                    .insert([
+                        {
+                            id: authData.user.id,
+                            first_name: firstName,
+                            last_name: lastName,
+                            email: email,
+                            phone: phone,
+                            roles: [role],
+                            username: shopName.toLowerCase().replace(/\s+/g, '_')
+                        }
+                    ])
+                
+                if (profileError) throw profileError
+                
+                // 3. Агар фурӯшанда бошад, мағоза созем
+                if (role === 'seller') {
+                    const { error: shopError } = await supabase
+                        .from('shops')
+                        .insert([
+                            {
+                                user_id: authData.user.id,
+                                name: shopName,
+                                slug: shopName.toLowerCase().replace(/\s+/g, '_'),
+                                phone: phone
+                            }
+                        ])
+                    
+                    if (shopError) throw shopError
+                }
+                
+                // Пас аз муваффақият
+                document.getElementById('successMessage').textContent = 
+                    'Сабти ном муваффақ шуд! Барои фаъолсозӣ, почтаи худро тафтиш кунед.'
+                document.getElementById('successMessage').style.display = 'block'
+                
+                // Ба саҳифаи тасдиқ равон кун
+                setTimeout(() => {
+                    window.location.href = `/src/pages/auth/${role}/register/verify.html?email=${encodeURIComponent(email)}`
+                }, 3000)
+                
+            } catch (error) {
+                errorDiv.textContent = error.message
+                errorDiv.style.display = 'block'
+                submitBtn.disabled = false
+                submitBtn.textContent = 'Сабти ном'
             }
-
-            // Сабти мағоза
-            const { error: shopError } = await supabase
-                .from('shops')
-                .insert({
-                    user_id: userId,
-                    shop_name: shopName,
-                    description: bio || null,
-                    moderation_status: 'pending',
-                    created_at: new Date()
-                })
-
-            if (shopError) {
-                error.style.display = 'block'
-                error.textContent = shopError.message
-                btn.disabled = false
-                btn.textContent = 'Сабт кардан'
-                return
-            }
-
-            localStorage.removeItem('temp_phone')
-            localStorage.removeItem('temp_email')
-            window.location.href = '/src/pages/dashboard/s/dashboard.html'
         })
     </script>
 </body>
